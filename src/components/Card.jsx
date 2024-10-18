@@ -1,7 +1,8 @@
-export default function Card({}) {
+export default function Card({ color }) {
+  // style={{ backgroundColor: color.hex }}
   return (
     <>
-      <div className="card">
+      <div style={{ backgroundColor: '#' + color.hex }} className="card">
         <div className="picture"></div>
       </div>
     </>

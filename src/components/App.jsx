@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import COLOR_DATA from '../colors.json';
 import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
@@ -13,9 +14,7 @@ const initialCards = [
 ];
 
 const getColors = async () => {
-  const response = await fetch('https://csscolorsapi.com/api/colors/cyan', {
-    mode: 'no-cors',
-  });
+  const response = await fetch('https://csscolorsapi.com/api/colors/cyan', {});
 
   return response;
 };
@@ -25,28 +24,39 @@ export default function App() {
   const [colors, setColors] = useState(null);
 
   useEffect(() => {
-    const getColors = async () => {
+    const fetchColors = () => {
       setColors(null);
-      const response = await fetch('https://csscolorsapi.com/api/colors');
-      const data = await response.json();
-      if (!ignore) {
-        console.log(data);
-        // setColors(data);
-      }
+      const result = COLOR_DATA; // Uses hard-coded color data for now
+      if (!ignore) setColors(result);
+      return result;
     };
 
     let ignore = false;
-    getColors();
+    const allColors = fetchColors();
+
+    // Needs a way to make colors not so close together. Maybe just hand pick them?
+    const getRandomColorIdx = () => Math.floor(Math.random() * allColors.length);
+    const getRandomColor = () => allColors[getRandomColorIdx()];
+
+    // Only run if cards haven't had the color prop added
+    if (cards.some((card) => !card.color)) {
+      const cardsWithColorProp = initialCards.map((card) =>
+        Object.defineProperty(card, 'color', { value: { ...getRandomColor() } }),
+      );
+      setCards(cardsWithColorProp);
+    }
 
     return () => {
       ignore = true;
     };
-  });
+  }, [cards.length]);
 
-  return (
+  return colors ? (
     <>
       <CardTable cards={cards} />
       <Scoreboard />
     </>
+  ) : (
+    <div>Loading cards...</div>
   );
 }
