@@ -1,62 +1,38 @@
 import { useState, useEffect } from 'react';
-import COLOR_DATA from '../colors.json';
 import '../styles/App.css';
-import Scoreboard from './Scoreboard.jsx';
+
 import CardTable from './CardTable.jsx';
 
-const initialCards = [
-  { id: 0, value: 0 },
-  { id: 1, value: 1 },
-  { id: 2, value: 2 },
-  { id: 3, value: 3 },
-  { id: 4, value: 4 },
-  { id: 5, value: 5 },
-];
-
-const getColors = async () => {
-  const response = await fetch('https://csscolorsapi.com/api/colors/cyan', {});
-
-  return response;
-};
-
 export default function App() {
-  const [cards, setCards] = useState(initialCards);
-  const [colors, setColors] = useState(null);
+  const [pokemon, setPokemon] = useState(null);
 
   useEffect(() => {
-    const fetchColors = () => {
-      setColors(null);
-      const result = COLOR_DATA; // Uses hard-coded color data for now
-      if (!ignore) setColors(result);
-      return result;
+    const LEVELS = { easy: 4, medium: 8, hard: 12 };
+
+    const fetchPokemon = async () => {
+      const level = 'medium';
+      const generation = 3;
+
+      const url = `https://pokeapi.co/api/v2/generation/${generation}`;
+      const result = await fetch(url);
+      const generationData = await result.json();
+      const pokemonSpecies = generationData.pokemon_species;
+
+      const selectedPokemon = [];
+      for (let i = 0; i < LEVELS[level]; i++) {
+        selectedPokemon.push(pokemonSpecies[i]);
+      }
+
+      if (!ignore) setPokemon(selectedPokemon);
     };
 
     let ignore = false;
-    const allColors = fetchColors();
-
-    // Needs a way to make colors not so close together. Maybe just hand pick them?
-    const getRandomColorIdx = () => Math.floor(Math.random() * allColors.length);
-    const getRandomColor = () => allColors[getRandomColorIdx()];
-
-    // Only run if cards haven't had the color prop added
-    if (cards.some((card) => !card.color)) {
-      const cardsWithColorProp = initialCards.map((card) =>
-        Object.defineProperty(card, 'color', { value: { ...getRandomColor() } }),
-      );
-      setCards(cardsWithColorProp);
-    }
+    fetchPokemon();
 
     return () => {
       ignore = true;
     };
-  }, [cards.length]);
+  }, []);
 
-  return colors ? (
-    <>
-      <CardTable cards={cards} />
-      <Scoreboard />
-    </>
-  ) : (
-    <div>Loading cards...</div>
-  );
+  return pokemon ? <CardTable pokemon={pokemon} /> : <div>Loading cards...</div>;
 }
