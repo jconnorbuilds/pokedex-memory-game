@@ -10,7 +10,7 @@ export default function App() {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
 
     const fetchPokemon = async () => {
-      const level = 'medium';
+      const level = 'easy';
       const generation = 3;
 
       const url = `https://pokeapi.co/api/v2/generation/${generation}`;

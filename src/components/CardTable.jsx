@@ -6,9 +6,10 @@ export default function CardTable({ pokemon }) {
   const [clickedIds, setClickedIds] = useState([]);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
+  const [gameOn, setGameOn] = useState(true);
+  const [gameWon, setGameWon] = useState(false);
 
-  const allPokemonClicked = clickedIds.length === pokemon.length;
-  const gameIsWon = allPokemonClicked;
+  const gameIsWon = clickedIds.length === pokemon.length;
 
   const updateScores = (newScore) => {
     setScore(newScore);
@@ -59,11 +60,21 @@ export default function CardTable({ pokemon }) {
       const newClickedIds = clickedIds.concat(id);
       setClickedIds(newClickedIds);
       updateScores(score + 1);
+
+      if (newClickedIds.length === pokemon.length) {
+        setGameOn(false);
+        setGameWon(true);
+      }
     } else {
-      // Game over
-      setScore(0);
-      setClickedIds([]);
+      setGameOn(false);
     }
+  };
+
+  const resetGame = () => {
+    setGameOn(true);
+    setGameWon(false);
+    setScore(0);
+    setClickedIds([]);
   };
 
   return (
@@ -74,7 +85,9 @@ export default function CardTable({ pokemon }) {
         })}
       </div>
       <Scoreboard score={score} bestScore={bestScore} />
-      {gameIsWon && <p>You win!</p>}
+      {gameWon && <p>You win!</p>}
+      {!gameOn && !gameWon && <p>You lose! </p>}
+      {!gameOn && <button onClick={resetGame}>Play again</button>}
     </>
   );
 }

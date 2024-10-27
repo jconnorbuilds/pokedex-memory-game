@@ -5,12 +5,24 @@ export default function Card({ pokemon, handleClick }) {
   const [sprite, setSprite] = useState(null);
 
   useEffect(() => {
+    const COLORS = {
+      red: '#DA073B',
+      yellow: '#FFD452',
+      green: '#66BB6A',
+      blue: '#3498DB',
+      pink: '#FF8ADE',
+      black: '#1C1D21',
+      brown: '#97715E',
+      white: '#E9E9E9',
+      grey: '#8C8C8C',
+    };
+
     const getPokemonData = async () => {
       // Get the pokemon's "color"
       const result = await fetch(pokemon.url);
       const data = await result.json();
       const colorData = data.color.name;
-      setColor(colorData);
+      setColor(COLORS[colorData]);
 
       // Get the pokemon's official artwork
       const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.id}`);
