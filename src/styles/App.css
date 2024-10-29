@@ -1,31 +1,86 @@
 @import 'reset.css';
 
 #root {
-  max-width: 1280px;
+  width: 100%;
+  height: 100vh;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+}
+
+.app {
+  grid-template-rows: 100px 1fr 100px;
+  grid-template-columns: 1fr;
 }
 
 .card-table {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
   margin: 2rem;
 }
 
 .card {
   border-radius: 8px;
-  padding: 0.2rem;
-  background-color: #333;
-  width: 140px;
-  aspect-ratio: 3/4;
+  padding: 0.5rem;
+  padding-top: 0;
+  border: 6px solid #c8c800a0;
+  width: 200px;
+  min-width: 200px;
+  aspect-ratio: 11/16;
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  justify-content: center;
+}
+.card:hover {
+  cursor: pointer;
 }
 
-.card .picture {
+.card__name {
+  padding: 0.2rem 0;
+  font-size: 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  justify-self: start;
+}
+
+.card__picture {
   border-radius: 5px;
   background-color: #445;
-  width: 100%;
-  height: 80%;
-  margin: auto;
   display: flex;
+  align-items: center;
+}
+
+.scoreboard {
+  text-align: end;
+  margin-left: auto;
+  font-size: 1.2rem;
+  flex: 1;
+}
+
+.score__val {
+  font-weight: 700;
+}
+
+.game-result {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.game-result button {
+  padding: 0.25rem 1rem;
+}
+
+footer .placeholder {
+  margin-right: auto;
+}
+
+@media (prefers-color-scheme: light) {
+  .card {
+    color: #223;
+  }
+
+  .card__picture {
+    background-color: #fafafa;
+  }
 }

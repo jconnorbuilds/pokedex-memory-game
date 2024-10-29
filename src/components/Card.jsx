@@ -34,20 +34,28 @@ export default function Card({ pokemon, handleClick }) {
     getPokemonData();
   }, [pokemon.url]);
 
-  return color && sprite ? (
+  const capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  return color ? (
     <>
       <div
         onClick={() => handleClick(pokemon.name)}
         style={{ backgroundColor: color }}
         className="card"
       >
-        <h2>{pokemon.name}</h2>
-        <div className="picture">
-          <img src={sprite} alt={pokemon.name} />
+        <div className="card__name">{capitalize(pokemon.name)}</div>
+        <div className="card__picture">
+          {sprite ? (
+            <img src={sprite} alt={pokemon.name} width="168px" />
+          ) : (
+            <div>Loading sprites...</div>
+          )}
         </div>
       </div>
     </>
   ) : (
-    <div>Loading sprites...</div>
+    <div>Loading...</div>
   );
 }

@@ -1,20 +1,12 @@
 import { useState } from 'react';
 import Card from './Card.jsx';
-import Scoreboard from './Scoreboard.jsx';
 
-export default function CardTable({ pokemon }) {
+export default function CardTable({ pokemon, score, setScore, updateScores }) {
   const [clickedIds, setClickedIds] = useState([]);
-  const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
   const [gameOn, setGameOn] = useState(true);
   const [gameWon, setGameWon] = useState(false);
 
   const gameIsWon = clickedIds.length === pokemon.length;
-
-  const updateScores = (newScore) => {
-    setScore(newScore);
-    if (newScore > bestScore) setBestScore(newScore);
-  };
 
   const _getRandomUnselectedIdx = (max, used) => {
     let randomIdx;
@@ -56,17 +48,19 @@ export default function CardTable({ pokemon }) {
   const pokemonToShow = _selectPokemonToShow();
 
   const handleClick = (id) => {
-    if (!clickedIds.includes(id)) {
-      const newClickedIds = clickedIds.concat(id);
-      setClickedIds(newClickedIds);
-      updateScores(score + 1);
+    if (gameOn) {
+      if (!clickedIds.includes(id)) {
+        const newClickedIds = clickedIds.concat(id);
+        setClickedIds(newClickedIds);
+        updateScores(score + 1);
 
-      if (newClickedIds.length === pokemon.length) {
+        if (newClickedIds.length === pokemon.length) {
+          setGameOn(false);
+          setGameWon(true);
+        }
+      } else {
         setGameOn(false);
-        setGameWon(true);
       }
-    } else {
-      setGameOn(false);
     }
   };
 
@@ -78,16 +72,17 @@ export default function CardTable({ pokemon }) {
   };
 
   return (
-    <>
+    <div className="container">
       <div className="card-table">
         {pokemonToShow.map((pokemon) => {
           return <Card pokemon={pokemon} handleClick={handleClick} key={pokemon.name} />;
         })}
       </div>
-      <Scoreboard score={score} bestScore={bestScore} />
-      {gameWon && <p>You win!</p>}
-      {!gameOn && !gameWon && <p>You lose! </p>}
-      {!gameOn && <button onClick={resetGame}>Play again</button>}
-    </>
+      <div className="game-result">
+        {gameWon && <p>You win!</p>}
+        {!gameOn && !gameWon && <p>You lose! </p>}
+        {!gameOn && <button onClick={resetGame}>Play again</button>}
+      </div>
+    </div>
   );
 }

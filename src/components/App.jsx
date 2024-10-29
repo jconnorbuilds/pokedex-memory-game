@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import '../styles/App.css';
+import Scoreboard from './Scoreboard.jsx';
 
 import CardTable from './CardTable.jsx';
 
 export default function App() {
   const [pokemon, setPokemon] = useState(null);
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
 
   useEffect(() => {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
@@ -34,5 +37,31 @@ export default function App() {
     };
   }, []);
 
-  return pokemon ? <CardTable pokemon={pokemon} /> : <div>Loading cards...</div>;
+  const updateScores = (newScore) => {
+    setScore(newScore);
+    if (newScore > bestScore) setBestScore(newScore);
+  };
+
+  return (
+    <div className="app">
+      <header className="header container">
+        <Scoreboard score={score} bestScore={bestScore} />
+      </header>
+      {pokemon ? (
+        <CardTable
+          pokemon={pokemon}
+          updateScores={updateScores}
+          score={score}
+          setScore={setScore}
+        />
+      ) : (
+        <div>Loading cards...</div>
+      )}
+      <footer className="footer container">
+        <div className="placeholder">
+          <p>Footer text</p>
+        </div>
+      </footer>
+    </div>
+  );
 }
