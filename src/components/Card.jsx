@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 export default function Card({ pokemon, handleClick }) {
   const [color, setColor] = useState(null);
@@ -39,11 +40,18 @@ export default function Card({ pokemon, handleClick }) {
   };
 
   return color ? (
-    <>
+    <motion.div
+      className="card"
+      animate={{ rotateY: '179.9deg' }}
+      style={{
+        transformStyle: 'preserve-3d',
+        transformPerspective: '600px',
+      }}
+    >
       <div
         onClick={() => handleClick(pokemon.name)}
         style={{ backgroundColor: color }}
-        className="card"
+        className="card__front"
       >
         <div className="card__name">{capitalize(pokemon.name)}</div>
         <div className="card__picture">
@@ -54,7 +62,8 @@ export default function Card({ pokemon, handleClick }) {
           )}
         </div>
       </div>
-    </>
+      <div className="card__back"></div>
+    </motion.div>
   ) : (
     <div>Loading...</div>
   );

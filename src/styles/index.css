@@ -60,6 +60,10 @@ button:focus-visible {
   max-width: 1440px;
 }
 
+/* .red-border {
+  border: 2px solid red;
+} */
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #223;
