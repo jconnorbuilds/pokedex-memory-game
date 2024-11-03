@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-export default function Card({ pokemon, handleClick }) {
+export default function Card({ pokemon, handleClick, gameWon }) {
   const [color, setColor] = useState(null);
   const [sprite, setSprite] = useState(null);
 
@@ -43,6 +43,7 @@ export default function Card({ pokemon, handleClick }) {
     <motion.div
       className="card"
       animate={{ rotateY: '179.9deg' }}
+      transition={{ delay: gameWon ? 0 : 0.5, duration: 0.5 }}
       style={{
         transformStyle: 'preserve-3d',
         transformPerspective: '600px',

@@ -1,51 +1,55 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Card from './Card.jsx';
 
 export default function CardTable({ pokemon, score, setScore, updateScores }) {
   const [clickedIds, setClickedIds] = useState([]);
   const [gameOn, setGameOn] = useState(true);
   const [gameWon, setGameWon] = useState(false);
+  const [handId, setHandId] = useState(0);
 
   const gameIsWon = clickedIds.length === pokemon.length;
 
-  const _getRandomUnselectedIdx = (max, used) => {
-    let randomIdx;
-    while (randomIdx === undefined) {
-      const randomIdxToTry = Math.floor(Math.random() * max);
-      if (!used.includes(randomIdxToTry)) randomIdx = randomIdxToTry;
-    }
-    return randomIdx;
-  };
+  const pokemonToShow = useMemo(() => {
+    // Gets an idx between 0 and <max> that's not present in the <used> array
+    const _getRandomUnselectedIdx = (max, used) => {
+      let idx;
+      const isUnusedIdx = (idx) => !used.includes(idx);
 
-  const _selectPokemon = () => {
-    const numberOfPkmn = Math.floor(pokemon.length * 0.75);
-    const usedIdxs = [];
-    const selectedPokemon = [];
-    for (let i = 0; i < numberOfPkmn; i++) {
-      const idx = _getRandomUnselectedIdx(pokemon.length, usedIdxs);
-      selectedPokemon.push(pokemon[idx]);
-      usedIdxs.push(idx);
-    }
+      do {
+        const randomIdx = Math.floor(Math.random() * max);
+        if (isUnusedIdx(randomIdx)) idx = randomIdx;
+      } while (idx === undefined);
 
-    return selectedPokemon;
-  };
+      return idx;
+    };
 
-  const _selectPokemonToShow = () => {
-    if (gameIsWon) return pokemon;
-    let selectedPokemon = [];
+    // Selects a random subset of the <pokemon> prop
+    const _selectPokemon = () => {
+      const numberOfPkmn = Math.floor(pokemon.length * 0.75);
+      const usedIdxs = [];
+      const selectedPokemon = [];
+      for (let i = 0; i < numberOfPkmn; i++) {
+        const idx = _getRandomUnselectedIdx(pokemon.length, usedIdxs);
+        selectedPokemon.push(pokemon[idx]);
+        usedIdxs.push(idx);
+      }
 
-    // Checks to make sure at least one pokemon being shown is still unclicked
-    const selectionIsValid = (selection) =>
+      return selectedPokemon;
+    };
+
+    const _selectionIsValid = (selection) =>
       selection.some((pkmn) => !clickedIds.includes(pkmn.name));
+    // Return all pokemon if player has won
+    if (gameIsWon) return pokemon;
 
+    // Return a valid subset of pokemon if game is still in play
+    let selectedPokemon;
     do {
       selectedPokemon = _selectPokemon();
-    } while (!selectionIsValid(selectedPokemon));
+    } while (!_selectionIsValid(selectedPokemon));
 
     return selectedPokemon;
-  };
-
-  const pokemonToShow = _selectPokemonToShow();
+  }, [clickedIds, gameIsWon, pokemon]);
 
   const handleClick = (id) => {
     if (gameOn) {
@@ -58,6 +62,7 @@ export default function CardTable({ pokemon, score, setScore, updateScores }) {
           setGameOn(false);
           setGameWon(true);
         }
+        setHandId(handId + 1);
       } else {
         setGameOn(false);
       }
@@ -69,20 +74,36 @@ export default function CardTable({ pokemon, score, setScore, updateScores }) {
     setGameWon(false);
     setScore(0);
     setClickedIds([]);
+    setHandId(0);
   };
 
   return (
     <div className="container">
-      <div className="card-table">
+      <Hand key={handId}>
         {pokemonToShow.map((pokemon) => {
-          return <Card pokemon={pokemon} handleClick={handleClick} key={pokemon.name} />;
+          return (
+            <Card
+              pokemon={pokemon}
+              handleClick={handleClick}
+              gameWon={gameWon}
+              key={pokemon.name}
+            />
+          );
         })}
-      </div>
+      </Hand>
       <div className="game-result">
         {gameWon && <p>You win!</p>}
         {!gameOn && !gameWon && <p>You lose! </p>}
         {!gameOn && <button onClick={resetGame}>Play again</button>}
       </div>
+    </div>
+  );
+}
+
+function Hand({ id, children }) {
+  return (
+    <div className="card-table" key={id}>
+      {children}
     </div>
   );
 }
