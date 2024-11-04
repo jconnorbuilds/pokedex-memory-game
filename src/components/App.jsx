@@ -7,6 +7,8 @@ export default function App() {
   const [pokemon, setPokemon] = useState(null);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
+  const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
+  const [winCount, setWinCount] = useState(0);
 
   useEffect(() => {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
@@ -21,7 +23,9 @@ export default function App() {
       const pokemonSpecies = generationData.pokemon_species;
 
       // Starter pokemon to always include
-      const starterPokemon = [pokemonSpecies[0], pokemonSpecies[1], pokemonSpecies[2]];
+      const starterPokemon = !winCount
+        ? [pokemonSpecies[0], pokemonSpecies[1], pokemonSpecies[2]]
+        : [];
 
       const selectedPokemon = [...starterPokemon];
       for (let i = starterPokemon.length; i < LEVELS[level]; i++) {
@@ -32,6 +36,7 @@ export default function App() {
       }
 
       if (!ignore) setPokemon(selectedPokemon);
+      setNeedsNewPkmn(false);
     };
 
     let ignore = false;
@@ -40,7 +45,7 @@ export default function App() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [winCount, needsNewPkmn]);
 
   const updateScores = (newScore) => {
     setScore(newScore);
@@ -58,6 +63,9 @@ export default function App() {
           updateScores={updateScores}
           score={score}
           setScore={setScore}
+          setNeedsNewPkmn={setNeedsNewPkmn}
+          winCount={winCount}
+          setWinCount={setWinCount}
         />
       ) : (
         <div>Loading cards...</div>

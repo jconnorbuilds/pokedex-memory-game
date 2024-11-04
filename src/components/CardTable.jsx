@@ -1,7 +1,15 @@
 import { useMemo, useState } from 'react';
 import Card from './Card.jsx';
 
-export default function CardTable({ pokemon, score, setScore, updateScores }) {
+export default function CardTable({
+  pokemon,
+  score,
+  setScore,
+  updateScores,
+  setNeedsNewPkmn,
+  winCount,
+  setWinCount,
+}) {
   const [clickedIds, setClickedIds] = useState([]);
   const [gameOn, setGameOn] = useState(true);
   const [gameWon, setGameWon] = useState(false);
@@ -76,6 +84,8 @@ export default function CardTable({ pokemon, score, setScore, updateScores }) {
     setScore(0);
     setClickedIds([]);
     setHandId(0);
+    setNeedsNewPkmn(gameWon);
+    if (gameWon) setWinCount(winCount + 1);
   };
 
   return (
