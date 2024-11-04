@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
-
 import CardTable from './CardTable.jsx';
 
 export default function App() {
@@ -14,16 +13,22 @@ export default function App() {
 
     const fetchPokemon = async () => {
       const level = 'easy';
-      const generation = 2;
+      const generation = 4;
 
       const url = `https://pokeapi.co/api/v2/generation/${generation}`;
       const result = await fetch(url);
       const generationData = await result.json();
       const pokemonSpecies = generationData.pokemon_species;
 
-      const selectedPokemon = [];
-      for (let i = 0; i < LEVELS[level]; i++) {
-        selectedPokemon.push(pokemonSpecies[i]);
+      // Starter pokemon to always include
+      const starterPokemon = [pokemonSpecies[0], pokemonSpecies[1], pokemonSpecies[2]];
+
+      const selectedPokemon = [...starterPokemon];
+      for (let i = starterPokemon.length; i < LEVELS[level]; i++) {
+        const randomIdx =
+          Math.floor(Math.random() * pokemonSpecies.length - starterPokemon.length) +
+          starterPokemon.length;
+        selectedPokemon.push(pokemonSpecies[randomIdx]);
       }
 
       if (!ignore) setPokemon(selectedPokemon);

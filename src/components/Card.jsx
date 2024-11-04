@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-export default function Card({ pokemon, handleClick, gameWon }) {
+export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
   const [color, setColor] = useState(null);
   const [sprite, setSprite] = useState(null);
 
@@ -15,13 +15,15 @@ export default function Card({ pokemon, handleClick, gameWon }) {
       black: '#1C1D21',
       brown: '#97715E',
       white: '#E9E9E9',
-      grey: '#8C8C8C',
+      purple: 'rebeccapurple',
+      gray: '#8C8C8C',
     };
 
     const getPokemonData = async () => {
       // Get the pokemon's "color"
       const result = await fetch(pokemon.url);
       const data = await result.json();
+      console.log(data);
       const colorData = data.color.name;
       setColor(COLORS[colorData]);
 
@@ -39,11 +41,37 @@ export default function Card({ pokemon, handleClick, gameWon }) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  return color ? (
+  const variants = {
+    flip: {
+      rotateY: '179.9deg',
+      transition: { delay: 0.25, duration: 0.5 },
+    },
+    'flip-win': {
+      rotateY: '540deg',
+      rotateZ: '2deg',
+      transition: {
+        rotateY: { duration: 0.75 },
+        rotateZ: {
+          from: '-2deg',
+          to: '2deg',
+          repeat: Infinity,
+          repeatType: 'mirror',
+          duration: 0.5,
+          ease: 'easeInOut',
+        },
+      },
+    },
+    hover: {
+      scale: 1.05,
+    },
+  };
+
+  return (
     <motion.div
+      variants={variants}
       className="card"
-      animate={{ rotateY: '179.9deg' }}
-      transition={{ delay: gameWon ? 0 : 0.5, duration: 0.5 }}
+      animate={gameWon ? 'flip-win' : 'flip'}
+      whileHover={'hover'}
       style={{
         transformStyle: 'preserve-3d',
         transformPerspective: '600px',
@@ -51,7 +79,7 @@ export default function Card({ pokemon, handleClick, gameWon }) {
     >
       <div
         onClick={() => handleClick(pokemon.name)}
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor: colorsOn ? color : '#999' }}
         className="card__front"
       >
         <div className="card__name">{capitalize(pokemon.name)}</div>
@@ -65,7 +93,5 @@ export default function Card({ pokemon, handleClick, gameWon }) {
       </div>
       <div className="card__back"></div>
     </motion.div>
-  ) : (
-    <div>Loading...</div>
   );
 }

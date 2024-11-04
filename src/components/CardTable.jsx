@@ -6,6 +6,7 @@ export default function CardTable({ pokemon, score, setScore, updateScores }) {
   const [gameOn, setGameOn] = useState(true);
   const [gameWon, setGameWon] = useState(false);
   const [handId, setHandId] = useState(0);
+  const [colorsOn, setColorsOn] = useState(true);
 
   const gameIsWon = clickedIds.length === pokemon.length;
 
@@ -87,6 +88,7 @@ export default function CardTable({ pokemon, score, setScore, updateScores }) {
               handleClick={handleClick}
               gameWon={gameWon}
               key={pokemon.name}
+              colorsOn={colorsOn}
             />
           );
         })}
