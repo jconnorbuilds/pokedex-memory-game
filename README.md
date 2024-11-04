@@ -1,8 +1,13 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Current features:
 
-Currently, two official plugins are available:
+- Starts with 3 starter pokemon from the selected generation
+- Easy, medium, and hard modes
+- Gives a new set of pokemon when playing a new game after winning
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Features to add:
+
+- Keep track of consecutive games won
+- Keep track of pokemon seen from each gen
+- Ability to toggle card colors on and off for more challening gameplay
