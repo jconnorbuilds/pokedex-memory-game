@@ -88,6 +88,18 @@
   padding: 0.25rem 1rem;
 }
 
+.game-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.game-menu div {
+  display: grid;
+  grid-auto-rows: min-content;
+  justify-content: start;
+  align-items: start;
+}
+
 footer .placeholder {
   margin-right: auto;
 }

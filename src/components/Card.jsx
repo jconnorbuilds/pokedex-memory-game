@@ -23,7 +23,6 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
       // Get the pokemon's "color"
       const result = await fetch(pokemon.url);
       const data = await result.json();
-      console.log(data);
       const colorData = data.color.name;
       setColor(COLORS[colorData]);
 
