@@ -4,21 +4,25 @@ import Card from './Card.jsx';
 export default function CardTable({
   pokemon,
   score,
-  setScore,
   updateScores,
-  setNeedsNewPkmn,
-  winCount,
-  setWinCount,
+  gameWon,
+  setGameWon,
+  gameOn,
+  setGameOn,
+  resetGame,
+  clickedIds,
+  setClickedIds,
+  handId,
+  setHandId,
 }) {
-  const [clickedIds, setClickedIds] = useState([]);
-  const [gameOn, setGameOn] = useState(true);
-  const [gameWon, setGameWon] = useState(false);
-  const [handId, setHandId] = useState(0);
   const [colorsOn, setColorsOn] = useState(true);
 
-  const gameIsWon = clickedIds.length === pokemon.length;
-
   const pokemonToShow = useMemo(() => {
+    // Return all pokemon if player has won
+    if (gameWon) {
+      return pokemon;
+    }
+
     // Gets an idx between 0 and <max> that's not present in the <used> array
     const _getRandomUnselectedIdx = (max, used) => {
       let idx;
@@ -42,14 +46,11 @@ export default function CardTable({
         selectedPokemon.push(pokemon[idx]);
         usedIdxs.push(idx);
       }
-
       return selectedPokemon;
     };
 
     const _selectionIsValid = (selection) =>
       selection.some((pkmn) => !clickedIds.includes(pkmn.name));
-    // Return all pokemon if player has won
-    if (gameIsWon) return pokemon;
 
     // Return a valid subset of pokemon if game is still in play
     let selectedPokemon;
@@ -58,12 +59,14 @@ export default function CardTable({
     } while (!_selectionIsValid(selectedPokemon));
 
     return selectedPokemon;
-  }, [clickedIds, gameIsWon, pokemon]);
+  }, [clickedIds, gameWon, pokemon]);
+
+  const choiceSucceeded = (id) => !clickedIds.includes(id);
 
   const handleClick = (id) => {
     if (gameOn) {
-      if (!clickedIds.includes(id)) {
-        const newClickedIds = clickedIds.concat(id);
+      if (choiceSucceeded(id)) {
+        const newClickedIds = clickedIds.concat([id]);
         setClickedIds(newClickedIds);
         updateScores(score + 1);
 
@@ -76,16 +79,6 @@ export default function CardTable({
         setGameOn(false);
       }
     }
-  };
-
-  const resetGame = () => {
-    setGameOn(true);
-    setGameWon(false);
-    setScore(0);
-    setClickedIds([]);
-    setHandId(0);
-    setNeedsNewPkmn(gameWon);
-    if (gameWon) setWinCount(winCount + 1);
   };
 
   return (

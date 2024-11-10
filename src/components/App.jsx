@@ -3,6 +3,7 @@ import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
 import MenuButton from './MenuButton.jsx';
+import GenerationDisplay from './GenerationDisplay.jsx';
 
 export default function App() {
   const [pokemon, setPokemon] = useState(null);
@@ -12,6 +13,10 @@ export default function App() {
   const [winCount, setWinCount] = useState(0);
   const [level, setLevel] = useState('easy');
   const [generation, setGeneration] = useState(1);
+  const [gameWon, setGameWon] = useState(false);
+  const [gameOn, setGameOn] = useState(true);
+  const [clickedIds, setClickedIds] = useState([]);
+  const [handId, setHandId] = useState(0);
 
   const NUM_OF_GENERATIONS = 9;
   const LEVELS = ['easy', 'medium', 'hard'];
@@ -25,17 +30,35 @@ export default function App() {
       const generationData = await result.json();
       const pokemonSpecies = generationData.pokemon_species;
 
-      // Starter pokemon to always include
+      // Starter pokemon to always include on the first round
       const starterPokemon = !winCount
         ? [pokemonSpecies[0], pokemonSpecies[1], pokemonSpecies[2]]
         : [];
 
       const selectedPokemon = [...starterPokemon];
-      for (let i = starterPokemon.length; i < LEVELS[level]; i++) {
-        const randomIdx =
-          Math.floor(Math.random() * pokemonSpecies.length - starterPokemon.length) +
-          starterPokemon.length;
-        selectedPokemon.push(pokemonSpecies[randomIdx]);
+
+      const _getRandomIdx = (range, offset = 0) =>
+        Math.floor(Math.random() * range - offset) + offset;
+
+      const _getRandomPokemon = () =>
+        pokemonSpecies[_getRandomIdx(pokemonSpecies.length, starterPokemon.range)];
+
+      const selectPokemon = () => {
+        const randomPokemon = _getRandomPokemon();
+        if (!selectedPokemon.includes(randomPokemon)) selectedPokemon.push(randomPokemon);
+
+        // Duplicate pokemon error handling
+        if (selectedPokemon.length > new Set(selectedPokemon).length) {
+          throw new Error(`Duplicate pokemon! ${selectedPokemon}`);
+        }
+      };
+
+      while (selectedPokemon.length < LEVELS[level]) {
+        try {
+          selectPokemon();
+        } catch (err) {
+          console.error(err);
+        }
       }
 
       if (!ignore) setPokemon(selectedPokemon);
@@ -56,11 +79,27 @@ export default function App() {
   };
 
   const handleGenerationSelect = (e) => {
-    if (e.target.tagName === 'BUTTON') setGeneration(+e.target.value);
+    if (e.target.tagName === 'BUTTON') {
+      setGeneration(+e.target.value);
+      resetGame();
+    }
   };
 
   const handleLevelSelect = (e) => {
-    if (e.target.tagName === 'BUTTON') setLevel(e.target.value);
+    if (e.target.tagName === 'BUTTON') {
+      setLevel(e.target.value);
+      resetGame();
+    }
+  };
+
+  const resetGame = () => {
+    setGameOn(true);
+    setGameWon(false);
+    setScore(0);
+    setClickedIds([]);
+    setHandId(0);
+    setNeedsNewPkmn(gameWon);
+    if (gameWon) setWinCount(winCount + 1);
   };
 
   return (
@@ -77,6 +116,15 @@ export default function App() {
           setNeedsNewPkmn={setNeedsNewPkmn}
           winCount={winCount}
           setWinCount={setWinCount}
+          gameWon={gameWon}
+          setGameWon={setGameWon}
+          gameOn={gameOn}
+          setGameOn={setGameOn}
+          resetGame={resetGame}
+          clickedIds={clickedIds}
+          setClickedIds={setClickedIds}
+          handId={handId}
+          setHandId={setHandId}
         />
       ) : (
         <div>Loading cards...</div>
@@ -85,9 +133,10 @@ export default function App() {
         <div className="choose-difficulty" onClick={handleLevelSelect}>
           <h2>Difficulty</h2>
           {LEVELS.map((level) => {
+            const levelNameFormatted = level.charAt(0).toUpperCase() + level.slice(1);
             return (
               <MenuButton key={level} value={level}>
-                {level.charAt(0).toUpperCase() + level.slice(1)}
+                {levelNameFormatted}
               </MenuButton>
             );
           })}
@@ -97,11 +146,13 @@ export default function App() {
           {Array(NUM_OF_GENERATIONS)
             .fill('')
             .map((_, idx) => {
-              const val = idx + 1;
+              const genNumber = idx + 1;
+              const genSize = 150;
               return (
-                <MenuButton key={val} value={val}>
-                  {val}
-                </MenuButton>
+                <GenerationDisplay key={idx}>
+                  <MenuButton value={genNumber}>{genNumber}</MenuButton>
+                  <div className="gen-dex-completion">0 / {genSize ? genSize : 999}</div>
+                </GenerationDisplay>
               );
             })}
         </div>
