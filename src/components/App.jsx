@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
@@ -17,6 +17,8 @@ export default function App() {
   const [gameOn, setGameOn] = useState(true);
   const [clickedIds, setClickedIds] = useState([]);
   const [handId, setHandId] = useState(0);
+  const [genSizes, setGenSizes] = useState({});
+  const [genCompletion, setGenCompletion] = useState({});
 
   const NUM_OF_GENERATIONS = 9;
   const LEVELS = ['easy', 'medium', 'hard'];
@@ -72,6 +74,22 @@ export default function App() {
       ignore = true;
     };
   }, [winCount, needsNewPkmn, generation, level]);
+
+  useEffect(() => {
+    const fetchGenerationData = async () => {
+      const pokemonInGen = {};
+      for (let i = 0; i < NUM_OF_GENERATIONS; i++) {
+        const genNumber = i + 1;
+        const url = `https://pokeapi.co/api/v2/generation/${genNumber}`;
+        const result = await fetch(url);
+        const generationData = await result.json();
+        pokemonInGen[genNumber] = generationData.pokemon_species.length;
+      }
+      return pokemonInGen;
+    };
+    const generationData = fetchGenerationData();
+    generationData.then((res) => setGenSizes(res));
+  }, []);
 
   const updateScores = (newScore) => {
     setScore(newScore);
@@ -147,11 +165,15 @@ export default function App() {
             .fill('')
             .map((_, idx) => {
               const genNumber = idx + 1;
-              const genSize = 150;
+              const genSize = genSizes[genNumber];
+
               return (
                 <GenerationDisplay key={idx}>
                   <MenuButton value={genNumber}>{genNumber}</MenuButton>
-                  <div className="gen-dex-completion">0 / {genSize ? genSize : 999}</div>
+                  <div className="gen-dex-completion">
+                    {genCompletion[genNumber] ? genCompletion[genNumber] : 0} /{' '}
+                    {genSize ? genSize : '...'}
+                  </div>
                 </GenerationDisplay>
               );
             })}
