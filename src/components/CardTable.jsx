@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Card from './Card.jsx';
 
 export default function CardTable({
@@ -14,8 +14,11 @@ export default function CardTable({
   setClickedIds,
   handId,
   setHandId,
+  genCompletion,
+  setGenCompletion,
+  generation,
 }) {
-  const [colorsOn, setColorsOn] = useState(true);
+  // const [colorsOn, setColorsOn] = useState(true);
 
   // Gets an idx between 0 and <max> that's not present in the <used> array
   const _getRandomUnselectedIdx = (max, used) => {
@@ -31,7 +34,6 @@ export default function CardTable({
   };
 
   // Selects a random subset of the <pokemon> prop
-
   const pokemonToShow = useMemo(() => {
     // Return all pokemon if player has won
     if (gameWon) return pokemon;
@@ -71,9 +73,19 @@ export default function CardTable({
         setClickedIds(newClickedIds);
         updateScores(score + 1);
 
+        // Check if player wins round
         if (newClickedIds.length === pokemon.length) {
+          // Keep track of seen pokemon per generation, without duplicates
+          const pokemonNames = pokemon.map((pkmn) => pkmn.name);
+          const newData = {
+            [generation]: genCompletion[generation]
+              ? [...new Set(genCompletion[generation].concat(pokemonNames))]
+              : pokemonNames,
+          };
+
           setGameOn(false);
           setGameWon(true);
+          setGenCompletion({ ...genCompletion, ...newData });
         }
         setHandId(handId + 1);
       } else {
@@ -81,6 +93,9 @@ export default function CardTable({
       }
     }
   };
+
+  console.log(genCompletion);
+  localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
 
   return (
     <div className="container">
@@ -92,7 +107,7 @@ export default function CardTable({
               handleClick={handleClick}
               gameWon={gameWon}
               key={pokemon.name}
-              colorsOn={colorsOn}
+              colorsOn={true}
             />
           );
         })}

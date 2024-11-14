@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
@@ -10,7 +10,9 @@ export default function App() {
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
-  const [winCount, setWinCount] = useState(0);
+  const [winCount, setWinCount] = useState(
+    JSON.parse(localStorage.getItem('winCount')) || 0,
+  );
   const [level, setLevel] = useState('easy');
   const [generation, setGeneration] = useState(1);
   const [gameWon, setGameWon] = useState(false);
@@ -18,7 +20,9 @@ export default function App() {
   const [clickedIds, setClickedIds] = useState([]);
   const [handId, setHandId] = useState(0);
   const [genSizes, setGenSizes] = useState({});
-  const [genCompletion, setGenCompletion] = useState({});
+  const [genCompletion, setGenCompletion] = useState(
+    JSON.parse(localStorage.getItem('genCompletion')) || {},
+  );
 
   const NUM_OF_GENERATIONS = 9;
   const LEVELS = ['easy', 'medium', 'hard'];
@@ -120,6 +124,8 @@ export default function App() {
     if (gameWon) setWinCount(winCount + 1);
   };
 
+  localStorage.setItem('winCount', JSON.stringify(winCount));
+
   return (
     <div className="app">
       <header className="header container">
@@ -143,6 +149,9 @@ export default function App() {
           setClickedIds={setClickedIds}
           handId={handId}
           setHandId={setHandId}
+          genCompletion={genCompletion}
+          setGenCompletion={setGenCompletion}
+          generation={generation}
         />
       ) : (
         <div>Loading cards...</div>
@@ -171,7 +180,7 @@ export default function App() {
                 <GenerationDisplay key={idx}>
                   <MenuButton value={genNumber}>{genNumber}</MenuButton>
                   <div className="gen-dex-completion">
-                    {genCompletion[genNumber] ? genCompletion[genNumber] : 0} /{' '}
+                    {genCompletion[genNumber] ? genCompletion[genNumber].length : 0} /{' '}
                     {genSize ? genSize : '...'}
                   </div>
                 </GenerationDisplay>
