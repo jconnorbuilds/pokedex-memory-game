@@ -6,12 +6,15 @@ import MenuButton from './MenuButton.jsx';
 import GenerationDisplay from './GenerationDisplay.jsx';
 
 export default function App() {
+  const NUM_OF_GENERATIONS = 9;
+
   const [pokemon, setPokemon] = useState(null);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
-  const [winCount, setWinCount] = useState(
-    JSON.parse(localStorage.getItem('winCount')) || 0,
+  const [showStarters, setShowStarters] = useState(
+    JSON.parse(localStorage.getItem('showStarters')) ||
+      Array(NUM_OF_GENERATIONS).fill(true),
   );
   const [level, setLevel] = useState('easy');
   const [generation, setGeneration] = useState(1);
@@ -24,7 +27,6 @@ export default function App() {
     JSON.parse(localStorage.getItem('genCompletion')) || {},
   );
 
-  const NUM_OF_GENERATIONS = 9;
   const LEVELS = ['easy', 'medium', 'hard'];
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function App() {
       const pokemonSpecies = generationData.pokemon_species;
 
       // Starter pokemon to always include on the first round
-      const starterPokemon = !winCount
+      const starterPokemon = showStarters[generation - 1]
         ? [pokemonSpecies[0], pokemonSpecies[1], pokemonSpecies[2]]
         : [];
 
@@ -77,7 +79,7 @@ export default function App() {
     return () => {
       ignore = true;
     };
-  }, [winCount, needsNewPkmn, generation, level]);
+  }, [showStarters, needsNewPkmn, generation, level]);
 
   useEffect(() => {
     const fetchGenerationData = async () => {
@@ -115,16 +117,19 @@ export default function App() {
   };
 
   const resetGame = () => {
+    const genIdx = generation - 1;
     setGameOn(true);
     setGameWon(false);
     setScore(0);
     setClickedIds([]);
     setHandId(0);
     setNeedsNewPkmn(gameWon);
-    if (gameWon) setWinCount(winCount + 1);
+    if (gameWon && showStarters[genIdx])
+      setShowStarters(showStarters.map((gen, idx) => (idx === genIdx ? false : gen)));
   };
+  console.log(showStarters);
 
-  localStorage.setItem('winCount', JSON.stringify(winCount));
+  localStorage.setItem('showStarters', JSON.stringify(showStarters));
 
   return (
     <div className="app">
@@ -138,8 +143,6 @@ export default function App() {
           score={score}
           setScore={setScore}
           setNeedsNewPkmn={setNeedsNewPkmn}
-          winCount={winCount}
-          setWinCount={setWinCount}
           gameWon={gameWon}
           setGameWon={setGameWon}
           gameOn={gameOn}

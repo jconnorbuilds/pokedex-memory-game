@@ -94,7 +94,6 @@ export default function CardTable({
     }
   };
 
-  console.log(genCompletion);
   localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
 
   return (
