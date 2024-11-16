@@ -4,6 +4,14 @@ import { motion } from 'framer-motion';
 export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
   const [color, setColor] = useState(null);
   const [sprite, setSprite] = useState(null);
+  const [isShiny, setIsShiny] = useState(false);
+
+  useEffect(() => {
+    console.log('getting shiny status');
+    const SHINY_ODDS = 1000;
+    const rollForShiny = () => Math.floor(Math.random() * 65535) / SHINY_ODDS < 8;
+    setIsShiny(rollForShiny());
+  }, []);
 
   useEffect(() => {
     const COLORS = {
@@ -29,12 +37,16 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
       // Get the pokemon's official artwork
       const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.id}`);
       const pokemonData = await pokemonResult.json();
-      const spriteData = pokemonData.sprites.other['official-artwork'].front_default;
+      // const spriteData = pokemonData.sprites.other['official-artwork'].front_default;
+      const spriteData = isShiny
+        ? pokemonData.sprites.other['official-artwork'].front_shiny
+        : pokemonData.sprites.other['official-artwork'].front_default;
+
       setSprite(spriteData);
     };
 
     getPokemonData();
-  }, [pokemon.url]);
+  }, [isShiny, pokemon.url]);
 
   const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -62,35 +74,40 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
     },
     hover: {
       scale: 1.05,
+      // z: '10px',
     },
   };
 
   return (
-    <motion.div
-      variants={variants}
-      className="card"
-      animate={gameWon ? 'flip-win' : 'flip'}
-      whileHover={'hover'}
-      style={{
-        transformStyle: 'preserve-3d',
-        transformPerspective: '600px',
-      }}
-    >
-      <div
-        onClick={() => handleClick(pokemon.name)}
-        style={{ backgroundColor: colorsOn ? color : '#999' }}
-        className="card__front"
+    <>
+      <motion.div
+        variants={variants}
+        className="card"
+        animate={gameWon ? 'flip-win' : 'flip'}
+        whileHover={'hover'}
+        style={{
+          transformStyle: 'preserve-3d',
+          transformPerspective: '600px',
+        }}
       >
-        <div className="card__name">{capitalize(pokemon.name)}</div>
-        <div className="card__picture">
-          {sprite ? (
-            <img src={sprite} alt={pokemon.name} width="168px" />
-          ) : (
-            <div>Loading sprites...</div>
-          )}
+        <div
+          onClick={() => handleClick(pokemon.name)}
+          style={{ backgroundColor: colorsOn ? color : '#999' }}
+          className={`card__front ${isShiny && 'shiny'}`}
+        >
+          <div className="card__name">{capitalize(pokemon.name)}</div>
+          <div className="card__picture">
+            {sprite ? (
+              <img src={sprite} alt={pokemon.name} width="168px" />
+            ) : (
+              <div>Loading sprites...</div>
+            )}
+          </div>
+          <p>isShiny is {`${isShiny}`}</p>
         </div>
-      </div>
-      <div className="card__back"></div>
-    </motion.div>
+        <div className="card__back"></div>
+      </motion.div>
+      <motion.div className=".card__shadow"></motion.div>
+    </>
   );
 }

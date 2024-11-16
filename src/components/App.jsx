@@ -127,7 +127,6 @@ export default function App() {
     if (gameWon && showStarters[genIdx])
       setShowStarters(showStarters.map((gen, idx) => (idx === genIdx ? false : gen)));
   };
-  console.log(showStarters);
 
   localStorage.setItem('showStarters', JSON.stringify(showStarters));
 

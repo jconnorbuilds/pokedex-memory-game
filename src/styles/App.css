@@ -7,6 +7,10 @@
   padding: 2rem;
 }
 
+:root {
+  --card-main-shadow: 3px 3px #000000;
+}
+
 .app {
   grid-template-rows: 100px 1fr 100px;
   grid-template-columns: 1fr;
@@ -29,9 +33,13 @@
   justify-content: center;
   display: flex;
   position: relative;
+  box-shadow: var(--card-main-shadow);
 }
 .card:hover {
   cursor: pointer;
+}
+.card:has(.shiny) {
+  box-shadow: 0 0 1500px 10px;
 }
 
 .card__front,
@@ -113,9 +121,35 @@ footer .placeholder {
 @media (prefers-color-scheme: light) {
   .card {
     color: #223;
+    box-shadow: var(--card-main-shadow);
+  }
+
+  .card:has(.shiny) {
+    box-shadow: var(--card-main-shadow), 0 0 1500px 10px #ffbbffff;
   }
 
   .card__picture {
     background-color: #fafafa;
+  }
+}
+
+.shiny {
+  mask-image: linear-gradient(
+    -75deg,
+    rgba(0, 0, 0, 0.8) 30%,
+    #000 50%,
+    rgba(0, 0, 0, 0.8) 70%
+  );
+  mask-size: 200%;
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  from {
+    -webkit-mask-position: 150%;
+  }
+
+  to {
+    -webkit-mask-position: -50%;
   }
 }
