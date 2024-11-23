@@ -45,6 +45,10 @@ export default function App() {
         ? [pokemonSpecies[0], pokemonSpecies[1], pokemonSpecies[2]]
         : [];
 
+      starterPokemon.forEach((pkmn) =>
+        Object.defineProperty(pkmn, 'isShiny', { value: rollForShiny() }),
+      );
+      // console.log(starterPokemon);
       const selectedPokemon = [...starterPokemon];
 
       const _getRandomIdx = (range, offset = 0) =>
@@ -68,7 +72,6 @@ export default function App() {
           const randomPokemon = selectPokemon(); // Can be undefined, which is a bug. This whole try/catch block should probably be reworked.
           const isShiny = rollForShiny();
           Object.defineProperty(randomPokemon, 'isShiny', { value: isShiny });
-          console.log(randomPokemon);
           selectedPokemon.push(randomPokemon);
         } catch (err) {
           console.error(err);
