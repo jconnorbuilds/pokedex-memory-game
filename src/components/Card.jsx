@@ -4,14 +4,6 @@ import { motion } from 'framer-motion';
 export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
   const [color, setColor] = useState(null);
   const [sprite, setSprite] = useState(null);
-  const [isShiny, setIsShiny] = useState(false);
-
-  useEffect(() => {
-    console.log('getting shiny status');
-    const SHINY_ODDS = 1000;
-    const rollForShiny = () => Math.floor(Math.random() * 65535) / SHINY_ODDS < 8;
-    setIsShiny(rollForShiny());
-  }, []);
 
   useEffect(() => {
     const COLORS = {
@@ -38,7 +30,7 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
       const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.id}`);
       const pokemonData = await pokemonResult.json();
       // const spriteData = pokemonData.sprites.other['official-artwork'].front_default;
-      const spriteData = isShiny
+      const spriteData = pokemon.isShiny
         ? pokemonData.sprites.other['official-artwork'].front_shiny
         : pokemonData.sprites.other['official-artwork'].front_default;
 
@@ -46,17 +38,35 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
     };
 
     getPokemonData();
-  }, [isShiny, pokemon.url]);
+  }, [pokemon.isShiny, pokemon.url]);
 
   const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  const variants = {
+  const ANIMATION_DURATION = 0.5;
+
+  const cardVariants = {
+    hover: {
+      z: '30px',
+      x: '6px',
+      y: '-6px',
+      transition: {
+        delay: 0,
+        duration: 0.1,
+        repeat: 0,
+      },
+    },
     flip: {
       rotateY: '179.9deg',
-      transition: { delay: 0.25, duration: 0.5 },
+      transition: {
+        rotateY: {
+          delay: 0.25,
+          duration: ANIMATION_DURATION,
+        },
+      },
     },
+
     'flip-win': {
       rotateY: '540deg',
       rotateZ: '2deg',
@@ -72,17 +82,17 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
         },
       },
     },
-    hover: {
-      scale: 1.05,
-      // z: '10px',
-    },
   };
 
   return (
-    <>
+    <motion.div
+      className="card-wrapper"
+      onClick={() => handleClick(pokemon.name)}
+      style={{ transformOrigin: 'bottom right' }}
+    >
       <motion.div
-        variants={variants}
         className="card"
+        variants={cardVariants}
         animate={gameWon ? 'flip-win' : 'flip'}
         whileHover={'hover'}
         style={{
@@ -91,9 +101,8 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
         }}
       >
         <div
-          onClick={() => handleClick(pokemon.name)}
           style={{ backgroundColor: colorsOn ? color : '#999' }}
-          className={`card__front ${isShiny && 'shiny'}`}
+          className={`card__front ${pokemon.isShiny && 'shiny'}`}
         >
           <div className="card__name">{capitalize(pokemon.name)}</div>
           <div className="card__picture">
@@ -103,11 +112,10 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
               <div>Loading sprites...</div>
             )}
           </div>
-          <p>isShiny is {`${isShiny}`}</p>
+          <p>isShiny is {`${pokemon.isShiny}`}</p>
         </div>
         <div className="card__back"></div>
       </motion.div>
-      <motion.div className=".card__shadow"></motion.div>
-    </>
+    </motion.div>
   );
 }

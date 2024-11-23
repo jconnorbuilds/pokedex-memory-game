@@ -28,9 +28,11 @@ export default function App() {
   );
 
   const LEVELS = ['easy', 'medium', 'hard'];
+  const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 
   useEffect(() => {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
+    const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
 
     const fetchPokemon = async () => {
       const url = `https://pokeapi.co/api/v2/generation/${generation}`;
@@ -53,7 +55,7 @@ export default function App() {
 
       const selectPokemon = () => {
         const randomPokemon = _getRandomPokemon();
-        if (!selectedPokemon.includes(randomPokemon)) selectedPokemon.push(randomPokemon);
+        if (!selectedPokemon.includes(randomPokemon)) return randomPokemon;
 
         // Duplicate pokemon error handling
         if (selectedPokemon.length > new Set(selectedPokemon).length) {
@@ -63,7 +65,11 @@ export default function App() {
 
       while (selectedPokemon.length < LEVELS[level]) {
         try {
-          selectPokemon();
+          const randomPokemon = selectPokemon(); // Can be undefined, which is a bug. This whole try/catch block should probably be reworked.
+          const isShiny = rollForShiny();
+          Object.defineProperty(randomPokemon, 'isShiny', { value: isShiny });
+          console.log(randomPokemon);
+          selectedPokemon.push(randomPokemon);
         } catch (err) {
           console.error(err);
         }

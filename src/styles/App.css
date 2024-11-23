@@ -8,7 +8,7 @@
 }
 
 :root {
-  --card-main-shadow: 3px 3px #000000;
+  --card-main-shadow: 0px 0px 10px #000000;
 }
 
 .app {
@@ -29,17 +29,35 @@
   min-width: 200px;
   aspect-ratio: 11/16;
   border-radius: 8px;
-  border: 6px solid #c8c800a0;
+  border: 6px solid #cdcd01;
   justify-content: center;
   display: flex;
   position: relative;
-  box-shadow: var(--card-main-shadow);
+  z-index: 1;
+  box-sizing: content-box;
+
+  &::before {
+    content: ' ';
+    display: block;
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 8px;
+    box-shadow: 1px 1px 5px 0px #00000088;
+    transition: 0.1s ease-in-out;
+  }
+  &:hover::before {
+    box-shadow: 10px 10px 20px 4px #00000088;
+  }
 }
+
 .card:hover {
   cursor: pointer;
 }
 .card:has(.shiny) {
-  box-shadow: 0 0 1500px 10px;
+  box-shadow: 0 0 5px 3px #fffb00cc;
 }
 
 .card__front,
@@ -121,11 +139,6 @@ footer .placeholder {
 @media (prefers-color-scheme: light) {
   .card {
     color: #223;
-    box-shadow: var(--card-main-shadow);
-  }
-
-  .card:has(.shiny) {
-    box-shadow: var(--card-main-shadow), 0 0 1500px 10px #ffbbffff;
   }
 
   .card__picture {
