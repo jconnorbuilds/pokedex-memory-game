@@ -114,24 +114,6 @@
   padding: 0.25rem 1rem;
 }
 
-.game-menu {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.game-menu div {
-  display: grid;
-  grid-auto-rows: min-content;
-  justify-content: start;
-  align-items: start;
-}
-
-.game-menu .gen-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 footer .placeholder {
   margin-right: auto;
 }
