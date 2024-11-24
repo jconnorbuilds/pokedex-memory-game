@@ -174,34 +174,37 @@ export default function App() {
         <Pokedex>
           <PokedexBody></PokedexBody>
           <PokedexLid>
-            <div className="choose-difficulty" onClick={handleLevelSelect}>
-              <h2>Difficulty</h2>
-              {LEVELS.map((level) => {
-                const levelNameFormatted = level.charAt(0).toUpperCase() + level.slice(1);
-                return (
-                  <MenuButton key={level} value={level}>
-                    {levelNameFormatted}
-                  </MenuButton>
-                );
-              })}
-            </div>
-            <div className="choose-gen" onClick={handleGenerationSelect}>
-              <h2>Generations</h2>
-              {Array(NUM_OF_GENERATIONS)
-                .fill('')
-                .map((_, idx) => {
-                  const genNumber = idx + 1;
-                  const genSize = genSizes[genNumber];
+            <div className="lid__content">
+              <div className="choose-difficulty" onClick={handleLevelSelect}>
+                <h2>Difficulty</h2>
+                {LEVELS.map((level) => {
+                  const levelNameFormatted =
+                    level.charAt(0).toUpperCase() + level.slice(1);
                   return (
-                    <GenerationDisplay key={idx}>
-                      <MenuButton value={genNumber}>{genNumber}</MenuButton>
-                      <div className="gen-dex-completion">
-                        {genCompletion[genNumber] ? genCompletion[genNumber].length : 0} /{' '}
-                        {genSize ? genSize : '...'}
-                      </div>
-                    </GenerationDisplay>
+                    <MenuButton key={level} value={level}>
+                      {levelNameFormatted}
+                    </MenuButton>
                   );
                 })}
+              </div>
+              <div className="choose-gen" onClick={handleGenerationSelect}>
+                <h2>Generations</h2>
+                {Array(NUM_OF_GENERATIONS)
+                  .fill('')
+                  .map((_, idx) => {
+                    const genNumber = idx + 1;
+                    const genSize = genSizes[genNumber];
+                    return (
+                      <GenerationDisplay key={idx}>
+                        <MenuButton value={genNumber}>{genNumber}</MenuButton>
+                        <div className="gen-dex-completion">
+                          {genCompletion[genNumber] ? genCompletion[genNumber].length : 0}{' '}
+                          / {genSize ? genSize : '...'}
+                        </div>
+                      </GenerationDisplay>
+                    );
+                  })}
+              </div>
             </div>
           </PokedexLid>
         </Pokedex>
