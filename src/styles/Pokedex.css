@@ -2,7 +2,8 @@
   --dex-perspective: 3000px;
   --dex-width: 400px;
   --dex-height: calc(var(--dex-width) * (3 / 2));
-  --dex-thickness: 20px;
+  --dex-body-thickness: 20px;
+  --dex-lid-thickness: 10px;
   --dex-color: #aa0044;
   --dex-color-shade: #820034;
   --dex-color-tint: #dd0059;
@@ -20,18 +21,18 @@
 
 .pokedex {
   margin: auto;
-  width: var(--dex-width);
-  aspect-ratio: 2/3;
+  width: calc(var(--dex-width) * 2);
+  aspect-ratio: 4/3;
   perspective: var(--dex-perspective);
   perspective-origin: center;
   position: relative;
-  transform: rotateY(-40deg) rotateX(45deg);
+  transform: rotateY(45deg) rotateX(15deg);
   /* transform: rotateY(0deg) rotateX(0deg); */
 }
 
 .pokedex__body {
   height: 100%;
-  width: 100%;
+  width: 50%;
 }
 
 .pokedex button {
@@ -46,11 +47,6 @@
 
 .pokedex > div {
   border-radius: 8px;
-}
-
-.front__inner {
-  padding: 2rem;
-  height: 80%;
 }
 
 .gen-container {
@@ -80,34 +76,34 @@
 .body__main .vert-edge,
 .body__main .horiz-edge {
   position: absolute;
-  opacity: 0.8;
-  border-radius: 8px;
+  /* opacity: 0.8; */
 }
 
 .body__main .face {
   background-color: var(--dex-color);
   width: 100%;
   height: 100%;
+  border-radius: 8px;
 }
 
 .body__main .vert-edge {
   background-color: var(--dex-color-tint);
-  width: var(--dex-thickness);
+  width: var(--dex-body-thickness);
   height: 100%;
 }
 
 .body__main .horiz-edge {
   background-color: var(--dex-color-shade);
   width: 100%;
-  height: var(--dex-thickness);
+  height: var(--dex-body-thickness);
 }
 
 .body__main__front {
-  transform: translateZ(calc(var(--dex-thickness) / 2));
+  transform: translateZ(calc(var(--dex-body-thickness) / 2));
 }
 
 .body__main__back {
-  transform: translateZ(calc(var(--dex-thickness) / -2)) rotateX(-180deg);
+  transform: translateZ(calc(var(--dex-body-thickness) / -2)) rotateX(-180deg);
 }
 
 .body__main__left {
@@ -146,23 +142,23 @@
 .body__upper-overhang .horiz-edge {
   position: absolute;
   opacity: 0.8;
-  border-radius: 8px;
 }
 
 .body__upper-overhang .face {
   background-color: var(--dex-color);
+  border-radius: 8px;
 }
 
 .body__upper-overhang .vert-edge {
   background-color: var(--dex-color-tint);
-  width: calc(var(--dex-thickness) / 2);
+  width: calc(var(--dex-body-thickness) / 2);
   height: 100%;
 }
 
 .body__upper-overhang .horiz-edge {
   background-color: var(--dex-color-shade);
   width: 100%;
-  height: calc(var(--dex-thickness) / 2);
+  height: calc(var(--dex-body-thickness) / 2);
 }
 
 .upper-overhang__front {
@@ -170,39 +166,39 @@
   width: 100%;
   height: 100%;
   background-color: #00009b;
-  transform: translateZ(calc(var(--dex-thickness)));
+  transform: translateZ(calc(var(--dex-body-thickness)));
   transform: translateZ(20px);
 }
 
 .upper-overhang__left {
   transform: translateX(calc(var(--dex-width) / -2))
-    translateZ(calc(var(--dex-thickness) * 0.75)) rotateY(-90deg);
+    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateY(-90deg);
 }
 
 .body__upper-overhang .upper-overhang__right {
   height: 50%;
   top: 0;
   transform: translateX(calc(var(--dex-width) / 2))
-    translateZ(calc(var(--dex-thickness) * 0.75)) rotateY(90deg);
+    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateY(90deg);
 }
 
 .upper-overhang__top {
   transform: translateY(calc(var(--dex-height) * -0.075))
-    translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg);
+    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg);
 }
 
 .upper-overhang__bottom.flat1 {
   width: 50%;
   left: 0;
   transform: translateY(calc(var(--dex-height) * 0.075))
-    translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg);
+    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg);
   border-radius: 8px 0 0 0;
 }
 
 .upper-overhang__bottom.flat2 {
   width: 25%;
   right: 0;
-  transform: translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg);
+  transform: translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg);
   border-radius: 0 8px 0 0;
 }
 
@@ -211,7 +207,7 @@
   left: 50%;
   transform-origin: left;
   transform: translateY(calc(var(--dex-height) * 0.075))
-    translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg) rotateY(24.228deg);
+    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg) rotateY(24.228deg);
   border-radius: 0;
 }
 
@@ -231,30 +227,108 @@
 
 /* ---------------------
       POKEDEX LID
+      *left and right are relative to the inner face of the lid
 ----------------------*/
-.pokedex__lid,
-.pokedex__lid > div {
-  background-color: #aa0044;
-}
 
-.pokedex .pokedex__lid {
+.pokedex__lid {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  clip-path: polygon(0 15%, 0 100%, 100% 100%, 100% 7.5%, 75% 7.5%, 50% 15%, 100% 15%);
+  top: 0;
+  width: 50%;
   height: 100%;
   margin-top: auto;
-  transform: rotateY(180deg);
-  transform-origin: right;
-  transition: 2s;
+  transform: translateZ(15px) rotateY(170deg);
+  /* transform: translateZ(15px) rotateY(0); */
+  transform-origin: 100% 0 -5px;
+  transition: 2s ease-in-out;
 }
 
-.pokedex .lid__content {
-  transform: rotateY(-180deg);
+.lid__main {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.lid__main .face,
+.lid__main .vert-edge,
+.lid__main .horiz-edge {
+  position: absolute;
+  /* opacity: 0.8; */
+}
+
+.lid__main .face {
+  background-color: var(--dex-color);
+  background-color: #9f0044;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.lid__main .vert-edge {
+  background-color: var(--dex-color-tint);
+  width: var(--dex-lid-thickness);
+}
+
+.lid__main .horiz-edge {
+  background-color: var(--dex-color-shade);
+
+  height: var(--dex-lid-thickness);
+}
+
+.lid__main__outside {
+  clip-path: polygon(0 15%, 0 100%, 100% 100%, 100% 7.5%, 75% 7.5%, 50% 15%);
+  transform: translateZ(calc(var(--dex-lid-thickness) / 2));
+}
+
+.lid__main__inside {
+  clip-path: polygon(0 7.5%, 0 100%, 100% 100%, 100% 15%, 50% 15%, 25% 7.5%);
+  transform: translateZ(calc(var(--dex-lid-thickness) / -2)) rotateY(-180deg);
+}
+
+.lid__main__left {
+  transform: translateX(calc(var(--dex-width) / -2)) rotateY(-90deg);
+}
+
+.lid__main__right {
+  height: 85%;
+  bottom: 0;
+  transform: translateX(calc(var(--dex-width) / -2)) rotateY(90deg);
+}
+
+.lid__main__top.flat1 {
+  width: 25%;
+  right: 0;
+  transform: translateY(calc((var(--dex-height) / -2) + var(--dex-height) * 0.075))
+    rotateX(90deg);
+}
+
+.lid__main__top.flat2 {
+  width: 50%;
+  left: 0;
+  transform: translateY(calc((var(--dex-height) / -2) + var(--dex-height) * 0.15))
+    rotateX(90deg);
+}
+
+.lid__main__top.slant1 {
+  width: calc(27.43%);
+  left: 50%;
+  transform-origin: left;
+  transform: translateY(calc((var(--dex-height) / -2) + var(--dex-height) * 0.15))
+    rotateX(-90deg) rotateY(24.228deg);
+}
+
+.lid__main__bottom {
+  width: 100%;
+  transform: translateY(calc(var(--dex-height) / 2)) rotateX(-90deg);
+}
+
+.lid__main-content {
+  height: 100%;
   display: grid;
-  padding: 2rem;
-  padding-top: 20%;
+  padding: 3rem;
+  padding-top: 50%;
   grid-auto-rows: min-content;
   justify-content: start;
   align-items: end;
