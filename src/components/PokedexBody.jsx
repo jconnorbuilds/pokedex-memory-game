@@ -1,26 +1,32 @@
 export default function PokedexBody({ children }) {
   return (
     <div className="pokedex__body">
-      <div className="body__front face ">
-        {/* <svg
-          className="front__upper"
-          viewBox="0 0 500 133.33"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g className="circle">
-            <circle className="circle__outer" cx="70" cy="66.665" r="45"></circle>
-            <circle className="circle__inner" cx="70" cy="66.665" r="38"></circle>
-          </g>
-          <path className="upper__main" d="M 0 132 L 250 132 L 375 53.332 L 500 53.332" />
-        </svg> */}
-        <div className="front__inner">{children}</div>
+      <div className="body__main">
+        <div className="body__main__front face"></div>
+        <div className="body__main__left vert-edge"></div>
+        <div className="body__main__right vert-edge"></div>
+        <div className="body__main__top horiz-edge"></div>
+        <div className="body__main__bottom horiz-edge"></div>
+        <div className="body__main__back face"></div>
       </div>
 
-      <div className="body__left vert-edge"></div>
-      <div className="body__right vert-edge"></div>
-      <div className="body__top horiz-edge"></div>
-      <div className="body__bottom horiz-edge"></div>
-      <div className="body__back face"></div>
+      <div className="body__upper-overhang">
+        <div className="upper-overhang__front face">
+          <svg viewBox="0 0 112.5 112.5" xmlns="http://www.w3.org/2000/svg">
+            <g className="circle">
+              <circle className="circle__outer" cx="56.25" cy="56.25" r="35"></circle>
+              <circle className="circle__inner" cx="56.25" cy="56.25" r="30"></circle>
+            </g>
+          </svg>
+        </div>
+        <div className="upper-overhang__left vert-edge"></div>
+        <div className="upper-overhang__right vert-edge"></div>
+        <div className="upper-overhang__top horiz-edge"></div>
+        <div className="upper-overhang__bottom flat1 horiz-edge"></div>
+        <div className="upper-overhang__bottom flat2 horiz-edge"></div>
+        <div className="upper-overhang__bottom slant1 horiz-edge"></div>
+      </div>
+      <div className="front__inner">{children}</div>
     </div>
   );
 }

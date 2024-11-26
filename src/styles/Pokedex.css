@@ -1,11 +1,16 @@
 :root {
   --dex-perspective: 3000px;
-  --dex-height: 500px;
-  --dex-width: calc(var(--dex-height) * (3 / 2));
-  --dex-half-thickness: 20px;
+  --dex-width: 400px;
+  --dex-height: calc(var(--dex-width) * (3 / 2));
+  --dex-thickness: 20px;
   --dex-color: #aa0044;
   --dex-color-shade: #820034;
   --dex-color-tint: #dd0059;
+}
+
+* {
+  padding: 0;
+  margin: 0;
 }
 
 .pokedex,
@@ -15,20 +20,18 @@
 
 .pokedex {
   margin: auto;
-  width: 500px;
+  width: var(--dex-width);
   aspect-ratio: 2/3;
   perspective: var(--dex-perspective);
   perspective-origin: center;
   position: relative;
-  transform: rotateY(20deg) rotateX(20deg);
+  transform: rotateY(-40deg) rotateX(45deg);
+  /* transform: rotateY(0deg) rotateX(0deg); */
 }
 
 .pokedex__body {
-  /* position: relative; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100%;
+  width: 100%;
 }
 
 .pokedex button {
@@ -42,41 +45,12 @@
 }
 
 .pokedex > div {
-  border-radius: 15px;
-}
-
-.pokedex__body > div {
-  background-color: var(--dex-color);
+  border-radius: 8px;
 }
 
 .front__inner {
   padding: 2rem;
   height: 80%;
-}
-
-svg.front__upper {
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 20%;
-  stroke-linecap: round;
-  stroke-width: 2px;
-  stroke: black;
-  fill: none;
-}
-
-svg.circle {
-  /* stroke-width: 0.33px; */
-  /* stroke: transparent; */
-}
-
-svg.front__upper .circle__outer {
-  fill: #5a5afb;
-}
-
-svg.front__upper .circle__inner {
-  fill: #1a1acc;
-  box-shadow: 3px 3px 10px 3px inset #ffffff;
 }
 
 .gen-container {
@@ -89,53 +63,170 @@ svg.front__upper .circle__inner {
        MAIN FACES and EDGES
 --------------------------------*/
 
-.pokedex .face,
-.pokedex .vert-edge,
-.pokedex .horiz-edge {
+.body__main {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.body__main > * {
+  position: absolute;
+}
+
+.body__main .face,
+.body__main .vert-edge,
+.body__main .horiz-edge {
   position: absolute;
   opacity: 0.8;
-  border-radius: 5px;
+  border-radius: 8px;
 }
 
-.pokedex .face {
+.body__main .face {
+  background-color: var(--dex-color);
   width: 100%;
   height: 100%;
 }
 
-.body__front {
-  transform: translateZ(calc(var(--dex-half-thickness) / 2));
-}
-
-.body__back {
-  transform: translateZ(calc(var(--dex-half-thickness) / -2)) rotateX(-180deg);
-}
-
-.pokedex .vert-edge {
+.body__main .vert-edge {
   background-color: var(--dex-color-tint);
-  width: var(--dex-half-thickness);
+  width: var(--dex-thickness);
   height: 100%;
 }
 
-.pokedex .horiz-edge {
+.body__main .horiz-edge {
   background-color: var(--dex-color-shade);
   width: 100%;
-  height: var(--dex-half-thickness);
+  height: var(--dex-thickness);
 }
 
-.body__left {
-  transform: translateX(calc(var(--dex-height) / -2)) rotateY(-90deg);
+.body__main__front {
+  transform: translateZ(calc(var(--dex-thickness) / 2));
 }
 
-.body__right {
-  transform: translateX(calc(var(--dex-height) / 2)) rotateY(90deg);
+.body__main__back {
+  transform: translateZ(calc(var(--dex-thickness) / -2)) rotateX(-180deg);
 }
 
-.body__top {
-  transform: translateY(calc(var(--dex-width) / -2)) rotateX(90deg);
+.body__main__left {
+  transform: translateX(calc(var(--dex-width) / -2)) rotateY(-90deg);
 }
 
-.body__bottom {
-  transform: translateY(calc(var(--dex-width) / 2)) rotateX(-90deg);
+.body__main__right {
+  transform: translateX(calc(var(--dex-width) / 2)) rotateY(90deg);
+}
+
+.body__main__top {
+  transform: translateY(calc(var(--dex-height) / -2)) rotateX(90deg);
+}
+
+.body__main__bottom {
+  transform: translateY(calc(var(--dex-height) / 2)) rotateX(-90deg);
+}
+
+/* -------------------------------
+          FRONT OVERHANG
+--------------------------------*/
+
+.body__upper-overhang {
+  position: absolute;
+  width: 100%;
+  height: 15%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.body__upper-overhang .face,
+.body__upper-overhang .vert-edge,
+.body__upper-overhang .horiz-edge {
+  position: absolute;
+  opacity: 0.8;
+  border-radius: 8px;
+}
+
+.body__upper-overhang .face {
+  background-color: var(--dex-color);
+}
+
+.body__upper-overhang .vert-edge {
+  background-color: var(--dex-color-tint);
+  width: calc(var(--dex-thickness) / 2);
+  height: 100%;
+}
+
+.body__upper-overhang .horiz-edge {
+  background-color: var(--dex-color-shade);
+  width: 100%;
+  height: calc(var(--dex-thickness) / 2);
+}
+
+.upper-overhang__front {
+  clip-path: polygon(0 0, 0 100%, 50% 100%, 75% 50%, 100% 50%, 100% 0%);
+  width: 100%;
+  height: 100%;
+  background-color: #00009b;
+  transform: translateZ(calc(var(--dex-thickness)));
+  transform: translateZ(20px);
+}
+
+.upper-overhang__left {
+  transform: translateX(calc(var(--dex-width) / -2))
+    translateZ(calc(var(--dex-thickness) * 0.75)) rotateY(-90deg);
+}
+
+.body__upper-overhang .upper-overhang__right {
+  height: 50%;
+  top: 0;
+  transform: translateX(calc(var(--dex-width) / 2))
+    translateZ(calc(var(--dex-thickness) * 0.75)) rotateY(90deg);
+}
+
+.upper-overhang__top {
+  transform: translateY(calc(var(--dex-height) * -0.075))
+    translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg);
+}
+
+.upper-overhang__bottom.flat1 {
+  width: 50%;
+  left: 0;
+  transform: translateY(calc(var(--dex-height) * 0.075))
+    translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg);
+  border-radius: 8px 0 0 0;
+}
+
+.upper-overhang__bottom.flat2 {
+  width: 25%;
+  right: 0;
+  transform: translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg);
+  border-radius: 0 8px 0 0;
+}
+
+.upper-overhang__bottom.slant1 {
+  width: calc(27.43%);
+  left: 50%;
+  transform-origin: left;
+  transform: translateY(calc(var(--dex-height) * 0.075))
+    translateZ(calc(var(--dex-thickness) * 0.75)) rotateX(-90deg) rotateY(24.228deg);
+  border-radius: 0;
+}
+
+.upper-overhang__front svg {
+  width: calc(var(--dex-height) * 0.15);
+  height: 100%;
+}
+
+.circle__outer {
+  fill: #5a5afb;
+}
+
+.circle__inner {
+  fill: #1a1acc;
+  box-shadow: 3px 3px 10px 3px inset #ffffff;
 }
 
 /* ---------------------
@@ -151,15 +242,8 @@ svg.front__upper .circle__inner {
   bottom: 0;
   right: 0;
   width: 100%;
-  clip-path: polygon(
-    -2px 80px,
-    0px 100%,
-    100% 100%,
-    103.3% 0.19%,
-    75.16% 0.19%,
-    49.83% 11.67%
-  );
-  height: 92%;
+  clip-path: polygon(0 15%, 0 100%, 100% 100%, 100% 7.5%, 75% 7.5%, 50% 15%, 100% 15%);
+  height: 100%;
   margin-top: auto;
   transform: rotateY(180deg);
   transform-origin: right;
@@ -171,7 +255,6 @@ svg.front__upper .circle__inner {
   display: grid;
   padding: 2rem;
   padding-top: 20%;
-  border-top-right-radius: 0px;
   grid-auto-rows: min-content;
   justify-content: start;
   align-items: end;
