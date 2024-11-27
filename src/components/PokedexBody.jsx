@@ -2,7 +2,14 @@ export default function PokedexBody({ children }) {
   return (
     <div className="pokedex__body">
       <div className="body__main">
-        <div className="body__main__front face"></div>
+        <div className="body__main__front face">
+          <div className="screen">
+            <div className="screen-frame">
+              <div className="screen-inner"></div>
+            </div>
+            <div className="screen-overlay"></div>
+          </div>
+        </div>
         <div className="body__main__left vert-edge"></div>
         <div className="body__main__right vert-edge"></div>
         <div className="body__main__top horiz-edge"></div>
@@ -26,7 +33,6 @@ export default function PokedexBody({ children }) {
         <div className="upper-overhang__bottom flat2 horiz-edge"></div>
         <div className="upper-overhang__bottom slant1 horiz-edge"></div>
       </div>
-      <div className="front__inner">{children}</div>
     </div>
   );
 }
