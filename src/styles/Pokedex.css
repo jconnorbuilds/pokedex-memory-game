@@ -2,8 +2,8 @@
   --dex-perspective: 3000px;
   --dex-width: 400px;
   --dex-height: calc(var(--dex-width) * (3 / 2));
-  --dex-body-thickness: 20px;
-  --dex-lid-thickness: 10px;
+  --dex-body-thickness: 25px;
+  --dex-lid-thickness: 12.5px;
   --dex-color: #aa0044;
   --dex-color-shade: #820034;
   --dex-color-tint: #dd0059;
@@ -22,11 +22,11 @@
 .pokedex {
   margin: auto;
   width: calc(var(--dex-width) * 2);
-  aspect-ratio: 4/3;
+  aspect-ratio: 1/1;
   perspective: var(--dex-perspective);
   perspective-origin: center;
   position: relative;
-  transform: rotateY(45deg) rotateX(15deg);
+  transform: rotateY(25deg) rotateX(15deg);
   /* transform: rotateY(0deg) rotateX(0deg); */
 }
 
@@ -43,10 +43,6 @@
     border: none;
     background-color: #1a1acc;
   }
-}
-
-.pokedex > div {
-  border-radius: 8px;
 }
 
 .gen-container {
@@ -83,7 +79,6 @@
   background-color: var(--dex-color);
   width: 100%;
   height: 100%;
-  border-radius: 8px;
 }
 
 .body__main .vert-edge {
@@ -100,7 +95,7 @@
 
 .body__main__front {
   transform: translateZ(calc(var(--dex-body-thickness) / 2));
-  display: flex;
+  /* display: flex; */
 }
 
 .body__main__back {
@@ -128,10 +123,8 @@
 --------------------------------*/
 
 .screen {
-  position: absolute;
   width: 100%;
-  height: 50%;
-  top: 15%;
+  height: 55%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,7 +138,6 @@
 }
 
 .screen-frame {
-  /* place-self: center; */
   width: 100%;
   height: 100%;
   aspect-ratio: 1/1;
@@ -155,9 +147,65 @@
 
 .screen-inner {
   width: 90%;
-  aspect-ratio: 4/3;
+  aspect-ratio: 1/1;
   margin: auto;
   background-color: #0a0a0a;
+}
+
+/* -------------------------------
+          BODY BUTTONS
+--------------------------------*/
+
+.body__buttons {
+  padding-top: 2rem;
+  display: flex;
+  justify-content: space-around;
+  gap: 15%;
+  bottom: 20%;
+  width: 100%;
+}
+
+.buttons__dpad {
+  background-color: #1a1a1a;
+  aspect-ratio: 1/1;
+  width: 80px;
+  clip-path: polygon(
+    33.33% 0,
+    33.33% 33.33%,
+    0 33.33%,
+    0 66.67%,
+    33.33% 66.67%,
+    33.33% 100%,
+    66.67% 100%,
+    66.67% 66.67%,
+    100% 66.67%,
+    100% 33.33%,
+    66.67% 33.33%,
+    66.67% 0
+  );
+}
+
+.buttons__ab {
+  width: 90px;
+  position: relative;
+}
+
+.buttons__ab .ab {
+  position: absolute;
+  background-color: #1a1a1a;
+  height: 47.5%;
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  margin: 3px;
+}
+
+.ab__a {
+  right: 0;
+}
+
+.ab__b {
+  bottom: 0;
+  left: 0;
 }
 
 /* -------------------------------
@@ -165,88 +213,74 @@
 --------------------------------*/
 
 .body__upper-overhang {
-  position: absolute;
   width: 100%;
   height: 15%;
-  top: 0;
-  left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  transform: translateZ(calc(var(--dex-lid-thickness) / 2));
 }
 
 .body__upper-overhang .face,
 .body__upper-overhang .vert-edge,
 .body__upper-overhang .horiz-edge {
   position: absolute;
-  opacity: 0.8;
 }
 
 .body__upper-overhang .face {
   background-color: var(--dex-color);
   background-color: #9f0044;
-  border-radius: 8px;
 }
 
 .body__upper-overhang .vert-edge {
   background-color: var(--dex-color-tint);
-  width: calc(var(--dex-body-thickness) / 2);
+  width: calc(var(--dex-lid-thickness));
   height: 100%;
 }
 
 .body__upper-overhang .horiz-edge {
   background-color: var(--dex-color-shade);
   width: 100%;
-  height: calc(var(--dex-body-thickness) / 2);
+  height: calc(var(--dex-lid-thickness));
 }
 
 .upper-overhang__front {
   clip-path: polygon(0 0, 0 100%, 50% 100%, 75% 50%, 100% 50%, 100% 0%);
-  width: 100%;
-  height: 100%;
-  transform: translateZ(calc(var(--dex-body-thickness)));
-  transform: translateZ(20px);
+  transform: translateZ(calc(var(--dex-lid-thickness) / 2));
 }
 
 .upper-overhang__left {
-  transform: translateX(calc(var(--dex-width) / -2))
-    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateY(-90deg);
+  transform: translateX(calc(var(--dex-width) * -0.5)) rotateY(-90deg);
 }
 
 .body__upper-overhang .upper-overhang__right {
   height: 50%;
   top: 0;
-  transform: translateX(calc(var(--dex-width) / 2))
-    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateY(90deg);
+  transform: translateX(calc(var(--dex-width) * 0.5)) rotateY(90deg);
 }
 
 .upper-overhang__top {
-  transform: translateY(calc(var(--dex-height) * -0.075))
-    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg);
+  transform: translateY(calc(var(--dex-height) * -0.075)) rotateX(-90deg);
 }
 
 .upper-overhang__bottom.flat1 {
   width: 50%;
   left: 0;
-  transform: translateY(calc(var(--dex-height) * 0.075))
-    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg);
-  border-radius: 8px 0 0 0;
+  transform: translateY(calc(var(--dex-height) * 0.075)) rotateX(-90deg);
 }
 
 .upper-overhang__bottom.flat2 {
   width: 25%;
   right: 0;
-  transform: translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg);
-  border-radius: 0 8px 0 0;
+  transform: rotateX(-90deg);
 }
 
 .upper-overhang__bottom.slant1 {
   width: calc(27.43%);
   left: 50%;
   transform-origin: left;
-  transform: translateY(calc(var(--dex-height) * 0.075))
-    translateZ(calc(var(--dex-body-thickness) * 0.75)) rotateX(-90deg) rotateY(24.228deg);
-  border-radius: 0;
+  transform: translateY(calc(var(--dex-height) * 0.075)) rotateX(-90deg)
+    rotateY(24.228deg);
 }
 
 .upper-overhang__front svg {
@@ -275,9 +309,12 @@
   height: 100%;
   margin-top: auto;
   transform: translateZ(15px) rotateY(170deg);
-  transform-origin: 100% 0 -5px;
+  transform-origin: 100% 0 calc(var(--dex-lid-thickness) * -0.5);
   transition: 2s ease-in-out;
-  /* transform: translateZ(15px) rotateY(0); */
+  /* transform: translateZ(
+      calc((var(--dex-body-thickness) * 0.5 + var(--dex-lid-thickness) * 0.5))
+    )
+    rotateY(0); */
 }
 
 .pokedex__lid.pokedex__lid--closed {
@@ -297,7 +334,6 @@
 .lid__main .vert-edge,
 .lid__main .horiz-edge {
   position: absolute;
-  /* opacity: 0.8; */
 }
 
 .lid__main .face {
@@ -305,7 +341,6 @@
   background-color: #9f0044;
   width: 100%;
   height: 100%;
-  border-radius: 8px;
 }
 
 .lid__main .vert-edge {
