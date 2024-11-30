@@ -29,7 +29,6 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
       // Get the pokemon's official artwork
       const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.id}`);
       const pokemonData = await pokemonResult.json();
-      // const spriteData = pokemonData.sprites.other['official-artwork'].front_default;
       const spriteData = pokemon.isShiny
         ? pokemonData.sprites.other['official-artwork'].front_shiny
         : pokemonData.sprites.other['official-artwork'].front_default;

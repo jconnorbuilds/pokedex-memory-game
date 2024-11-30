@@ -29,6 +29,7 @@ export default function App() {
   const [genCompletion, setGenCompletion] = useState(
     JSON.parse(localStorage.getItem('genCompletion')) || {},
   );
+  const [testPkmn, setTestPkmn] = useState();
 
   const LEVELS = ['easy', 'medium', 'hard'];
   const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
@@ -51,14 +52,14 @@ export default function App() {
       starterPokemon.forEach((pkmn) =>
         Object.defineProperty(pkmn, 'isShiny', { value: rollForShiny() }),
       );
-      // console.log(starterPokemon);
+
       const selectedPokemon = [...starterPokemon];
 
       const _getRandomIdx = (range, offset = 0) =>
         Math.floor(Math.random() * range - offset) + offset;
 
       const _getRandomPokemon = () =>
-        pokemonSpecies[_getRandomIdx(pokemonSpecies.length, starterPokemon.range)];
+        pokemonSpecies[_getRandomIdx(pokemonSpecies.length, starterPokemon.length)];
 
       const selectPokemon = () => {
         const randomPokemon = _getRandomPokemon();
@@ -94,6 +95,20 @@ export default function App() {
   }, [showStarters, needsNewPkmn, generation, level]);
 
   useEffect(() => {
+    const getPokedexSprite = async () => {
+      // Get the pokemon's official artwork
+      const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/6`);
+      const pokemonData = await pokemonResult.json();
+      console.log(pokemonData);
+      const spriteData = pokemonData.sprites.other['showdown'].front_default;
+
+      setTestPkmn(spriteData);
+    };
+
+    getPokedexSprite();
+  }, []);
+
+  useEffect(() => {
     const fetchGenerationData = async () => {
       const pokemonInGen = {};
       for (let i = 0; i < NUM_OF_GENERATIONS; i++) {
@@ -105,9 +120,10 @@ export default function App() {
       }
       return pokemonInGen;
     };
+
     const generationData = fetchGenerationData();
     generationData.then((res) => setGenSizes(res));
-  }, []);
+  });
 
   const updateScores = (newScore) => {
     setScore(newScore);
@@ -172,7 +188,7 @@ export default function App() {
       )}{' '}
       <div className="pokedex-wrapper">
         <Pokedex>
-          <PokedexBody></PokedexBody>
+          <PokedexBody sprite={testPkmn}></PokedexBody>
           <PokedexLid>
             <div className="choose-gen" onClick={handleGenerationSelect}>
               <h2>Generations</h2>
