@@ -12,6 +12,7 @@ export default function App() {
   const NUM_OF_GENERATIONS = 9;
 
   const [pokemon, setPokemon] = useState(null);
+  const [pokemonDexSprites, setPokemonDexSprites] = useState([]);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
@@ -29,7 +30,6 @@ export default function App() {
   const [genCompletion, setGenCompletion] = useState(
     JSON.parse(localStorage.getItem('genCompletion')) || {},
   );
-  const [testPkmn, setTestPkmn] = useState();
 
   const LEVELS = ['easy', 'medium', 'hard'];
   const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
@@ -39,10 +39,12 @@ export default function App() {
     const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
 
     const fetchPokemon = async () => {
+      // Can't I just change this to the /pokemon endpoint and filter the data by generation?
       const url = `https://pokeapi.co/api/v2/generation/${generation}`;
       const result = await fetch(url);
       const generationData = await result.json();
       const pokemonSpecies = generationData.pokemon_species;
+      console.log(generationData);
 
       // Starter pokemon to always include on the first round
       const starterPokemon = showStarters[generation - 1]
@@ -95,18 +97,31 @@ export default function App() {
   }, [showStarters, needsNewPkmn, generation, level]);
 
   useEffect(() => {
-    const getPokedexSprite = async () => {
-      // Get the pokemon's official artwork
-      const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/6`);
-      const pokemonData = await pokemonResult.json();
-      console.log(pokemonData);
-      const spriteData = pokemonData.sprites.other['showdown'].front_default;
+    if (pokemon) {
+      const dexSpriteUrls = pokemon.map((pkmn) => {
+        return `https://pokeapi.co/api/v2/pokemon/${pkmn.name}`;
+      });
 
-      setTestPkmn(spriteData);
-    };
+      const getPokemonData = async (urls) => {
+        try {
+          const promises = urls.map((urls) => fetch(urls));
+          const responses = await Promise.all(promises);
+          const data = await Promise.all(responses.map((response) => response.json()));
+          return data;
+        } catch (error) {
+          throw new Error(`Failed to fetch data: ${error}`);
+        }
+      };
 
-    getPokedexSprite();
-  }, []);
+      // setTestPkmn(spriteData);
+      getPokemonData(dexSpriteUrls).then((data) => {
+        const dexSprites = data.map(
+          (pokemon) => pokemon.sprites.other['showdown'].front_default,
+        );
+        setPokemonDexSprites(dexSprites);
+      });
+    }
+  }, [pokemon]);
 
   useEffect(() => {
     const fetchGenerationData = async () => {
@@ -123,7 +138,7 @@ export default function App() {
 
     const generationData = fetchGenerationData();
     generationData.then((res) => setGenSizes(res));
-  });
+  }, []);
 
   const updateScores = (newScore) => {
     setScore(newScore);
@@ -188,7 +203,7 @@ export default function App() {
       )}{' '}
       <div className="pokedex-wrapper">
         <Pokedex>
-          <PokedexBody sprite={testPkmn}></PokedexBody>
+          <PokedexBody sprite={pokemonDexSprites[0]}></PokedexBody>
           <PokedexLid>
             <div className="choose-gen" onClick={handleGenerationSelect}>
               <h2>Generations</h2>
