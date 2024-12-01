@@ -149,7 +149,7 @@
 }
 
 .screen--on {
-  color: #ccc;
+  color: #333;
 }
 
 .screen-frame {
@@ -167,20 +167,21 @@
   background-color: #0a0a0a;
   display: flex;
   flex-direction: column;
+  padding: 1rem;
 }
 
 .screen--on .screen-inner {
-  background-color: #555;
+  background-color: #ccf;
 }
 
 .pokedex__pkmn-sprite {
-  position: absolute;
   margin: auto;
-  width: 75%;
-  width: 90%;
+  max-height: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  object-fit: contain;
   height: auto;
   image-rendering: pixelated;
-  transform: translateZ(50px);
   opacity: 0.8;
 }
 
