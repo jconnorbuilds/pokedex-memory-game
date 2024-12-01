@@ -347,17 +347,18 @@
   width: 50%;
   height: 100%;
   margin-top: auto;
-  transform: translateZ(15px) rotateY(170deg);
+  /* transform: translateZ(15px) rotateY(0); */
+
   transform-origin: 100% 0 calc(var(--dex-lid-thickness) * -0.5);
   transition: 2s ease-in-out;
-  /* transform: translateZ(
+  transform: translateZ(
       calc((var(--dex-body-thickness) * 0.5 + var(--dex-lid-thickness) * 0.5))
     )
-    rotateY(0); */
+    rotateY(0);
 }
 
-.pokedex__lid.pokedex__lid--closed {
-  transform: translateZ(15px) rotateY(0);
+.pokedex--open .pokedex__lid {
+  transform: translateZ(15px) rotateY(170deg);
 }
 
 .lid__main {

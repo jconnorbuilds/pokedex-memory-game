@@ -171,6 +171,15 @@ export default function App() {
       setShowStarters(showStarters.map((gen, idx) => (idx === genIdx ? false : gen)));
   };
 
+  const toggleDexOpenClosed = (e) => {
+    console.log(e.target);
+    if (e.target.closest('.body__upper-overhang')) {
+      const pokedex = document.querySelector('.pokedex');
+      const willOpen = !pokedex.classList.contains('pokedex--open');
+      pokedex.classList.toggle('pokedex--open', willOpen);
+    }
+  };
+
   localStorage.setItem('showStarters', JSON.stringify(showStarters));
 
   return (
@@ -202,7 +211,7 @@ export default function App() {
         <div>Loading cards...</div>
       )}{' '}
       <div className="pokedex-wrapper">
-        <Pokedex>
+        <Pokedex toggleOpenClosed={toggleDexOpenClosed}>
           <PokedexBody sprite={pokemonDexSprites[0]}></PokedexBody>
           <PokedexLid>
             <div className="choose-gen" onClick={handleGenerationSelect}>
