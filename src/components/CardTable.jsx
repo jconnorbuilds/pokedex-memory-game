@@ -97,7 +97,8 @@ export default function CardTable({
   localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
 
   return (
-    <div className="container">
+    // <div className="container">
+    <>
       <Hand key={handId}>
         {pokemonToShow.map((pokemon) => {
           return (
@@ -116,7 +117,7 @@ export default function CardTable({
         {!gameOn && !gameWon && <p>You lose! </p>}
         {!gameOn && <button onClick={resetGame}>Play again</button>}
       </div>
-    </div>
+    </>
   );
 }
 

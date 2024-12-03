@@ -46,21 +46,22 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
   const ANIMATION_DURATION = 0.5;
 
   const cardVariants = {
+    hover: {
+      z: '30px',
+      x: '6px',
+      y: '-6px',
+      transition: {
+        delay: 0,
+        duration: 0.1,
+        repeat: 0,
+      },
+    },
     flip: {
       rotateY: '179.9deg',
-      translateZ: '110px',
       transition: {
         rotateY: {
           delay: 0.25,
           duration: ANIMATION_DURATION,
-        },
-        translateZ: {
-          from: '0px',
-          to: '110px',
-          delay: 0,
-          duration: ANIMATION_DURATION,
-          repeat: 1,
-          repeatType: 'reverse',
         },
       },
     },
@@ -83,32 +84,38 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
   };
 
   return (
-    <>
-      {/* <div className="card-base"> */}
-      <div className="card-wrapper" onClick={() => handleClick(pokemon.name)}>
-        <motion.div
-          className="card"
-          variants={cardVariants}
-          animate={gameWon ? 'flip-win' : 'flip'}
+    <motion.div
+      className="card-wrapper"
+      onClick={() => handleClick(pokemon.name)}
+      style={{ transformOrigin: 'bottom right' }}
+    >
+      <motion.div
+        className="card"
+        variants={cardVariants}
+        animate={gameWon ? 'flip-win' : 'flip'}
+        onHoverStart={() => console.log('hoverin')}
+        whileHover={'hover'}
+        style={{
+          transformStyle: 'preserve-3d',
+          transformPerspective: '600px',
+        }}
+      >
+        <div
+          style={{ backgroundColor: colorsOn ? color : '#999' }}
+          className={`card__front ${pokemon.isShiny && 'shiny'}`}
         >
-          <div
-            style={{ backgroundColor: colorsOn ? color : '#999' }}
-            className={`card__front ${pokemon.isShiny && 'shiny'}`}
-          >
-            <div className="card__name">{capitalize(pokemon.name)}</div>
-            <div className="card__picture">
-              {sprite ? (
-                <img src={sprite} alt={pokemon.name} width="168px" />
-              ) : (
-                <div>Loading sprites...</div>
-              )}
-            </div>
-            <p>isShiny is {`${pokemon.isShiny}`}</p>
+          <div className="card__name">{capitalize(pokemon.name)}</div>
+          <div className="card__picture">
+            {sprite ? (
+              <img src={sprite} alt={pokemon.name} width="168px" />
+            ) : (
+              <div>Loading sprites...</div>
+            )}
           </div>
-          <div className="card__back"></div>
-        </motion.div>
-      </div>
-      {/* </div> */}
-    </>
+          <p>isShiny is {`${pokemon.isShiny}`}</p>
+        </div>
+        <div className="card__back"></div>
+      </motion.div>
+    </motion.div>
   );
 }
