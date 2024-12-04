@@ -17,6 +17,18 @@
   grid-template-columns: 1fr;
 }
 
+.scene {
+  perspective: var(--dex-perspective);
+  perspective-origin: center;
+  perspective: 3000px;
+  transform: rotateY(40deg) rotateX(25deg);
+}
+
+.scene,
+.scene * {
+  transform-style: preserve-3d;
+}
+
 .card-table {
   display: flex;
   flex-wrap: wrap;
@@ -76,6 +88,7 @@
   /* box-sizing: content-box; */
   /* box-shadow: 1px 1px 5px 0px #00000088; */
   transition: box-shadow 0.1s ease-in-out;
+  z-index: 1;
 
   &:hover {
     cursor: pointer;
@@ -88,7 +101,8 @@
 
 .card__front,
 .card__back,
-.card__front * {
+.card__front *,
+.card__back * {
   backface-visibility: hidden;
 }
 
@@ -170,18 +184,6 @@ footer .placeholder {
   );
   mask-size: 200%;
   animation: shine 2s infinite;
-}
-
-.scene {
-  perspective: var(--dex-perspective);
-  perspective-origin: center;
-  perspective: 3000px;
-  transform: rotateY(60deg) rotateX(30deg);
-}
-
-.scene,
-.scene * {
-  transform-style: preserve-3d;
 }
 
 @keyframes shine {

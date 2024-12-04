@@ -55,7 +55,7 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
           duration: ANIMATION_DURATION,
         },
         translateZ: {
-          from: '0px',
+          from: '1px',
           to: '110px',
           delay: 0,
           duration: ANIMATION_DURATION,
@@ -67,6 +67,7 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
 
     'flip-win': {
       rotateY: '540deg',
+      translateZ: '1px',
       rotateZ: '2deg',
       transition: {
         rotateY: { duration: 0.75 },
