@@ -44,7 +44,6 @@ export default function App() {
       const result = await fetch(url);
       const generationData = await result.json();
       const pokemonSpecies = generationData.pokemon_species;
-      console.log(generationData);
 
       // Starter pokemon to always include on the first round
       const starterPokemon = showStarters[generation - 1]

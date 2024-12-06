@@ -43,73 +43,158 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  const ANIMATION_DURATION = 0.5;
+  const ANIMATION_DURATION = 1.25;
 
-  const cardVariants = {
-    flip: {
-      rotateY: '179.9deg',
-      translateZ: '110px',
-      transition: {
-        rotateY: {
-          delay: 0.25,
-          duration: ANIMATION_DURATION,
-        },
-        translateZ: {
-          from: '1px',
-          to: '110px',
-          delay: 0,
-          duration: ANIMATION_DURATION,
-          repeat: 1,
-          repeatType: 'reverse',
-        },
-      },
+  const toggleShadowHover = (e, isHovered) => {
+    const shadow = e.target.querySelector('.card-shadow');
+    const noHover = !!e.target.closest('.no-hover');
+    if (!noHover) {
+      if (isHovered && !noHover) {
+        shadow.style.transform = 'translate3d(0, 0, -30px)';
+        shadow.style.boxShadow = '0 0 20px 20px #00000055';
+        shadow.style.width = '80%';
+        shadow.style.height = '80%';
+        shadow.style.transition = '0.1s ease-in-out';
+      } else {
+        shadow.style.transform = 'translate3d(0, 0, 0)';
+        shadow.style.boxShadow = '0 0 5px 0px #00000055';
+        shadow.style.width = '100%';
+        shadow.style.height = '100%';
+      }
+    }
+  };
+
+  const toggleDisableHover = (disabled) => {
+    const cardTable = document.querySelector('.card-table');
+    cardTable.classList.toggle('no-hover', disabled);
+  };
+
+  const cardWrapperVariants = {
+    initial: { translateZ: '1px' },
+    hover: {
+      translateZ: '30px',
     },
-
-    'flip-win': {
-      rotateY: '540deg',
-      translateZ: '1px',
-      rotateZ: '2deg',
+    win: {
+      rotateZ: ['-2deg', '2deg'],
       transition: {
-        rotateY: { duration: 0.75 },
+        // rotateY: { duration: 0.75 },
         rotateZ: {
-          from: '-2deg',
-          to: '2deg',
           repeat: Infinity,
           repeatType: 'mirror',
           duration: 0.5,
-          ease: 'easeInOut',
         },
       },
     },
   };
 
+  const cardVariants = {
+    initial: {
+      translateZ: '1px',
+    },
+    flip: {
+      rotateY: [null, null, '179.9deg', '179.9deg'],
+      translateZ: [null, '50px', '110px', '1px'],
+    },
+    win: {
+      rotateY: [0, '179.9deg', '179.9deg'],
+      translateZ: ['110px', '1px'],
+      duration: 2,
+    },
+  };
+
+  const shadowVariants = {
+    initial: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#00000055',
+      boxShadow: '0 0 5px 0px #00000055',
+    },
+    flip: {
+      width: ['100%', '80%', '1%', '80%', '100%'],
+      height: ['100%', '80%', '80%', '80%', '100%'],
+      boxShadow: [
+        '0 0 5px 0px #00000055',
+        '0 0 20px 20px #00000055',
+        '0 0 10px 5px #00000011',
+        '0 0 20px 20px #00000055',
+        '0 0 5px 0px #00000055',
+      ],
+      backgroundColor: ['#00000055', '#00000055', '#00000011', '#00000055', '#00000055'],
+    },
+    win: {
+      width: ['80%', '10%', '80%', '100%'],
+      height: ['80%', '80%', '80%', '100%'],
+      boxShadow: [
+        '0 0 20px 20px #00000055',
+        '0 0 10px 5px #00000011',
+        '0 0 20px 20px #00000055',
+        '0 0 5px 0px #00000055',
+      ],
+      backgroundColor: ['#00000055', '#00000011', '#00000055', '#00000055'],
+      transition: {
+        times: [0, 0.05, 0.15, 1],
+        duration: 2,
+      },
+    },
+  };
+
   return (
-    <>
-      {/* <div className="card-base"> */}
-      <div className="card-wrapper" onClick={() => handleClick(pokemon.name)}>
-        <motion.div
-          className="card"
-          variants={cardVariants}
-          animate={gameWon ? 'flip-win' : 'flip'}
+    <motion.div
+      initial="initial"
+      className="card-wrapper"
+      variants={cardWrapperVariants}
+      onClick={() => handleClick(pokemon.name)}
+      onHoverStart={(e) => toggleShadowHover(e, true)}
+      onHoverEnd={(e) => toggleShadowHover(e, false)}
+      whileHover={() => {
+        const hover = !document.querySelector('.card-table.no-hover');
+        if (hover) return 'hover';
+      }}
+      animate={gameWon ? 'win' : 'flip'}
+    >
+      <motion.div
+        initial="initial"
+        variants={shadowVariants}
+        className="card-shadow"
+        animate={gameWon ? 'win' : 'flip'}
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          translateZ: '0px',
+        }}
+        transition={{
+          duration: ANIMATION_DURATION,
+          times: [0, 0.33, 0.4, 0.6, 0.98],
+        }}
+      ></motion.div>
+      <motion.div
+        initial="initial"
+        className="card"
+        variants={cardVariants}
+        animate={gameWon ? 'win' : 'flip'}
+        transition={{
+          duration: ANIMATION_DURATION,
+        }}
+        onAnimationStart={() => toggleDisableHover(true)}
+        onAnimationComplete={() => toggleDisableHover(false)}
+      >
+        <div
+          style={{ backgroundColor: colorsOn ? color : '#999' }}
+          className={`card__front ${pokemon.isShiny && 'shiny'}`}
         >
-          <div
-            style={{ backgroundColor: colorsOn ? color : '#999' }}
-            className={`card__front ${pokemon.isShiny && 'shiny'}`}
-          >
-            <div className="card__name">{capitalize(pokemon.name)}</div>
-            <div className="card__picture">
-              {sprite ? (
-                <img src={sprite} alt={pokemon.name} width="168px" />
-              ) : (
-                <div>Loading sprites...</div>
-              )}
-            </div>
-            <p>isShiny is {`${pokemon.isShiny}`}</p>
+          <div className="card__name">{capitalize(pokemon.name)}</div>
+          <div className="card__picture">
+            {sprite ? (
+              <img src={sprite} alt={pokemon.name} width="168px" />
+            ) : (
+              <div>Loading sprites...</div>
+            )}
           </div>
-          <div className="card__back"></div>
-        </motion.div>
-      </div>
-      {/* </div> */}
-    </>
+          <p>isShiny is {`${pokemon.isShiny}`}</p>
+        </div>
+        <div className="card__back"></div>
+      </motion.div>
+    </motion.div>
   );
 }
