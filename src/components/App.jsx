@@ -7,6 +7,8 @@ import GenerationDisplay from './GenerationDisplay.jsx';
 import Pokedex from './Pokedex.jsx';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
+import SetAngleInput from './SetAngleButton.jsx';
+import InputGroup from './InputGroup.jsx';
 
 export default function App() {
   const NUM_OF_GENERATIONS = 9;
@@ -30,6 +32,14 @@ export default function App() {
   const [genCompletion, setGenCompletion] = useState(
     JSON.parse(localStorage.getItem('genCompletion')) || {},
   );
+  const [sceneAngle, setSceneAngle] = useState({ x: '25', y: '40', z: '0' });
+
+  useEffect(() => {
+    const scene = document.querySelector('.scene');
+    if (scene) {
+      scene.style.transform = `rotateY(${sceneAngle.y}deg) rotateX(${sceneAngle.x}deg) rotateZ(${sceneAngle.z}deg)`;
+    }
+  }, [sceneAngle]);
 
   const LEVELS = ['easy', 'medium', 'hard'];
   const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
@@ -171,7 +181,6 @@ export default function App() {
   };
 
   const toggleDexOpenClosed = (e) => {
-    console.log(e.target);
     if (e.target.closest('.body__upper-overhang')) {
       const pokedex = document.querySelector('.pokedex');
       const willOpen = !pokedex.classList.contains('pokedex--open');
@@ -181,9 +190,44 @@ export default function App() {
 
   localStorage.setItem('showStarters', JSON.stringify(showStarters));
 
+  const setAngle = (degrees, axis) => {
+    setSceneAngle({ ...sceneAngle, [axis]: degrees });
+  };
+
   return (
     <div className="app">
       <header className="header container">
+        <div className="dev-toolbar">
+          <div className="toolbar__widget">
+            <h2>Scene</h2>
+            <InputGroup>
+              {['x', 'y', 'z'].map((axis) => {
+                return (
+                  <SetAngleInput
+                    key={`scene-${axis}`}
+                    label={`scene-${axis}`}
+                    axis={axis}
+                    value={sceneAngle[axis]}
+                    setAngle={setAngle}
+                  />
+                );
+              })}
+            </InputGroup>
+          </div>
+          <h2>Pokedex</h2>
+          <InputGroup>
+            {['x', 'y', 'z'].map((axis) => {
+              return (
+                <SetAngleInput
+                  key={`scene-${axis}`}
+                  label={`scene-${axis}`}
+                  axis={axis}
+                  setAngle={setAngle}
+                />
+              );
+            })}
+          </InputGroup>
+        </div>
         <Scoreboard score={score} bestScore={bestScore} />
       </header>
       <main className="container">

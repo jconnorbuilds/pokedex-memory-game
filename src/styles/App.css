@@ -20,8 +20,27 @@
 .scene {
   perspective: var(--dex-perspective);
   perspective-origin: center;
-  perspective: 3000px;
   transform: rotateY(40deg) rotateX(25deg);
+}
+
+header {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+header h2 {
+  font-size: 1em;
+}
+
+header .input-group {
+  display: grid;
+  gap: 0.1em;
+}
+
+.dev-toolbar {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  gap: 1em;
 }
 
 .scene,
