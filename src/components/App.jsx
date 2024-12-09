@@ -10,49 +10,13 @@ import PokedexLid from './PokedexLid.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
 import InputGroup from './InputGroup.jsx';
 
-export default function App() {
-  const NUM_OF_GENERATIONS = 9;
+const NUM_OF_GENERATIONS = 9;
+const AXES = ['x', 'y', 'z'];
+const LEVELS = ['easy', 'medium', 'hard'];
+const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 
+const usePokemon = (showStarters, needsNewPkmn, setNeedsNewPkmn, generation, level) => {
   const [pokemon, setPokemon] = useState(null);
-  const [pokemonDexSprites, setPokemonDexSprites] = useState([]);
-  const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
-  const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
-  const [showStarters, setShowStarters] = useState(
-    JSON.parse(localStorage.getItem('showStarters')) ||
-      Array(NUM_OF_GENERATIONS).fill(true),
-  );
-  const [level, setLevel] = useState('easy');
-  const [generation, setGeneration] = useState(1);
-  const [gameWon, setGameWon] = useState(false);
-  const [gameOn, setGameOn] = useState(true);
-  const [clickedIds, setClickedIds] = useState([]);
-  const [handId, setHandId] = useState(0);
-  const [genSizes, setGenSizes] = useState({});
-  const [genCompletion, setGenCompletion] = useState(
-    JSON.parse(localStorage.getItem('genCompletion')) || {},
-  );
-  const [sceneAngle, setSceneAngle] = useState({ x: '25', y: '40', z: '0' });
-  const [pokedexAngle, setPokedexAngle] = useState({ x: '0', y: '0', z: '0' });
-
-  const AXES = ['x', 'y', 'z'];
-
-  const rotate3d = (target, { x, y, z }) => {
-    target.style.transform = `rotateY(${y}deg) rotateX(${x}deg) rotateZ(${z}deg)`;
-  };
-
-  useMemo(() => {
-    const scene = document.querySelector('#scene');
-    if (scene) rotate3d(scene, sceneAngle);
-  }, [sceneAngle]);
-
-  useMemo(() => {
-    const scene = document.querySelector('#pokedex');
-    if (scene) rotate3d(scene, pokedexAngle);
-  }, [pokedexAngle]);
-
-  const LEVELS = ['easy', 'medium', 'hard'];
-  const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 
   useEffect(() => {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
@@ -113,7 +77,56 @@ export default function App() {
     return () => {
       ignore = true;
     };
-  }, [showStarters, needsNewPkmn, generation, level]);
+  }, [generation, level, setNeedsNewPkmn, showStarters]);
+
+  return pokemon;
+};
+
+export default function App() {
+  // const [pokemon, setPokemon] = useState(null);
+  const [pokemonDexSprites, setPokemonDexSprites] = useState([]);
+  const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState(0);
+  const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
+
+  const [showStarters, setShowStarters] = useState(
+    JSON.parse(localStorage.getItem('showStarters')) ||
+      Array(NUM_OF_GENERATIONS).fill(true),
+  );
+  const [level, setLevel] = useState('easy');
+  const [generation, setGeneration] = useState(1);
+  const [gameWon, setGameWon] = useState(false);
+  const [gameOn, setGameOn] = useState(true);
+  const [clickedIds, setClickedIds] = useState([]);
+  const [handId, setHandId] = useState(0);
+  const [genSizes, setGenSizes] = useState({});
+  const [genCompletion, setGenCompletion] = useState(
+    JSON.parse(localStorage.getItem('genCompletion')) || {},
+  );
+  const [sceneAngle, setSceneAngle] = useState({ x: '25', y: '40', z: '0' });
+  const [pokedexAngle, setPokedexAngle] = useState({ x: '0', y: '0', z: '0' });
+
+  const pokemon = usePokemon(
+    showStarters,
+    needsNewPkmn,
+    setNeedsNewPkmn,
+    generation,
+    level,
+  );
+
+  const rotate3d = (target, { x, y, z }) => {
+    target.style.transform = `rotateY(${y}deg) rotateX(${x}deg) rotateZ(${z}deg)`;
+  };
+
+  useMemo(() => {
+    const scene = document.querySelector('#scene');
+    if (scene) rotate3d(scene, sceneAngle);
+  }, [sceneAngle]);
+
+  useMemo(() => {
+    const scene = document.querySelector('#pokedex');
+    if (scene) rotate3d(scene, pokedexAngle);
+  }, [pokedexAngle]);
 
   useEffect(() => {
     if (pokemon) {
@@ -164,19 +177,17 @@ export default function App() {
     if (newScore > bestScore) setBestScore(newScore);
   };
 
-  const handleGenerationSelect = (e) => {
-    if (e.target.tagName === 'BUTTON') {
-      setGeneration(+e.target.value);
-      resetGame();
-    }
+  const createSelectionHandler = (setState) => {
+    return (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        setState(+e.target.value);
+        resetGame();
+      }
+    };
   };
 
-  const handleLevelSelect = (e) => {
-    if (e.target.tagName === 'BUTTON') {
-      setLevel(e.target.value);
-      resetGame();
-    }
-  };
+  const handleGenerationSelect = createSelectionHandler(setGeneration);
+  const handleLevelSelect = createSelectionHandler(setLevel);
 
   const resetGame = () => {
     const genIdx = generation - 1;
