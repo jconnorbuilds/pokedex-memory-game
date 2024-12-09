@@ -17,7 +17,7 @@
   grid-template-columns: 1fr;
 }
 
-.scene {
+#scene {
   perspective: var(--dex-perspective);
   perspective-origin: center;
   transform: rotateY(40deg) rotateX(25deg);
@@ -43,8 +43,8 @@ header .input-group {
   gap: 1em;
 }
 
-.scene,
-.scene * {
+#scene,
+#scene * {
   transform-style: preserve-3d;
 }
 

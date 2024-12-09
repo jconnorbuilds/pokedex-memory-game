@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
@@ -7,7 +7,7 @@ import GenerationDisplay from './GenerationDisplay.jsx';
 import Pokedex from './Pokedex.jsx';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
-import SetAngleInput from './SetAngleButton.jsx';
+import SetAngleInput from './SetAngleInput.jsx';
 import InputGroup from './InputGroup.jsx';
 
 export default function App() {
@@ -33,13 +33,23 @@ export default function App() {
     JSON.parse(localStorage.getItem('genCompletion')) || {},
   );
   const [sceneAngle, setSceneAngle] = useState({ x: '25', y: '40', z: '0' });
+  const [pokedexAngle, setPokedexAngle] = useState({ x: '0', y: '0', z: '0' });
 
-  useEffect(() => {
-    const scene = document.querySelector('.scene');
-    if (scene) {
-      scene.style.transform = `rotateY(${sceneAngle.y}deg) rotateX(${sceneAngle.x}deg) rotateZ(${sceneAngle.z}deg)`;
-    }
+  const AXES = ['x', 'y', 'z'];
+
+  const rotate3d = (target, { x, y, z }) => {
+    target.style.transform = `rotateY(${y}deg) rotateX(${x}deg) rotateZ(${z}deg)`;
+  };
+
+  useMemo(() => {
+    const scene = document.querySelector('#scene');
+    if (scene) rotate3d(scene, sceneAngle);
   }, [sceneAngle]);
+
+  useMemo(() => {
+    const scene = document.querySelector('#pokedex');
+    if (scene) rotate3d(scene, pokedexAngle);
+  }, [pokedexAngle]);
 
   const LEVELS = ['easy', 'medium', 'hard'];
   const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
@@ -182,7 +192,7 @@ export default function App() {
 
   const toggleDexOpenClosed = (e) => {
     if (e.target.closest('.body__upper-overhang')) {
-      const pokedex = document.querySelector('.pokedex');
+      const pokedex = document.querySelector('#pokedex');
       const willOpen = !pokedex.classList.contains('pokedex--open');
       pokedex.classList.toggle('pokedex--open', willOpen);
     }
@@ -190,9 +200,30 @@ export default function App() {
 
   localStorage.setItem('showStarters', JSON.stringify(showStarters));
 
-  const setAngle = (degrees, axis) => {
-    setSceneAngle({ ...sceneAngle, [axis]: degrees });
+  const createRotationSetter = (setState) => {
+    return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
   };
+
+  const renderAngleInputs = (labelPrefix, target, onChange) => {
+    return (
+      <InputGroup>
+        {AXES.map((axis) => {
+          return (
+            <SetAngleInput
+              key={`${labelPrefix}-${axis}`}
+              axis={axis}
+              label={`${labelPrefix}-${axis}`}
+              value={target[axis]}
+              onChange={(value) => onChange(axis, value)}
+            />
+          );
+        })}
+      </InputGroup>
+    );
+  };
+
+  const setSceneRotation = createRotationSetter(setSceneAngle);
+  const setPokedexRotation = createRotationSetter(setPokedexAngle);
 
   return (
     <div className="app">
@@ -200,38 +231,17 @@ export default function App() {
         <div className="dev-toolbar">
           <div className="toolbar__widget">
             <h2>Scene</h2>
-            <InputGroup>
-              {['x', 'y', 'z'].map((axis) => {
-                return (
-                  <SetAngleInput
-                    key={`scene-${axis}`}
-                    label={`scene-${axis}`}
-                    axis={axis}
-                    value={sceneAngle[axis]}
-                    setAngle={setAngle}
-                  />
-                );
-              })}
-            </InputGroup>
+            {renderAngleInputs('scene', sceneAngle, setSceneRotation)}
           </div>
-          <h2>Pokedex</h2>
-          <InputGroup>
-            {['x', 'y', 'z'].map((axis) => {
-              return (
-                <SetAngleInput
-                  key={`scene-${axis}`}
-                  label={`scene-${axis}`}
-                  axis={axis}
-                  setAngle={setAngle}
-                />
-              );
-            })}
-          </InputGroup>
+          <div className="toolbar__widget">
+            <h2>Pokedex</h2>
+            {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)}
+          </div>
         </div>
         <Scoreboard score={score} bestScore={bestScore} />
       </header>
       <main className="container">
-        <div className="scene">
+        <div id="scene" className="scene">
           {pokemon ? (
             <CardTable
               pokemon={pokemon}

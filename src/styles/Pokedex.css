@@ -15,12 +15,12 @@
   margin: 0;
 }
 
-.pokedex,
-.pokedex * {
+#pokedex,
+#pokedex * {
   transform-style: preserve-3d;
 }
 
-.pokedex {
+#pokedex {
   margin: auto;
   width: calc(var(--dex-width) * 2);
   aspect-ratio: 1/1;
