@@ -20,7 +20,6 @@
 #scene {
   perspective: var(--dex-perspective);
   perspective-origin: center;
-  transform: rotateY(40deg) rotateX(25deg);
 }
 
 header {

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
@@ -18,10 +18,6 @@ const LEVELS = ['easy', 'medium', 'hard'];
 const NUM_OF_GENERATIONS = 9;
 
 const getFromLocalStorage = (itemName) => JSON.parse(localStorage.getItem(itemName));
-
-const rotate3d = (target, { x, y, z }) => {
-  target.style.transform = `rotateY(${y}deg) rotateX(${x}deg) rotateZ(${z}deg)`;
-};
 
 const createRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
@@ -57,15 +53,8 @@ export default function App() {
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const pokemonDexSprites = usePokemonDexSprites(pokemon);
 
-  useMemo(() => {
-    const scene = document.querySelector('#scene');
-    if (scene) rotate3d(scene, sceneAngle);
-  }, [sceneAngle]);
-
-  useMemo(() => {
-    const scene = document.querySelector('#pokedex');
-    if (scene) rotate3d(scene, pokedexAngle);
-  }, [pokedexAngle]);
+  const sceneTransform = `rotateY(${sceneAngle.y}deg) rotateX(${sceneAngle.x}deg) rotateZ(${sceneAngle.z}deg)`;
+  const pokedexTransform = `rotateY(${pokedexAngle.y}deg) rotateX(${pokedexAngle.x}deg) rotateZ(${pokedexAngle.z}deg)`;
 
   const createSelectionHandler = (setState) => {
     return (e) => {
@@ -139,7 +128,13 @@ export default function App() {
         <Scoreboard score={score} bestScore={bestScore} />
       </header>
       <main className="container">
-        <div id="scene" className="scene">
+        <div
+          id="scene"
+          className="scene"
+          style={{
+            transform: sceneTransform,
+          }}
+        >
           {pokemon ? (
             <CardTable
               pokemon={pokemon}
@@ -163,7 +158,10 @@ export default function App() {
             <div>Loading cards...</div>
           )}{' '}
           <div className="pokedex-wrapper container">
-            <Pokedex toggleOpenClosed={toggleDexOpenClosed}>
+            <Pokedex
+              toggleOpenClosed={toggleDexOpenClosed}
+              style={{ transform: pokedexTransform }}
+            >
               <PokedexBody sprite={pokemonDexSprites[0]}></PokedexBody>
               <PokedexLid>
                 <div className="choose-gen" onClick={handleGenerationSelect}>
