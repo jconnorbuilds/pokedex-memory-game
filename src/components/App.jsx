@@ -60,6 +60,7 @@ export default function App() {
     return (e) => {
       if (e.target.tagName === 'BUTTON') {
         setState(e.target.value);
+        requestNewPokemon();
         resetGame();
       }
     };
@@ -138,9 +139,8 @@ export default function App() {
           {pokemon ? (
             <CardTable
               pokemon={pokemon}
-              updateScores={updateScores}
               score={score}
-              setScore={setScore}
+              updateScores={updateScores}
               gameWon={gameWon}
               setGameWon={setGameWon}
               gameOn={gameOn}
