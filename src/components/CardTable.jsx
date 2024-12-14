@@ -3,20 +3,11 @@ import Card from './Card.jsx';
 
 export default function CardTable({
   pokemon,
-  score,
-  updateScores,
   gameWon,
-  setGameWon,
-  gameOn,
-  setGameOn,
-  resetGame,
+  handleClick,
   clickedIds,
-  setClickedIds,
   handId,
-  setHandId,
   genCompletion,
-  setGenCompletion,
-  generation,
 }) {
   // const [colorsOn, setColorsOn] = useState(true);
 
@@ -64,36 +55,6 @@ export default function CardTable({
     return selectedPokemon;
   }, [clickedIds, gameWon, pokemon]);
 
-  const choiceSucceeded = (id) => !clickedIds.includes(id);
-
-  const handleClick = (id) => {
-    if (gameOn) {
-      if (choiceSucceeded(id)) {
-        const newClickedIds = clickedIds.concat([id]);
-        setClickedIds(newClickedIds);
-        updateScores(score + 1);
-
-        // Check if player wins round
-        if (newClickedIds.length === pokemon.length) {
-          // Keep track of seen pokemon per generation, without duplicates
-          const pokemonNames = pokemon.map((pkmn) => pkmn.name);
-          const newData = {
-            [generation]: genCompletion[generation]
-              ? [...new Set(genCompletion[generation].concat(pokemonNames))]
-              : pokemonNames,
-          };
-
-          setGameOn(false);
-          setGameWon(true);
-          setGenCompletion({ ...genCompletion, ...newData });
-        }
-        setHandId(handId + 1);
-      } else {
-        setGameOn(false);
-      }
-    }
-  };
-
   localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
 
   return (
@@ -111,11 +72,6 @@ export default function CardTable({
           );
         })}
       </Hand>
-      <div className="game-result">
-        {gameWon && <p>You win!</p>}
-        {!gameOn && !gameWon && <p>You lose! </p>}
-        {!gameOn && <button onClick={resetGame}>Play again</button>}
-      </div>
     </>
   );
 }

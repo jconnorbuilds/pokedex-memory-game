@@ -41,7 +41,7 @@ export default function App() {
   );
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
-  const [clickedIds, setClickedIds] = useState([]);
+  const [clickedCardIds, setClickedCardIds] = useState([]);
   const [handId, setHandId] = useState(0);
   const [genCompletion, setGenCompletion] = useState(
     getFromLocalStorage('genCompletion') || {},
@@ -74,19 +74,54 @@ export default function App() {
   const handleGenerationSelect = createSelectionHandler(setGeneration);
   const handleLevelSelect = createSelectionHandler(setLevel);
 
+  const hideStarters = (currentGen) => {
+    setShowStarters(
+      showStarters.map((gen, idx) => (idx + 1 === +currentGen ? false : gen)),
+    );
+  };
+
   const resetGame = () => {
-    const genIdx = generation - 1;
+    const startersShown = showStarters[generation - 1];
+
     setGameOn(true);
     setGameWon(false);
     setScore(0);
-    setClickedIds([]);
+    setClickedCardIds([]);
     setHandId(0);
 
     if (gameWon) {
       requestNewPokemon();
-      if (showStarters[genIdx]) {
-        setShowStarters(showStarters.map((gen, idx) => (idx === genIdx ? false : gen)));
+      if (startersShown) hideStarters(generation);
+    }
+  };
+
+  const choiceSucceeded = (id) => !clickedCardIds.includes(id);
+
+  const handleCardClick = (id) => {
+    if (!gameOn) return;
+
+    if (choiceSucceeded(id)) {
+      const newClickedIds = clickedCardIds.concat([id]);
+      setClickedCardIds(newClickedIds);
+      updateScores(score + 1);
+
+      // Check if player wins round
+      if (newClickedIds.length === pokemon.length) {
+        // Keep track of seen pokemon per generation, without duplicates
+        const pokemonNames = pokemon.map((pkmn) => pkmn.name);
+        const newData = {
+          [generation]: genCompletion[generation]
+            ? [...new Set(genCompletion[generation].concat(pokemonNames))]
+            : pokemonNames,
+        };
+
+        setGameOn(false);
+        setGameWon(true);
+        setGenCompletion({ ...genCompletion, ...newData });
       }
+      setHandId(handId + 1);
+    } else {
+      setGameOn(false);
     }
   };
 
@@ -137,23 +172,22 @@ export default function App() {
           }}
         >
           {pokemon ? (
-            <CardTable
-              pokemon={pokemon}
-              score={score}
-              updateScores={updateScores}
-              gameWon={gameWon}
-              setGameWon={setGameWon}
-              gameOn={gameOn}
-              setGameOn={setGameOn}
-              resetGame={resetGame}
-              clickedIds={clickedIds}
-              setClickedIds={setClickedIds}
-              handId={handId}
-              setHandId={setHandId}
-              genCompletion={genCompletion}
-              setGenCompletion={setGenCompletion}
-              generation={generation}
-            />
+            <>
+              <CardTable
+                pokemon={pokemon}
+                gameWon={gameWon}
+                clickedIds={clickedCardIds}
+                setClickedIds={setClickedCardIds}
+                handId={handId}
+                genCompletion={genCompletion}
+                handleClick={handleCardClick}
+              />
+              <div className="game-result">
+                {gameWon && <p>You win!</p>}
+                {!gameOn && !gameWon && <p>You lose! </p>}
+                {!gameOn && <button onClick={resetGame}>Play again</button>}
+              </div>
+            </>
           ) : (
             <div>Loading cards...</div>
           )}{' '}
