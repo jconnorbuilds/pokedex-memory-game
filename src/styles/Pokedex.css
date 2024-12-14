@@ -2,7 +2,7 @@
 
 :root {
   --dex-width: 300px;
-  --dex-height: calc(var(--dex-width) * (3 / 2));
+  --dex-height: calc(var(--dex-width) * 2);
   --dex-body-thickness: 25px;
   --dex-lid-thickness: 12.5px;
   --dex-color: #aa0044;
@@ -312,11 +312,11 @@
 }
 
 .upper-overhang__bottom.slant1 {
-  width: calc(27.43%);
+  width: 87.464px;
   left: 50%;
   transform-origin: left;
   transform: translateY(calc(var(--dex-height) * 0.075)) rotateX(-90deg)
-    rotateY(24.228deg);
+    rotateY(30.964deg);
 }
 
 .upper-overhang__front svg {
@@ -335,7 +335,7 @@
 
 /* ---------------------
       POKEDEX LID
-      *left and right are relative to the inner face of the lid
+      *left and right are relative to the outer face of the lid
 ----------------------*/
 
 .pokedex__lid {
@@ -401,11 +401,13 @@
   transform: translateZ(calc(var(--dex-lid-thickness) / -2)) rotateY(-180deg);
 }
 
-.lid__main__left {
-  transform: translateX(calc(var(--dex-width) / -2)) rotateY(-90deg);
+.lid__main__right {
+  height: 92.5%;
+  bottom: 0;
+  transform: translateX(calc(var(--dex-width) / 2)) rotateY(-90deg);
 }
 
-.lid__main__right {
+.lid__main__left {
   height: 85%;
   bottom: 0;
   transform: translateX(calc(var(--dex-width) / -2)) rotateY(90deg);
@@ -426,11 +428,11 @@
 }
 
 .lid__main__top.slant1 {
-  width: calc(27.43%);
+  width: 87.464px;
   left: 50%;
   transform-origin: left;
   transform: translateY(calc((var(--dex-height) / -2) + var(--dex-height) * 0.15))
-    rotateX(-90deg) rotateY(24.228deg);
+    rotateX(-90deg) rotateY(30.964deg);
 }
 
 .lid__main__bottom {
