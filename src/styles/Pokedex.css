@@ -19,6 +19,14 @@
   transition: --dex-scale 0.5s ease-in-out;
   &:has(.pokedex--open) {
     --dex-scale: 1;
+
+    /* .game-area {
+      width: 50%;
+    } */
+
+    /* #scene {
+      justify-content: start;
+    } */
   }
 }
 
@@ -28,10 +36,9 @@
 }
 
 .pokedex-wrapper {
-  width: 50%;
-
-  /* transform-origin: center; */
-  /* border: 2px solid rebeccapurple; */
+  /* justify-self: start; */
+  /* width: 25%; */
+  padding: 2rem;
 }
 
 .scene {

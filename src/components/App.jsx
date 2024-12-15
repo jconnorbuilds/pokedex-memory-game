@@ -38,7 +38,7 @@ export default function App() {
   const [genCompletion, setGenCompletion] = useState(
     getFromLocalStorage('genCompletion') || {},
   );
-  const [sceneAngle, setSceneAngle] = useState({ x: '0', y: '45', z: '0' });
+  const [sceneAngle, setSceneAngle] = useState({ x: '25', y: '30', z: '0' });
   const [pokedexAngle, setPokedexAngle] = useState({ x: '0', y: '0', z: '0' });
   const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
   const [pokedexIsFrontCenter, setPokedexIsFrontCenter] = useState(false);
@@ -47,13 +47,17 @@ export default function App() {
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const pokemonDexSprites = usePokemonDexSprites(pokemon);
 
-  let sceneTransform = `rotateY(${sceneAngle.y}deg) rotateX(${
-    sceneAngle.x
-  }deg)  rotateZ(${sceneAngle.z}deg) ${pokedexIsOpen ? 'translateZ(-100px)' : ''}`;
+  let sceneTransform = `${pokedexIsOpen ? 'translateX(-150px)' : ''}rotateY(${
+    sceneAngle.y
+  }deg) rotateX(${sceneAngle.x}deg)  rotateZ(${sceneAngle.z}deg) ${
+    pokedexIsOpen ? 'translateZ(-100px)' : ''
+  }`;
 
   let pokedexTransform = `rotateY(${pokedexAngle.y}deg) rotateX(${
     pokedexAngle.x
-  }deg) rotateZ(${pokedexAngle.z}deg) ${pokedexIsOpen ? 'translateZ(0px)' : ''}`;
+  }deg) rotateZ(${pokedexAngle.z}deg) ${
+    pokedexIsOpen ? 'translateZ(400px) translateX(-100%)' : ''
+  }`;
 
   const createSelectionHandler = (setState) => {
     return (e) => {
