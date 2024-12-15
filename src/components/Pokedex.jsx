@@ -5,7 +5,7 @@ export default function Pokedex({ children, isOpen, toggleOpen, style }) {
     <div className="pokedex-wrapper">
       <div
         id="pokedex"
-        className={`pokedex ${isOpen && 'pokedex--open'}`}
+        className={`pokedex ${isOpen ? 'pokedex--open' : ''}`}
         onClick={toggleOpen}
         style={style}
       >

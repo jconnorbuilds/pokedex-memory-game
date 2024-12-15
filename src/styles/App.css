@@ -22,6 +22,7 @@
   perspective-origin: center;
   display: flex;
   justify-content: center;
+  transition: transform 1s ease-in-out;
 }
 
 #scene,
@@ -148,6 +149,10 @@ header .input-group {
 
 .score__val {
   font-weight: 700;
+}
+
+.game-area {
+  transition: transform 1s ease-in-out;
 }
 
 .game-result {

@@ -38,7 +38,7 @@ export default function App() {
   const [genCompletion, setGenCompletion] = useState(
     getFromLocalStorage('genCompletion') || {},
   );
-  const [sceneAngle, setSceneAngle] = useState({ x: '25', y: '40', z: '0' });
+  const [sceneAngle, setSceneAngle] = useState({ x: '0', y: '45', z: '0' });
   const [pokedexAngle, setPokedexAngle] = useState({ x: '0', y: '0', z: '0' });
   const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
   const [pokedexIsFrontCenter, setPokedexIsFrontCenter] = useState(false);
@@ -47,8 +47,13 @@ export default function App() {
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const pokemonDexSprites = usePokemonDexSprites(pokemon);
 
-  const sceneTransform = `rotateY(${sceneAngle.y}deg) rotateX(${sceneAngle.x}deg) rotateZ(${sceneAngle.z}deg)`;
-  const pokedexTransform = `rotateY(${pokedexAngle.y}deg) rotateX(${pokedexAngle.x}deg) rotateZ(${pokedexAngle.z}deg)`;
+  let sceneTransform = `rotateY(${sceneAngle.y}deg) rotateX(${
+    sceneAngle.x
+  }deg)  rotateZ(${sceneAngle.z}deg) ${pokedexIsOpen ? 'translateZ(-100px)' : ''}`;
+
+  let pokedexTransform = `rotateY(${pokedexAngle.y}deg) rotateX(${
+    pokedexAngle.x
+  }deg) rotateZ(${pokedexAngle.z}deg) ${pokedexIsOpen ? 'translateZ(0px)' : ''}`;
 
   const createSelectionHandler = (setState) => {
     return (e) => {
@@ -62,7 +67,12 @@ export default function App() {
 
   const toggleDexOpenClosed = (e) => {
     if (e.target.closest('.body__upper-overhang')) {
-      setPokedexIsOpen(!pokedexIsOpen);
+      const willOpen = pokedexIsOpen !== true;
+      setPokedexIsOpen(willOpen);
+
+      setSceneRotation('y', willOpen ? 15 : 30);
+      setSceneRotation('x', willOpen ? 70 : 25);
+      setPokedexRotation('x', willOpen ? -70 : 0);
     }
   };
 
@@ -172,7 +182,10 @@ export default function App() {
             transform: sceneTransform,
           }}
         >
-          <div className="game-area">
+          <div
+            className="game-area"
+            style={pokedexIsOpen ? { transform: 'scale(0.6)' } : {}}
+          >
             {pokemon ? (
               <>
                 <CardTable
