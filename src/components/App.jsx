@@ -23,14 +23,6 @@ const createRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
 };
 
-const toggleDexOpenClosed = (e) => {
-  if (e.target.closest('.body__upper-overhang')) {
-    const pokedex = document.querySelector('#pokedex');
-    const willOpen = !pokedex.classList.contains('pokedex--open');
-    pokedex.classList.toggle('pokedex--open', willOpen);
-  }
-};
-
 export default function App() {
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
@@ -48,6 +40,8 @@ export default function App() {
   );
   const [sceneAngle, setSceneAngle] = useState({ x: '25', y: '40', z: '0' });
   const [pokedexAngle, setPokedexAngle] = useState({ x: '0', y: '0', z: '0' });
+  const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
+  const [pokedexIsFrontCenter, setPokedexIsFrontCenter] = useState(false);
 
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
@@ -64,6 +58,12 @@ export default function App() {
         resetGame();
       }
     };
+  };
+
+  const toggleDexOpenClosed = (e) => {
+    if (e.target.closest('.body__upper-overhang')) {
+      setPokedexIsOpen(!pokedexIsOpen);
+    }
   };
 
   const updateScores = (newScore) => {
@@ -192,48 +192,46 @@ export default function App() {
               <div>Loading cards...</div>
             )}{' '}
           </div>
-          <div className="pokedex-wrapper container">
-            <Pokedex
-              toggleOpenClosed={toggleDexOpenClosed}
-              style={{ transform: pokedexTransform }}
-            >
-              <PokedexBody sprite={pokemonDexSprites[0]}></PokedexBody>
-              <PokedexLid>
-                <div className="choose-gen" onClick={handleGenerationSelect}>
-                  <h2>Generations</h2>
-                  {Array(NUM_OF_GENERATIONS)
-                    .fill('')
-                    .map((_, idx) => {
-                      const genNumber = idx + 1;
-                      const genSize = genSizes[genNumber];
-                      return (
-                        <GenerationDisplay key={idx}>
-                          <MenuButton value={genNumber}>{genNumber}</MenuButton>
-                          <div className="gen-dex-completion">
-                            {genCompletion[genNumber]
-                              ? genCompletion[genNumber].length
-                              : 0}{' '}
-                            / {genSize ? genSize : '...'}
-                          </div>
-                        </GenerationDisplay>
-                      );
-                    })}
-                </div>
-                <div className="choose-difficulty" onClick={handleLevelSelect}>
-                  <h2>Difficulty</h2>
-                  {LEVELS.map((level) => {
-                    const levelNameFormatted =
-                      level.charAt(0).toUpperCase() + level.slice(1);
+
+          <Pokedex
+            isOpen={pokedexIsOpen}
+            toggleOpen={toggleDexOpenClosed}
+            style={{ transform: pokedexTransform }}
+          >
+            <PokedexBody sprite={pokemonDexSprites[0]}></PokedexBody>
+            <PokedexLid>
+              <div className="choose-gen" onClick={handleGenerationSelect}>
+                <h2>Generations</h2>
+                {Array(NUM_OF_GENERATIONS)
+                  .fill('')
+                  .map((_, idx) => {
+                    const genNumber = idx + 1;
+                    const genSize = genSizes[genNumber];
                     return (
-                      <MenuButton key={level} value={level}>
-                        {levelNameFormatted}
-                      </MenuButton>
+                      <GenerationDisplay key={idx}>
+                        <MenuButton value={genNumber}>{genNumber}</MenuButton>
+                        <div className="gen-dex-completion">
+                          {genCompletion[genNumber] ? genCompletion[genNumber].length : 0}{' '}
+                          / {genSize ? genSize : '...'}
+                        </div>
+                      </GenerationDisplay>
                     );
                   })}
-                </div>
-              </PokedexLid>
-            </Pokedex>
-          </div>
+              </div>
+              <div className="choose-difficulty" onClick={handleLevelSelect}>
+                <h2>Difficulty</h2>
+                {LEVELS.map((level) => {
+                  const levelNameFormatted =
+                    level.charAt(0).toUpperCase() + level.slice(1);
+                  return (
+                    <MenuButton key={level} value={level}>
+                      {levelNameFormatted}
+                    </MenuButton>
+                  );
+                })}
+              </div>
+            </PokedexLid>
+          </Pokedex>
         </div>
       </main>
       <footer className="footer container">

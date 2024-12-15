@@ -5,7 +5,7 @@
   height: 100vh;
   margin: 0 auto;
   padding: 2rem;
-  --dex-perspective: 3000px;
+  --dex-perspective: 10000px;
 }
 
 :root {
@@ -21,6 +21,7 @@
   perspective: var(--dex-perspective);
   perspective-origin: center;
   display: flex;
+  justify-content: center;
 }
 
 #scene,

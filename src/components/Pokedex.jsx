@@ -1,9 +1,16 @@
 import '../styles/Pokedex.css';
 
-export default function Pokedex({ children, toggleOpenClosed, style }) {
+export default function Pokedex({ children, isOpen, toggleOpen, style }) {
   return (
-    <div id="pokedex" className="pokedex" onClick={toggleOpenClosed} style={style}>
-      {children}
+    <div className="pokedex-wrapper">
+      <div
+        id="pokedex"
+        className={`pokedex ${isOpen && 'pokedex--open'}`}
+        onClick={toggleOpen}
+        style={style}
+      >
+        {children}
+      </div>
     </div>
   );
 }

@@ -1,11 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Tomorrow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+@property --scale {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+
 :root {
-  --dex-width: 300px;
-  /* --dex-width: 100%; */
+  --dex-width: calc(300px * var(--scale));
   --dex-height: calc(var(--dex-width) * 2);
-  --dex-body-thickness: 25px;
-  --dex-lid-thickness: 12.5px;
+  --dex-body-thickness: calc(var(--dex-width) / 12); /* default 25px */
+  --dex-lid-thickness: calc(var(--dex-body-thickness) * 0.5); /* default 12.5px */
   --dex-color: #aa0044;
   --dex-color-shade: #820034;
   --dex-color-tint: #dd0059;
@@ -17,19 +22,39 @@
 }
 
 .pokedex-wrapper {
-  width: 300px;
+  width: 50%;
+  /* transform-origin: center; */
+  /* border: 2px solid rebeccapurple; */
+}
+
+.scene {
+  /* border: 2px solid orange; */
+}
+
+#pokedex {
+  /* If these ratios change, update the slant transform trig formulae. 
+  Unable to easily do it programatically since the length units can't be stripped to use in the calc function.
+  Maybe a potential workaround: https://css-tip.com/length-to-integer/  */
+  --cutout-max-height-decimal: 0.15;
+  --cutout-min-height-decimal: 0.075;
+  --cutout-max-height-percent: calc(var(--cutout-max-height-decimal) * 100%);
+  --cutout-min-height-percent: calc(var(--cutout-min-height-decimal) * 100%);
+  --overhang-slant-start-percent: 50%;
+  --overhang-slant-finish-percent: 75%;
+  --overhang-max-height: calc(var(--dex-height) * var(--cutout-max-height-decimal));
+  --overhang-min-height: calc(var(--dex-height) * var(--cutout-min-height-decimal));
+  --slant-angle: atan(45 / 75);
+  --slant-length: calc((var(--overhang-min-height)) / sin(var(--slant-angle)));
+
+  margin: auto;
+  width: calc(var(--dex-width) * 2);
+  aspect-ratio: 1/1;
+  position: relative;
 }
 
 #pokedex,
 #pokedex * {
   transform-style: preserve-3d;
-}
-
-#pokedex {
-  margin: auto;
-  width: calc(var(--dex-width) * 2);
-  aspect-ratio: 1/1;
-  position: relative;
 }
 
 .pokedex__body {
@@ -57,6 +82,7 @@
   font-family: 'Tomorrow', sans-serif;
   font-weight: 400;
   font-style: normal;
+  font-size: calc(1em * var(--scale));
 }
 
 /* -------------------------------
@@ -103,7 +129,6 @@
 
 .body__main__front {
   transform: translateZ(calc(var(--dex-body-thickness) / 2));
-  /* display: flex; */
 }
 
 .body__main__back {
@@ -253,7 +278,7 @@
 
 .body__upper-overhang {
   width: 100%;
-  height: 15%;
+  height: var(--cutout-max-height-percent);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -284,7 +309,14 @@
 }
 
 .upper-overhang__front {
-  clip-path: polygon(0 0, 0 100%, 50% 100%, 75% 50%, 100% 50%, 100% 0%);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 50%,
+    var(--overhang-slant-finish-percent) 50%,
+    var(--overhang-slant-start-percent) 100%,
+    0 100%
+  );
   transform: translateZ(calc(var(--dex-lid-thickness) / 2));
 }
 
@@ -315,11 +347,11 @@
 }
 
 .upper-overhang__bottom.slant1 {
-  width: 87.464px;
+  width: var(--slant-length);
   left: 50%;
   transform-origin: left;
   transform: translateY(calc(var(--dex-height) * 0.075)) rotateX(-90deg)
-    rotateY(30.964deg);
+    rotateY(var(--slant-angle));
 }
 
 .upper-overhang__front svg {
@@ -347,8 +379,6 @@
   width: 50%;
   height: 100%;
   margin-top: auto;
-  /* transform: translateZ(15px) rotateY(0); */
-
   transform-origin: 100% 0 calc(var(--dex-lid-thickness) * -0.5);
   transition: 2s ease-in-out;
   transform: translateZ(
@@ -359,6 +389,8 @@
 
 .pokedex--open .pokedex__lid {
   transform: translateZ(15px) rotateY(170deg);
+  transform: translateZ(calc(var(--dex-body-thickness) - var(--dex-lid-thickness)))
+    rotateY(170deg);
 }
 
 .lid__main {
@@ -395,12 +427,26 @@
 }
 
 .lid__main__outside {
-  clip-path: polygon(0 15%, 0 100%, 100% 100%, 100% 7.5%, 75% 7.5%, 50% 15%);
+  clip-path: polygon(
+    0 var(--cutout-max-height-percent),
+    var(--overhang-slant-start-percent) var(--cutout-max-height-percent),
+    var(--overhang-slant-finish-percent) var(--cutout-min-height-percent),
+    100% var(--cutout-min-height-percent),
+    100% 100%,
+    0 100%
+  );
   transform: translateZ(calc(var(--dex-lid-thickness) / 2));
 }
 
 .lid__main__inside {
-  clip-path: polygon(0 7.5%, 0 100%, 100% 100%, 100% 15%, 50% 15%, 25% 7.5%);
+  clip-path: polygon(
+    0 var(--cutout-min-height-percent),
+    calc(100% - var(--overhang-slant-finish-percent)) var(--cutout-min-height-percent),
+    var(--overhang-slant-start-percent) var(--cutout-max-height-percent),
+    100% var(--cutout-max-height-percent),
+    100% 100%,
+    0 100%
+  );
   transform: translateZ(calc(var(--dex-lid-thickness) / -2)) rotateY(-180deg);
 }
 
@@ -431,11 +477,11 @@
 }
 
 .lid__main__top.slant1 {
-  width: 87.464px;
+  width: var(--slant-length);
   left: 50%;
   transform-origin: left;
   transform: translateY(calc((var(--dex-height) / -2) + var(--dex-height) * 0.15))
-    rotateX(-90deg) rotateY(30.964deg);
+    rotateX(-90deg) rotateY(var(--slant-angle));
 }
 
 .lid__main__bottom {
@@ -465,10 +511,11 @@
   border: 2px solid var(--dex-color-shade);
   border-radius: 3px;
   padding: 0.75rem;
+  font-size: calc(1em * var(--scale));
 }
 
 .lid__display {
-  height: 3rem;
+  height: 10%;
   width: 75%;
   margin: auto;
   background-color: #1a1a1a;
