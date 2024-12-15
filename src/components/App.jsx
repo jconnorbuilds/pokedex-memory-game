@@ -126,6 +126,7 @@ export default function App() {
   };
 
   localStorage.setItem('showStarters', JSON.stringify(showStarters));
+  localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
 
   const renderAngleInputs = (labelPrefix, target, onChange) => {
     return (
@@ -171,26 +172,26 @@ export default function App() {
             transform: sceneTransform,
           }}
         >
-          {pokemon ? (
-            <>
-              <CardTable
-                pokemon={pokemon}
-                gameWon={gameWon}
-                clickedIds={clickedCardIds}
-                setClickedIds={setClickedCardIds}
-                handId={handId}
-                genCompletion={genCompletion}
-                handleClick={handleCardClick}
-              />
-              <div className="game-result">
-                {gameWon && <p>You win!</p>}
-                {!gameOn && !gameWon && <p>You lose! </p>}
-                {!gameOn && <button onClick={resetGame}>Play again</button>}
-              </div>
-            </>
-          ) : (
-            <div>Loading cards...</div>
-          )}{' '}
+          <div className="game-area">
+            {pokemon ? (
+              <>
+                <CardTable
+                  pokemon={pokemon}
+                  gameWon={gameWon}
+                  handleClick={handleCardClick}
+                  clickedIds={clickedCardIds}
+                  handId={handId}
+                />
+                <div className="game-result">
+                  {gameWon && <p>You win!</p>}
+                  {!gameOn && !gameWon && <p>You lose! </p>}
+                  {!gameOn && <button onClick={resetGame}>Play again</button>}
+                </div>
+              </>
+            ) : (
+              <div>Loading cards...</div>
+            )}{' '}
+          </div>
           <div className="pokedex-wrapper container">
             <Pokedex
               toggleOpenClosed={toggleDexOpenClosed}

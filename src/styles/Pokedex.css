@@ -2,6 +2,7 @@
 
 :root {
   --dex-width: 300px;
+  /* --dex-width: 100%; */
   --dex-height: calc(var(--dex-width) * 2);
   --dex-body-thickness: 25px;
   --dex-lid-thickness: 12.5px;
@@ -15,6 +16,10 @@
   margin: 0;
 }
 
+.pokedex-wrapper {
+  width: 300px;
+}
+
 #pokedex,
 #pokedex * {
   transform-style: preserve-3d;
@@ -25,8 +30,6 @@
   width: calc(var(--dex-width) * 2);
   aspect-ratio: 1/1;
   position: relative;
-  transform: rotateY(0deg) rotateX(0deg);
-  /* transform: rotateY(0deg) rotateX(0deg); */
 }
 
 .pokedex__body {

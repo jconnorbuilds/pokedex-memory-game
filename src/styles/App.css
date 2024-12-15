@@ -20,6 +20,12 @@
 #scene {
   perspective: var(--dex-perspective);
   perspective-origin: center;
+  display: flex;
+}
+
+#scene,
+#scene * {
+  transform-style: preserve-3d;
 }
 
 header {
@@ -40,11 +46,6 @@ header .input-group {
   display: grid;
   grid-template-columns: repeat(2, max-content);
   gap: 1em;
-}
-
-#scene,
-#scene * {
-  transform-style: preserve-3d;
 }
 
 .card-table {

@@ -1,14 +1,7 @@
 import { useMemo } from 'react';
 import Card from './Card.jsx';
 
-export default function CardTable({
-  pokemon,
-  gameWon,
-  handleClick,
-  clickedIds,
-  handId,
-  genCompletion,
-}) {
+export default function CardTable({ pokemon, gameWon, handleClick, clickedIds, handId }) {
   // const [colorsOn, setColorsOn] = useState(true);
 
   // Gets an idx between 0 and <max> that's not present in the <used> array
@@ -54,8 +47,6 @@ export default function CardTable({
 
     return selectedPokemon;
   }, [clickedIds, gameWon, pokemon]);
-
-  localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
 
   return (
     <>
