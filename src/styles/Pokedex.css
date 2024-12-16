@@ -3,11 +3,11 @@
 @property --dex-scale {
   syntax: '<number>';
   inherits: true;
-  initial-value: 0.6;
+  initial-value: 1;
 }
 
 :root {
-  --dex-width: calc(300px * var(--dex-scale));
+  --dex-width: calc(250px * var(--dex-scale));
   --dex-height: calc(var(--dex-width) * 2);
   --dex-body-thickness: calc(var(--dex-width) / 12); /* default 25px */
   --dex-lid-thickness: calc(var(--dex-body-thickness) * 0.5); /* default 12.5px */
@@ -39,6 +39,9 @@
   /* justify-self: start; */
   /* width: 25%; */
   padding: 2rem;
+  /* position: absolute;
+  left: 50%;
+  top: 50%; */
 }
 
 .scene {
@@ -68,6 +71,7 @@
   width: calc(var(--dex-width) * 2);
   aspect-ratio: 1/1;
   position: relative;
+  transform-origin: bottom;
   transition: transform 1s ease-in-out;
 }
 
@@ -409,7 +413,7 @@
 
 .pokedex--open .pokedex__lid {
   transform: translateZ(calc(var(--dex-body-thickness) - var(--dex-lid-thickness)))
-    rotateY(170deg);
+    rotateY(160deg);
 }
 
 .lid__main {

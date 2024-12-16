@@ -26,6 +26,7 @@
   transition: transform 1s ease-in-out;
   /* background-color: rebeccapurple; */
   width: 100vw;
+  min-width: 1500px;
   max-height: 100vh;
   position: relative;
 }
@@ -71,8 +72,8 @@ header .input-group {
 }
 
 .card-wrapper {
-  width: 200px;
-  min-width: 200px;
+  width: 165px;
+  min-width: 165px;
   aspect-ratio: 11/16;
   display: flex;
   justify-content: center;
@@ -158,7 +159,7 @@ header .input-group {
 .game-area {
   grid-column: 2;
   margin: 2rem;
-  transform-origin: top;
+  transform-origin: top right;
   transition: transform 1s ease-in-out;
 }
 
