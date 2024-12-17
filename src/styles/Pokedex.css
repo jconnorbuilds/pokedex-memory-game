@@ -3,7 +3,7 @@
 @property --dex-scale {
   syntax: '<number>';
   inherits: true;
-  initial-value: 1;
+  initial-value: 0.8;
 }
 
 :root {
@@ -18,15 +18,7 @@
 
   transition: --dex-scale 0.5s ease-in-out;
   &:has(.pokedex--open) {
-    --dex-scale: 1;
-
-    /* .game-area {
-      width: 50%;
-    } */
-
-    /* #scene {
-      justify-content: start;
-    } */
+    --dex-scale: 1.4;
   }
 }
 
@@ -36,19 +28,13 @@
 }
 
 .pokedex-wrapper {
-  /* justify-self: start; */
-  /* width: 25%; */
   padding: 2rem;
-  /* position: absolute;
-  left: 50%;
-  top: 50%; */
-}
+  position: relative;
+  right: 0;
+  transition: right 1s ease-in-out;
 
-.scene {
-  /* border: 2px solid orange; */
-  /* background-color: rebeccapurple; */
   &:has(.pokedex--open) {
-    transform: rotateX(75deg);
+    right: 25%;
   }
 }
 
@@ -71,8 +57,14 @@
   width: calc(var(--dex-width) * 2);
   aspect-ratio: 1/1;
   position: relative;
+  right: 0;
   transform-origin: bottom;
-  transition: transform 1s ease-in-out;
+  transition: transform 1s ease-in-out, right 1s ease-in-out;
+
+  &:is(.pokedex--open) {
+    /* Not sure why this the magic value to center the pokedex */
+    right: 500px;
+  }
 }
 
 #pokedex,
@@ -403,7 +395,6 @@
   height: 100%;
   margin-top: auto;
   transform-origin: 100% 0 calc(var(--dex-lid-thickness) * -0.5);
-  /* transition: 2s ease-in-out; */
   transform: translateZ(
       calc((var(--dex-body-thickness) * 0.5 + var(--dex-lid-thickness) * 0.5))
     )
@@ -413,7 +404,7 @@
 
 .pokedex--open .pokedex__lid {
   transform: translateZ(calc(var(--dex-body-thickness) - var(--dex-lid-thickness)))
-    rotateY(160deg);
+    rotateY(180deg);
 }
 
 .lid__main {

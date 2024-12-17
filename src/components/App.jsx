@@ -52,16 +52,17 @@ export default function App() {
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const pokemonDexSprites = usePokemonDexSprites(pokemon);
 
-  let sceneTransform = `${pokedexIsOpen ? 'translateY(100px) translateX(-200px)' : ''}
+  let sceneTransform = `${pokedexIsOpen ? 'translateY(0px) translateX(0px)' : ''}
   rotateY(${sceneAngle.y}deg)
   rotateX(${sceneAngle.x}deg)
   rotateZ(${sceneAngle.z}deg)`;
 
-  let pokedexTransform = `${pokedexIsOpen ? 'translateZ(20px)' : ''} 
+  let pokedexTransform = `${pokedexIsOpen ? 'translateZ(0px)' : ''} 
   rotateX(${pokedexAngle.x}deg)
   rotateY(${pokedexAngle.y}deg)
-    rotateZ(${pokedexAngle.z}deg)
-    ${pokedexIsOpen ? 'translateZ(200px)' : ''}`;
+  rotateZ(${pokedexAngle.z}deg)
+  ${pokedexIsOpen ? 'translateX(0)' : ''}`;
+
   const createSelectionHandler = (setState) => {
     return (e) => {
       if (e.target.tagName === 'BUTTON') {
@@ -78,15 +79,10 @@ export default function App() {
       setPokedexIsOpen(willOpen);
 
       setSceneRotation('y', willOpen ? 0 : initialScreenRotation.y);
-      setSceneRotation('x', willOpen ? 70 : initialScreenRotation.x);
-      setSceneRotation('z', willOpen ? 25 : initialScreenRotation.z);
+      setSceneRotation('x', willOpen ? 45 : initialScreenRotation.x);
+      setSceneRotation('z', willOpen ? 0 : initialScreenRotation.z);
       setPokedexRotation('y', willOpen ? 0 : initialPokedexRotation.x);
-      setPokedexRotation('x', willOpen ? -85 : initialPokedexRotation.x);
-
-      // setSceneRotation('y', willOpen ? 0 : initialScreenRotation.y);
-      // setSceneRotation('x', willOpen ? 70 : initialScreenRotation.x);
-      // setSceneRotation('z', willOpen ? 0 : initialScreenRotation.z);
-      // setPokedexRotation('x', willOpen ? -70 : initialPokedexRotation.x);
+      setPokedexRotation('x', willOpen ? -45 : initialPokedexRotation.x);
     }
   };
 
@@ -189,6 +185,7 @@ export default function App() {
         <Scoreboard score={score} bestScore={bestScore} />
       </header>
       <main className="container">
+        <div className="overlay"></div>
         <div
           id="scene"
           className="scene"

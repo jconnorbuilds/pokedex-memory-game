@@ -50,7 +50,7 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
     const noHover = !!e.target.closest('.no-hover');
     if (!noHover) {
       if (isHovered && !noHover) {
-        shadow.style.transform = 'translate3d(0, 0, -30px)';
+        shadow.style.transform = 'translate3d(0, 0, -15px)';
         shadow.style.boxShadow = '0 0 20px 20px #00000055';
         shadow.style.width = '80%';
         shadow.style.height = '80%';
@@ -72,7 +72,7 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
   const cardWrapperVariants = {
     initial: { translateZ: '1px' },
     hover: {
-      translateZ: '30px',
+      translateZ: '15px',
     },
     win: {
       rotateZ: ['-2deg', '2deg'],
