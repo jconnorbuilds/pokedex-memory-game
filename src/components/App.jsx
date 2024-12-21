@@ -171,16 +171,6 @@ export default function App() {
   return (
     <div className="app">
       <header className="header container">
-        <div className="dev-toolbar">
-          <div className="toolbar__widget">
-            <h2>Scene</h2>
-            {renderAngleInputs('scene', sceneAngle, setSceneRotation)}
-          </div>
-          <div className="toolbar__widget">
-            <h2>Pokedex</h2>
-            {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)}
-          </div>
-        </div>
         <Scoreboard score={score} bestScore={bestScore} />
       </header>
       <main className="container">
@@ -258,7 +248,19 @@ export default function App() {
       </main>
       <footer className="footer container">
         <div className="placeholder">
-          <p>Footer text</p>
+          <p>
+            ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>
+          </p>
+        </div>
+        <div className="dev-toolbar">
+          <div className="toolbar__widget">
+            <h2>Scene</h2>
+            {renderAngleInputs('scene', sceneAngle, setSceneRotation)}
+          </div>
+          <div className="toolbar__widget">
+            <h2>Pokedex</h2>
+            {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)}
+          </div>
         </div>
       </footer>
     </div>
