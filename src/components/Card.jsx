@@ -1,30 +1,31 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHandFist } from '@fortawesome/free-solid-svg-icons';
 
-export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
-  const [color, setColor] = useState(null);
+export default function Card({ pokemon, handleClick, gameWon }) {
   const [sprite, setSprite] = useState(null);
+  const [typeName, setTypeName] = useState(null);
+  const [ability, setAbility] = useState(null);
 
   useEffect(() => {
-    const COLORS = {
-      red: '#DA073B',
-      yellow: '#FFD452',
-      green: '#66BB6A',
-      blue: '#3498DB',
-      pink: '#FF8ADE',
-      black: '#1C1D21',
-      brown: '#97715E',
-      white: '#E9E9E9',
-      purple: 'rebeccapurple',
-      gray: '#8C8C8C',
-    };
+    // const COLORS = {
+    //   red: '#DA073B',
+    //   yellow: '#FFD452',
+    //   green: '#66BB6A',
+    //   blue: '#3498DB',
+    //   pink: '#FF8ADE',
+    //   black: '#1C1D21',
+    //   brown: '#97715E',
+    //   white: '#E9E9E9',
+    //   purple: 'rebeccapurple',
+    //   gray: '#8C8C8C',
+    // };
 
     const getPokemonData = async () => {
       // Get the pokemon's "color"
       const result = await fetch(pokemon.url);
       const data = await result.json();
-      const colorData = data.color.name;
-      setColor(COLORS[colorData]);
 
       // Get the pokemon's official artwork
       const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.id}`);
@@ -33,7 +34,20 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
         ? pokemonData.sprites.other['official-artwork'].front_shiny
         : pokemonData.sprites.other['official-artwork'].front_default;
 
+      console.log(pokemonData);
       setSprite(spriteData);
+      try {
+        setTypeName(pokemonData.types[0].type.name);
+      } catch (err) {
+        console.error(err);
+      }
+
+      try {
+        console.log(pokemonData.moves[0].move.name);
+        setAbility(pokemonData.moves[0].move.name);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     getPokemonData();
@@ -77,7 +91,6 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
     win: {
       rotateZ: ['-2deg', '2deg'],
       transition: {
-        // rotateY: { duration: 0.75 },
         rotateZ: {
           repeat: Infinity,
           repeatType: 'mirror',
@@ -179,11 +192,10 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
         onAnimationStart={() => toggleDisableHover(true)}
         onAnimationComplete={() => toggleDisableHover(false)}
       >
-        <div
-          style={{ backgroundColor: colorsOn ? color : '#999' }}
-          className={`card__front ${pokemon.isShiny && 'shiny'}`}
-        >
-          <div className="card__name">{capitalize(pokemon.name)}</div>
+        <div className={`card__front ${pokemon.isShiny && 'shiny'} type-${typeName}`}>
+          <div className="card__name blur-bg">
+            <p>{capitalize(pokemon.name)}</p>
+          </div>
           <div className="card__picture">
             {sprite ? (
               <img src={sprite} alt={pokemon.name} width="168px" />
@@ -191,7 +203,11 @@ export default function Card({ pokemon, handleClick, gameWon, colorsOn }) {
               <div>Loading sprites...</div>
             )}
           </div>
-          <p>isShiny is {`${pokemon.isShiny}`}</p>
+          <hr />
+          <div className="card__moves blur-bg">
+            <FontAwesomeIcon icon={faHandFist} className="icon-shadow" />
+            {ability && <p>{capitalize(ability)}</p>}
+          </div>
         </div>
         <div className="card__back"></div>
       </motion.div>

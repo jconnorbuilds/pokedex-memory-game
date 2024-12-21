@@ -6,6 +6,7 @@
   margin: 0 auto;
   padding: 2rem;
   --dex-perspective: 10000px;
+  interpolate-size: allow-keywords;
 }
 
 :root {
@@ -41,8 +42,8 @@
 }
 
 header {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  justify-content: end;
 }
 
 header h2 {
@@ -58,6 +59,78 @@ header .input-group {
   display: grid;
   grid-template-columns: repeat(2, max-content);
   gap: 1em;
+}
+
+.type-bug {
+  background-image: url('../assets/type-bg/bug-type-bg.webp');
+}
+
+.type-dark {
+  background-image: url('../assets/type-bg/dark-type-bg.webp');
+}
+
+.type-dragon {
+  background-image: url('../assets/type-bg/dragon-type-bg.webp');
+}
+
+.type-electric {
+  background-image: url('../assets/type-bg/electric-type-bg.webp');
+}
+
+.type-fairy {
+  background-image: url('../assets/type-bg/fairy-type-bg.webp');
+}
+
+.type-fighting {
+  background-image: url('../assets/type-bg/fighting-type-bg.webp');
+}
+
+.type-fire {
+  background-image: url('../assets/type-bg/fire-type-bg.webp');
+}
+
+.type-flying {
+  background-image: url('../assets/type-bg/flying-type-bg.webp');
+}
+
+.type-ghost {
+  background-image: url('../assets/type-bg/ghost-type-bg.webp');
+}
+
+.type-grass {
+  background-image: url('../assets/type-bg/grass-type-bg.webp');
+}
+
+.type-ground {
+  background-image: url('../assets/type-bg/ground-type-bg.webp');
+}
+
+.type-ice {
+  background-image: url('../assets/type-bg/ice-type-bg.webp');
+}
+
+.type-normal {
+  background-image: url('../assets/type-bg/normal-type-bg.webp');
+}
+
+.type-poison {
+  background-image: url('../assets/type-bg/poison-type-bg.webp');
+}
+
+.type-psychic {
+  background-image: url('../assets/type-bg/psychic-type-bg.webp');
+}
+
+.type-rock {
+  background-image: url('../assets/type-bg/rock-type-bg.webp');
+}
+
+.type-steel {
+  background-image: url('../assets/type-bg/steel-type-bg.webp');
+}
+
+.type-water {
+  background-image: url('../assets/type-bg/water-type-bg.webp');
 }
 
 .card-table {
@@ -76,8 +149,8 @@ header .input-group {
 }
 
 .card-wrapper {
-  width: 165px;
-  min-width: 165px;
+  width: 180px;
+  min-width: 180px;
   aspect-ratio: 11/16;
   display: flex;
   justify-content: center;
@@ -98,6 +171,8 @@ header .input-group {
   display: flex;
   transition: box-shadow 0.1s ease-in-out;
   border-radius: 8px;
+  color: #fafafa;
+  text-shadow: 1px 1px 3px #000;
 
   &:hover {
     cursor: pointer;
@@ -120,33 +195,71 @@ header .input-group {
   flex: 1;
   width: 100%;
   height: 100%;
-  border: 6px solid #cdcd01;
+  border: 6px solid #d9d9d9;
   border-radius: inherit;
+  overflow: hidden;
 }
 
 .card__front {
   transform: rotateY(-179.9deg);
-  padding: 0.5rem;
   padding-top: 0;
+  background-size: cover;
+  position: relative;
+  background-attachment: fixed;
+  overflow: hidden;
+
+  &::before {
+    /* An overlay to tint/shade the card's background img */
+    content: '';
+    background-image: linear-gradient(to bottom, #0004 30%, #fff7);
+    inset: 0;
+    position: absolute;
+  }
 }
 
 .card__back {
   background-color: rebeccapurple;
 }
 
+.blur-bg {
+  backdrop-filter: blur(1px);
+  /* background-color: #0003; */
+}
+
 .card__name {
-  padding: 0.2rem 0;
-  font-size: 1rem;
+  padding-inline: 0.2rem;
+  padding-top: 0.2rem;
   font-size: 1.2rem;
   font-weight: 700;
   justify-self: start;
+  position: relative;
+  max-width: 100%;
+  width: 100%;
+
+  /* &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(1px);
+  } */
 }
 
 .card__picture {
   border-radius: 5px;
-  background-color: #445;
+  /* background-color: #4453; */
   display: flex;
   align-items: center;
+}
+
+.card__moves {
+  text-align: center;
+  padding-inline: 0.2rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1ch;
+  margin-left: -2ch;
 }
 
 .scoreboard {
@@ -193,7 +306,7 @@ footer .placeholder {
   }
 
   .card__picture {
-    background-color: #fafafa;
+    /* background-color: #fafafa; */
   }
 }
 
