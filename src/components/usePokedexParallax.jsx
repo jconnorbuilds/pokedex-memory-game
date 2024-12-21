@@ -7,8 +7,8 @@ export default function usePokedexParallax(pokedexIsOpen, setPokedexAngle, poked
       if (pokedexIsOpen) {
         setPokedexAngle({
           ...pokedexAngle,
-          x: (e.clientY / window.screen.availHeight) * 20 - 10,
-          y: (e.clientX / window.screen.availWidth) * -20 + 10,
+          x: (e.clientY / window.innerHeight) * 20 - 10,
+          y: (e.clientX / window.innerWidth) * -20 + 10,
         });
       }
     };
