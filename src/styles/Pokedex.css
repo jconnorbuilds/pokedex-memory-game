@@ -58,6 +58,7 @@
   aspect-ratio: 1/1;
   position: relative;
   right: 0;
+  transform: translateZ(40px);
   transform-origin: bottom;
   transition: transform 1s ease-in-out, right 1s ease-in-out;
 

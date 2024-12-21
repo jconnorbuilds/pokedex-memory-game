@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/App.css';
 import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
@@ -23,7 +23,7 @@ const createRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
 };
 
-const initialScreenRotation = { x: '40', y: '20', z: '-5' };
+const initialSceneRotation = { x: 40, y: 20, z: -5 };
 const initialPokedexRotation = { x: '0', y: '0', z: '0' };
 const initialPokedexTranslation = { x: '0', y: '0', z: '0' };
 
@@ -42,7 +42,7 @@ export default function App() {
   const [genCompletion, setGenCompletion] = useState(
     getFromLocalStorage('genCompletion') || {},
   );
-  const [sceneAngle, setSceneAngle] = useState(initialScreenRotation);
+  const [sceneAngle, setSceneAngle] = useState(initialSceneRotation);
   const [pokedexAngle, setPokedexAngle] = useState(initialPokedexRotation);
   const [pokedexTranslation, setPokedexTranslation] = useState(initialPokedexTranslation);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
@@ -51,6 +51,23 @@ export default function App() {
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const pokemonDexSprites = usePokemonDexSprites(pokemon);
+
+  useEffect(() => {
+    document.addEventListener('mousemove', (e) => {
+      // Rotate scene on Z axis when mouse moves horizontally
+      // Max range should be 10 degrees in either direction
+      const getZRotation = (mouseXPos) =>
+        ((mouseXPos * -1) / window.screen.width) * 10 + initialSceneRotation.z + 5;
+      const getXRotation = (mouseYPos) =>
+        (mouseYPos / window.screen.height) * 10 + initialSceneRotation.x - 5;
+
+      setSceneAngle({
+        ...sceneAngle,
+        x: getXRotation(e.clientY),
+        z: getZRotation(e.clientX),
+      });
+    });
+  }, [sceneAngle]);
 
   let sceneTransform = `${pokedexIsOpen ? 'translateY(0px) translateX(0px)' : ''}
   rotateY(${sceneAngle.y}deg)
@@ -78,9 +95,9 @@ export default function App() {
       const willOpen = pokedexIsOpen !== true;
       setPokedexIsOpen(willOpen);
 
-      setSceneRotation('y', willOpen ? 0 : initialScreenRotation.y);
-      setSceneRotation('x', willOpen ? 45 : initialScreenRotation.x);
-      setSceneRotation('z', willOpen ? 0 : initialScreenRotation.z);
+      setSceneRotation('y', willOpen ? 0 : initialSceneRotation.y);
+      setSceneRotation('x', willOpen ? 45 : initialSceneRotation.x);
+      setSceneRotation('z', willOpen ? 0 : initialSceneRotation.z);
       setPokedexRotation('y', willOpen ? 0 : initialPokedexRotation.x);
       setPokedexRotation('x', willOpen ? -45 : initialPokedexRotation.x);
     }
