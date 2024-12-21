@@ -1,5 +1,7 @@
 @import 'reset.css';
 
+@import url('https://fonts.googleapis.com/css2?family=Alatsi&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 #root {
   width: 100%;
   height: 100vh;
@@ -140,12 +142,23 @@ header .input-group {
   gap: 1rem;
 }
 
-.card-base {
-  position: relative;
-  width: 200px;
-  min-width: 200px;
-  aspect-ratio: 11/16;
+.card {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  display: flex;
+  transition: box-shadow 0.1s ease-in-out;
   border-radius: 8px;
+  color: #fafafa;
+  text-shadow: 1px 1px 2px #000;
+  font-family: Prompt, serif;
+
+  &:hover {
+    cursor: pointer;
+  }
+  &:has(.shiny) {
+    box-shadow: 0 0 5px 3px #fffb00cc;
+  }
 }
 
 .card-wrapper {
@@ -162,24 +175,6 @@ header .input-group {
   position: absolute;
   border-radius: inherit;
   background-color: #00000055;
-}
-
-.card {
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  display: flex;
-  transition: box-shadow 0.1s ease-in-out;
-  border-radius: 8px;
-  color: #fafafa;
-  text-shadow: 1px 1px 3px #000;
-
-  &:hover {
-    cursor: pointer;
-  }
-  &:has(.shiny) {
-    box-shadow: 0 0 5px 3px #fffb00cc;
-  }
 }
 
 .card__front,
@@ -207,11 +202,13 @@ header .input-group {
   position: relative;
   background-attachment: fixed;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   &::before {
     /* An overlay to tint/shade the card's background img */
     content: '';
-    background-image: linear-gradient(to bottom, #0004 30%, #fff7);
+    background-image: linear-gradient(to bottom, #0006 40%, #fff7);
     inset: 0;
     position: absolute;
   }
@@ -222,8 +219,7 @@ header .input-group {
 }
 
 .blur-bg {
-  backdrop-filter: blur(1px);
-  /* background-color: #0003; */
+  backdrop-filter: blur(2px);
 }
 
 .card__name {
@@ -252,7 +248,7 @@ header .input-group {
 }
 
 .card__moves {
-  text-align: center;
+  flex: 1;
   padding-inline: 0.2rem;
   font-weight: 700;
   display: flex;
@@ -260,6 +256,13 @@ header .input-group {
   align-items: center;
   gap: 1ch;
   margin-left: -2ch;
+  /* color: #ccc; */
+  /* text-shadow: 1px 1px 3px #eee; */
+}
+
+hr {
+  border-color: #0005;
+  border-width: 1px;
 }
 
 .scoreboard {

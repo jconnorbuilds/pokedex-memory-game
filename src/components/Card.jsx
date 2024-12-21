@@ -195,7 +195,9 @@ export default function Card({ pokemon, handleClick, gameWon }) {
         <div className={`card__front ${pokemon.isShiny && 'shiny'} type-${typeName}`}>
           <div className="card__name blur-bg">
             <p>{capitalize(pokemon.name)}</p>
+            <hr />
           </div>
+
           <div className="card__picture">
             {sprite ? (
               <img src={sprite} alt={pokemon.name} width="168px" />
