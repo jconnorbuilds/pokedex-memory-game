@@ -1,84 +1,78 @@
 import { useState, useEffect } from 'react';
 import '../styles/App.css';
-import Scoreboard from './Scoreboard.jsx';
 import CardTable from './CardTable.jsx';
-import MenuButton from './MenuButton.jsx';
 import GenerationDisplay from './GenerationDisplay.jsx';
+import InputGroup from './InputGroup.jsx';
+import MenuButton from './MenuButton.jsx';
 import Pokedex from './Pokedex.jsx';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
+import Scoreboard from './Scoreboard.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
-import InputGroup from './InputGroup.jsx';
-import usePokemon from './usePokemon.jsx';
 import useGenSizes from './useGenSizes.jsx';
+import useLocalStorage from './useLocalStorage.jsx';
+import usePokemon from './usePokemon.jsx';
 import usePokemonDexSprites from './usePokemonSprites.jsx';
+import usePokedexParallax from './usePokedexParallax.jsx';
 
 const AXES = ['x', 'y', 'z'];
 const LEVELS = ['easy', 'medium', 'hard'];
 const NUM_OF_GENERATIONS = 9;
 
-const getFromLocalStorage = (itemName) => JSON.parse(localStorage.getItem(itemName));
-
-const createRotationSetter = (setState) => {
+const createSingleAxisRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
 };
 
 const initialSceneRotation = { x: 40, y: 20, z: -5 };
-const initialPokedexRotation = { x: '0', y: '0', z: '0' };
-const initialPokedexTranslation = { x: '0', y: '0', z: '0' };
+
+let baseSceneRotation = initialSceneRotation;
 
 export default function App() {
+  // Retrieve saved settings from localstorage
+  const savedStarters = JSON.parse(localStorage.getItem('showStarters'));
+  const savedGenCompletion = JSON.parse(localStorage.getItem('genCompletion'));
+
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [level, setLevel] = useState('easy');
   const [generation, setGeneration] = useState(1);
   const [showStarters, setShowStarters] = useState(
-    getFromLocalStorage('showStarters') || Array(NUM_OF_GENERATIONS).fill(true),
+    savedStarters || Array(NUM_OF_GENERATIONS).fill(true),
   );
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
   const [clickedCardIds, setClickedCardIds] = useState([]);
   const [handId, setHandId] = useState(0);
-  const [genCompletion, setGenCompletion] = useState(
-    getFromLocalStorage('genCompletion') || {},
-  );
+  const [genCompletion, setGenCompletion] = useState(savedGenCompletion || {});
   const [sceneAngle, setSceneAngle] = useState(initialSceneRotation);
-  const [pokedexAngle, setPokedexAngle] = useState(initialPokedexRotation);
-  const [pokedexTranslation, setPokedexTranslation] = useState(initialPokedexTranslation);
+  const [pokedexAngle, setPokedexAngle] = useState({ x: 0, y: 0, z: 0 });
   const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
-  const [pokedexIsFrontCenter, setPokedexIsFrontCenter] = useState(false);
 
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const pokemonDexSprites = usePokemonDexSprites(pokemon);
+  useLocalStorage(showStarters, genCompletion);
+  usePokedexParallax(pokedexIsOpen, setPokedexAngle, pokedexAngle);
+
+  baseSceneRotation = pokedexIsOpen ? { x: 25, y: -25, z: 0 } : initialSceneRotation;
 
   useEffect(() => {
-    document.addEventListener('mousemove', (e) => {
-      // Rotate scene on Z axis when mouse moves horizontally
-      // Max range should be 10 degrees in either direction
-      const getZRotation = (mouseXPos) =>
-        ((mouseXPos * -1) / window.screen.width) * 10 + initialSceneRotation.z + 5;
-      const getXRotation = (mouseYPos) =>
-        (mouseYPos / window.screen.height) * 10 + initialSceneRotation.x - 5;
+    setSceneAngle(baseSceneRotation);
+    setPokedexAngle({ x: 0, y: 0, z: 0 });
+  }, [pokedexIsOpen]);
 
-      setSceneAngle({
-        ...sceneAngle,
-        x: getXRotation(e.clientY),
-        z: getZRotation(e.clientX),
-      });
-    });
-  }, [sceneAngle]);
+  const setSceneRotation = createSingleAxisRotationSetter(setSceneAngle);
+  const setPokedexRotation = createSingleAxisRotationSetter(setPokedexAngle);
 
-  let sceneTransform = `${pokedexIsOpen ? 'translateY(0px) translateX(0px)' : ''}
+  let sceneTransform = `
   rotateY(${sceneAngle.y}deg)
   rotateX(${sceneAngle.x}deg)
   rotateZ(${sceneAngle.z}deg)`;
 
-  let pokedexTransform = `${pokedexIsOpen ? 'translateZ(0px)' : ''} 
+  let pokedexTransform = `
   rotateX(${pokedexAngle.x}deg)
   rotateY(${pokedexAngle.y}deg)
-  rotateZ(${pokedexAngle.z}deg)
-  ${pokedexIsOpen ? 'translateX(0)' : ''}`;
+  rotateZ(${pokedexAngle.z}deg)`;
 
   const createSelectionHandler = (setState) => {
     return (e) => {
@@ -90,16 +84,13 @@ export default function App() {
     };
   };
 
+  const handleGenerationSelect = createSelectionHandler(setGeneration);
+  const handleLevelSelect = createSelectionHandler(setLevel);
+
   const toggleDexOpenClosed = (e) => {
     if (e.target.closest('.body__upper-overhang')) {
       const willOpen = pokedexIsOpen !== true;
       setPokedexIsOpen(willOpen);
-
-      setSceneRotation('y', willOpen ? 0 : initialSceneRotation.y);
-      setSceneRotation('x', willOpen ? 45 : initialSceneRotation.x);
-      setSceneRotation('z', willOpen ? 0 : initialSceneRotation.z);
-      setPokedexRotation('y', willOpen ? 0 : initialPokedexRotation.x);
-      setPokedexRotation('x', willOpen ? -45 : initialPokedexRotation.x);
     }
   };
 
@@ -107,9 +98,6 @@ export default function App() {
     setScore(newScore);
     if (newScore > bestScore) setBestScore(newScore);
   };
-
-  const handleGenerationSelect = createSelectionHandler(setGeneration);
-  const handleLevelSelect = createSelectionHandler(setLevel);
 
   const hideStarters = (currentGen) => {
     setShowStarters(
@@ -162,9 +150,6 @@ export default function App() {
     }
   };
 
-  localStorage.setItem('showStarters', JSON.stringify(showStarters));
-  localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
-
   const renderAngleInputs = (labelPrefix, target, onChange) => {
     return (
       <InputGroup>
@@ -183,9 +168,6 @@ export default function App() {
     );
   };
 
-  const setSceneRotation = createRotationSetter(setSceneAngle);
-  const setPokedexRotation = createRotationSetter(setPokedexAngle);
-
   return (
     <div className="app">
       <header className="header container">
@@ -202,7 +184,6 @@ export default function App() {
         <Scoreboard score={score} bestScore={bestScore} />
       </header>
       <main className="container">
-        <div className="overlay"></div>
         <div
           id="scene"
           className="scene"

@@ -59,8 +59,8 @@
   position: relative;
   right: 0;
   transform: translateZ(40px);
-  transform-origin: bottom;
-  transition: transform 1s ease-in-out, right 1s ease-in-out;
+  transform-origin: center;
+  transition: transform 0.75s linear, right 1s ease-in-out;
 
   &:is(.pokedex--open) {
     /* Not sure why this the magic value to center the pokedex */

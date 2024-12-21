@@ -17,29 +17,6 @@
   grid-template-columns: 1fr;
 }
 
-.overlay {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 100vh;
-  width: 100vw;
-  background-color: #00000088;
-  backdrop-filter: blur(10px);
-  position: fixed;
-  z-index: 1;
-  box-shadow: inset 0 0 50px rgba(120, 120, 120, 0.4), 0 0 12px 3px rgba(0, 0, 0, 0.3);
-  box-sizing: content-box;
-  opacity: 0;
-  visibility: hidden;
-  transition: 1s ease-in-out;
-
-  &:has(+ .scene .pokedex--open) {
-    opacity: 1;
-    visibility: visible;
-  }
-}
-
 #scene {
   perspective: var(--dex-perspective);
   transform-origin: center;
@@ -189,9 +166,11 @@ header .input-group {
   transition: 1s ease-in-out;
   opacity: 1;
   min-width: 610px;
+  visibility: visible;
 
   &:has(+ .pokedex-wrapper .pokedex--open) {
     opacity: 0;
+    visibility: hidden;
   }
 }
 
