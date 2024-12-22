@@ -43,7 +43,6 @@ export default function Card({ pokemon, handleClick, gameWon }) {
       }
 
       try {
-        console.log(pokemonData.moves[0].move.name);
         setAbility(pokemonData.moves[0].move.name);
       } catch (err) {
         console.error(err);

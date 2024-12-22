@@ -46,7 +46,7 @@ export default function App() {
   const [genCompletion, setGenCompletion] = useState(savedGenCompletion || {});
   const [sceneAngle, setSceneAngle] = useState(initialSceneRotation);
   const [pokedexAngle, setPokedexAngle] = useState({ x: 0, y: 0, z: 0 });
-  const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
+  const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
@@ -197,7 +197,11 @@ export default function App() {
                 <div className="game-result">
                   {gameWon && <p>You win!</p>}
                   {!gameOn && !gameWon && <p>You lose! </p>}
-                  {!gameOn && <button onClick={resetGame}>Play again</button>}
+                  {!gameOn && (
+                    <button className="play-again" onClick={resetGame}>
+                      Play again
+                    </button>
+                  )}
                 </div>
               </>
             ) : (
@@ -212,35 +216,44 @@ export default function App() {
           >
             <PokedexBody sprite={pokemonDexSprites[0]}></PokedexBody>
             <PokedexLid>
-              <div className="choose-gen" onClick={handleGenerationSelect}>
-                <h2>Generations</h2>
-                {Array(NUM_OF_GENERATIONS)
-                  .fill('')
-                  .map((_, idx) => {
-                    const genNumber = idx + 1;
-                    const genSize = genSizes[genNumber];
+              <section className="lid__menu-area">
+                <h2>Generation</h2>
+                <div onClick={handleGenerationSelect} className="lid__gen-buttons">
+                  {Array(10)
+                    .fill('')
+                    .map((_, idx) => {
+                      const genNumber = idx + 1;
+                      const needsLabel = genNumber <= NUM_OF_GENERATIONS;
+                      return (
+                        <MenuButton
+                          key={genNumber}
+                          className={
+                            +generation === genNumber ? 'lid__button--selected' : ''
+                          }
+                          value={needsLabel ? genNumber : 0}
+                        >
+                          {needsLabel ? genNumber : ''}
+                        </MenuButton>
+                      );
+                    })}
+                </div>
+
+                <h2>Difficulty</h2>
+                <div onClick={handleLevelSelect} className="lid__difficulty-buttons">
+                  {LEVELS.map((level) => {
+                    const levelNameFormatted =
+                      level.charAt(0).toUpperCase() + level.slice(1);
                     return (
-                      <GenerationDisplay key={idx}>
-                        <MenuButton value={genNumber}>{genNumber}</MenuButton>
-                        <div className="gen-dex-completion">
-                          {genCompletion[genNumber] ? genCompletion[genNumber].length : 0}{' '}
-                          / {genSize ? genSize : '...'}
-                        </div>
-                      </GenerationDisplay>
+                      <MenuButton key={level} value={level}>
+                        {levelNameFormatted}
+                      </MenuButton>
                     );
                   })}
-              </div>
-              <div className="choose-difficulty" onClick={handleLevelSelect}>
-                <h2>Difficulty</h2>
-                {LEVELS.map((level) => {
-                  const levelNameFormatted =
-                    level.charAt(0).toUpperCase() + level.slice(1);
-                  return (
-                    <MenuButton key={level} value={level}>
-                      {levelNameFormatted}
-                    </MenuButton>
-                  );
-                })}
+                </div>
+              </section>
+              <div className="lid__display">
+                <p>Generation: {generation}</p>
+                <div>Pokémon caught</div>
               </div>
             </PokedexLid>
           </Pokedex>

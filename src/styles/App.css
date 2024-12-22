@@ -9,6 +9,7 @@
   padding: 2rem;
   --dex-perspective: 10000px;
   interpolate-size: allow-keywords;
+  font-family: 'Prompt', sans-serif;
 }
 
 :root {
@@ -297,6 +298,21 @@ hr {
 
 .game-result button {
   padding: 0.25rem 1rem;
+  border-radius: 8px;
+  border: 6px solid transparent;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  transition: color 0.25s;
+
+  button:hover {
+    border: 6px solid #c8c800a0;
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
 }
 
 footer .placeholder {
@@ -304,24 +320,6 @@ footer .placeholder {
 }
 
 @media (prefers-color-scheme: light) {
-  .card {
-    color: #223;
-  }
-
-  .card__picture {
-    /* background-color: #fafafa; */
-  }
-}
-
-.shiny {
-  mask-image: linear-gradient(
-    -75deg,
-    rgba(0, 0, 0, 0.8) 30%,
-    #000 50%,
-    rgba(0, 0, 0, 0.8) 70%
-  );
-  mask-size: 200%;
-  animation: shine 2s infinite;
 }
 
 @keyframes shine {

@@ -8,6 +8,7 @@ export default function usePokemonDexSprites(pokemon) {
         return `https://pokeapi.co/api/v2/pokemon/${pkmn.name}`;
       });
 
+      console.log(dexSpriteUrls);
       const getPokemonData = async (urls) => {
         try {
           const promises = urls.map((urls) => fetch(urls));
