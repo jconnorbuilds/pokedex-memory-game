@@ -4,6 +4,7 @@ const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 
 export default function usePokemon(showStarters, generation, level) {
   const [pokemon, setPokemon] = useState(null);
+  const [pokemonSpeciesData, setPokemonSpeciesData] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
 
   useEffect(() => {

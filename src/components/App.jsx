@@ -12,8 +12,9 @@ import SetAngleInput from './SetAngleInput.jsx';
 import useGenSizes from './useGenSizes.jsx';
 import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
-import usePokemonDexSprites from './usePokemonSprites.jsx';
 import usePokedexParallax from './usePokedexParallax.jsx';
+import usePokemonData from './usePokemonData.jsx';
+import usePokemonSpeciesData from './usePokemonSpeciesData.jsx';
 
 const AXES = ['x', 'y', 'z'];
 const LEVELS = ['easy', 'medium', 'hard'];
@@ -49,9 +50,11 @@ export default function App() {
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
+  const pokemonData = usePokemonData(pokemon);
+  const pokemonSpeciesData = usePokemonSpeciesData(pokemon);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
-  const pokemonDexSprites = usePokemonDexSprites(pokemon);
-  useLocalStorage(showStarters, genCompletion);
+
+  const pokemonDexSprites = useLocalStorage(showStarters, genCompletion);
   usePokedexParallax(pokedexIsOpen, setPokedexAngle, pokedexAngle);
 
   baseSceneRotation = pokedexIsOpen ? { x: 25, y: -25, z: 0 } : initialSceneRotation;
@@ -214,7 +217,11 @@ export default function App() {
             toggleOpen={toggleDexOpenClosed}
             style={{ transform: pokedexTransform }}
           >
-            <PokedexBody sprite={pokemonDexSprites[0]}></PokedexBody>
+            <PokedexBody
+              pokemonData={pokemonData}
+              pokemonSpeciesData={pokemonSpeciesData}
+              sprite={pokemonDexSprites && pokemonDexSprites[0]}
+            ></PokedexBody>
             <PokedexLid>
               <section className="lid__menu-area">
                 <h2>Generation</h2>

@@ -1,4 +1,13 @@
-export default function PokedexBody({ children, sprite }) {
+export default function PokedexBody({ children, pokemonData, pokemonSpeciesData }) {
+  console.log(pokemonSpeciesData);
+  const sprites = pokemonData?.map(
+    (pokemon) => pokemon.sprites.other['home'].front_default,
+  );
+  const names = pokemonSpeciesData?.map((pokemon) => pokemon.name);
+  const nationalDexNumbers = pokemonSpeciesData?.map(
+    (pokemon) => pokemon.pokedex_numbers[0].entry_number,
+  );
+
   return (
     <div className="pokedex__body pokedex-font">
       <div className="body__main">
@@ -23,11 +32,21 @@ export default function PokedexBody({ children, sprite }) {
           <div className="screen screen--on">
             <div className="screen-frame">
               <div className="screen-inner">
-                <img className="pokedex__pkmn-sprite" src={sprite} alt="a pokemon" />
+                {sprites ? (
+                  <img
+                    className="pokedex__pkmn-sprite"
+                    src={sprites[0]}
+                    alt="a pokemon"
+                  />
+                ) : (
+                  <div className="loading-dex-sprites">Loading...</div>
+                )}
                 <div className="screen-text">
                   <div className="pokemon-info">
-                    <div className="pokemon-info__name">Charizard</div>
-                    <div className="pokemon-info__number">#7</div>
+                    <div className="pokemon-info__name">{names ? names[0] : '...'}</div>
+                    <div className="pokemon-info__number">
+                      #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
+                    </div>
                   </div>
                 </div>
               </div>
