@@ -1,4 +1,4 @@
-export default function PokedexBody({ children, pokemonData, pokemonSpeciesData }) {
+export default function PokedexBody({ pokemonData, pokemonSpeciesData }) {
   const sprites = pokemonData?.map(
     (pokemon) => pokemon.sprites.other['home'].front_default,
   );

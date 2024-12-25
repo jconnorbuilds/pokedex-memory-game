@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 
 export default function usePokemonSpeciesData(pokemon) {
   const [speciesData, setSpeciesData] = useState(null);
-  console.log('POKEMON SPECIES DATA running');
 
   useEffect(() => {
     if (!pokemon) return;

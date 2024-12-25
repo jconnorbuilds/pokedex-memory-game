@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import '../styles/App.css';
 import CardTable from './CardTable.jsx';
 import GenerationDisplay from './GenerationDisplay.jsx';
@@ -19,22 +19,19 @@ import usePokemonSpeciesData from './usePokemonSpeciesData.jsx';
 const AXES = ['x', 'y', 'z'];
 const LEVELS = ['easy', 'medium', 'hard'];
 const NUM_OF_GENERATIONS = 9;
+const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
+const SCENE_ROTATION_POKEDEX_OPEN = { x: 25, y: -10, z: 0 };
 
 const createSingleAxisRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
 };
 
-const initialSceneRotation = { x: 40, y: 20, z: -5 };
-
-let baseSceneRotation = initialSceneRotation;
+let baseSceneRotation = SCENE_ROTATION_DEFAULT;
 
 export default function App() {
   // Retrieve saved settings from localstorage
-  // const savedStarters = JSON.parse(localStorage.getItem('showStarters'));
-  // const savedGenCompletion = JSON.parse(localStorage.getItem('genCompletion'));
-
-  const savedStarters = 0;
-  const savedGenCompletion = 0;
+  const savedStarters = JSON.parse(localStorage.getItem('showStarters'));
+  const savedGenCompletion = JSON.parse(localStorage.getItem('genCompletion'));
 
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
@@ -48,24 +45,53 @@ export default function App() {
   const [clickedCardIds, setClickedCardIds] = useState([]);
   const [handId, setHandId] = useState(0);
   const [genCompletion, setGenCompletion] = useState(savedGenCompletion || {});
-  const [sceneAngle, setSceneAngle] = useState(initialSceneRotation);
-  const [pokedexAngle, setPokedexAngle] = useState({ x: 0, y: 0, z: 0 });
+  const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
+  const [mousePos, setMousePos] = useState({ x: null, y: null });
 
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
   const pokemonSpeciesData = usePokemonSpeciesData(pokemon);
   const pokemonData = usePokemonData(pokemonSpeciesData);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
 
-  // usePokedexParallax(pokedexIsOpen, setPokedexAngle, pokedexAngle);
+  useLocalStorage(showStarters, genCompletion);
 
-  baseSceneRotation = pokedexIsOpen ? { x: 25, y: -25, z: 0 } : initialSceneRotation;
+  baseSceneRotation = pokedexIsOpen
+    ? SCENE_ROTATION_POKEDEX_OPEN
+    : SCENE_ROTATION_DEFAULT;
 
-  console.log(pokemonData);
+  const throttle = (cb, delay = 150) => {
+    let shouldWait = false;
+
+    // Return the throttled function
+    return (...args) => {
+      if (shouldWait) return;
+
+      cb(...args);
+      shouldWait = true;
+
+      setTimeout(() => {
+        shouldWait = false;
+      }, delay);
+    };
+  };
+
+  // The mousemove event handler, throttled to limit re-renders
+  const handleMouseMove = useCallback(
+    throttle((e) => setMousePos((state) => ({ ...state, x: e.clientX, y: e.clientY }))),
+    [],
+  );
+
+  const { pokedexAngle, setPokedexAngle } = usePokedexParallax(
+    pokedexIsOpen,
+    mousePos,
+    handleMouseMove,
+  );
+
   useEffect(() => {
     setSceneAngle(baseSceneRotation);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
-  }, [pokedexIsOpen]);
+  }, [pokedexIsOpen, setPokedexAngle]);
 
   const setSceneRotation = createSingleAxisRotationSetter(setSceneAngle);
   const setPokedexRotation = createSingleAxisRotationSetter(setPokedexAngle);
