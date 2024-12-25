@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
 
-export default function usePokemonData(pokemon) {
+export default function usePokemonData(ids) {
   const [pokemonData, setPokemonData] = useState(null);
 
   useEffect(() => {
-    if (!pokemon) return;
-    const pokemonUrls = pokemon.map(
-      (pkmn) => `https://pokeapi.co/api/v2/pokemon/${pkmn.name}`,
-    );
+    if (!ids) return;
+    const pokemonUrls = ids.map((id) => `https://pokeapi.co/api/v2/pokemon/${id}`);
     const fetchPokemonData = async (urls) => {
       try {
         const promises = urls.map((urls) => fetch(urls));
@@ -20,7 +18,7 @@ export default function usePokemonData(pokemon) {
     };
 
     fetchPokemonData(pokemonUrls).then((data) => setPokemonData(data));
-  }, [pokemon]);
+  }, [ids]);
 
   return pokemonData;
 }

@@ -34,7 +34,7 @@ export default function Card({ pokemon, handleClick, gameWon }) {
         ? pokemonData.sprites.other['official-artwork'].front_shiny
         : pokemonData.sprites.other['official-artwork'].front_default;
 
-      console.log(pokemonData);
+      // console.log(pokemonData);
       setSprite(spriteData);
       try {
         setTypeName(pokemonData.types[0].type.name);

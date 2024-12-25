@@ -50,12 +50,15 @@ export default function App() {
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
-  const pokemonData = usePokemonData(pokemon);
   const pokemonSpeciesData = usePokemonSpeciesData(pokemon);
+  const pokemonData = usePokemonData(pokemonSpeciesData?.map((pkmn) => pkmn.id));
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
 
   const pokemonDexSprites = useLocalStorage(showStarters, genCompletion);
   usePokedexParallax(pokedexIsOpen, setPokedexAngle, pokedexAngle);
+  console.log(pokemon);
+  console.log(pokemonData);
+  console.log(pokemonSpeciesData);
 
   baseSceneRotation = pokedexIsOpen ? { x: 25, y: -25, z: 0 } : initialSceneRotation;
 
