@@ -30,8 +30,11 @@ let baseSceneRotation = initialSceneRotation;
 
 export default function App() {
   // Retrieve saved settings from localstorage
-  const savedStarters = JSON.parse(localStorage.getItem('showStarters'));
-  const savedGenCompletion = JSON.parse(localStorage.getItem('genCompletion'));
+  // const savedStarters = JSON.parse(localStorage.getItem('showStarters'));
+  // const savedGenCompletion = JSON.parse(localStorage.getItem('genCompletion'));
+
+  const savedStarters = 0;
+  const savedGenCompletion = 0;
 
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
@@ -51,17 +54,14 @@ export default function App() {
 
   const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
   const pokemonSpeciesData = usePokemonSpeciesData(pokemon);
-  const pokemonData = usePokemonData(pokemonSpeciesData?.map((pkmn) => pkmn.id));
+  const pokemonData = usePokemonData(pokemonSpeciesData);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
 
-  const pokemonDexSprites = useLocalStorage(showStarters, genCompletion);
-  usePokedexParallax(pokedexIsOpen, setPokedexAngle, pokedexAngle);
-  console.log(pokemon);
-  console.log(pokemonData);
-  console.log(pokemonSpeciesData);
+  // usePokedexParallax(pokedexIsOpen, setPokedexAngle, pokedexAngle);
 
   baseSceneRotation = pokedexIsOpen ? { x: 25, y: -25, z: 0 } : initialSceneRotation;
 
+  console.log(pokemonData);
   useEffect(() => {
     setSceneAngle(baseSceneRotation);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
@@ -223,7 +223,6 @@ export default function App() {
             <PokedexBody
               pokemonData={pokemonData}
               pokemonSpeciesData={pokemonSpeciesData}
-              sprite={pokemonDexSprites && pokemonDexSprites[0]}
             ></PokedexBody>
             <PokedexLid>
               <section className="lid__menu-area">
