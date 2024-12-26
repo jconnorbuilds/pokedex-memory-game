@@ -1,13 +1,7 @@
 import { useMemo } from 'react';
 import Card from './Card.jsx';
 
-export default function CardTable({
-  pkmnData,
-  gameWon,
-  handleClick,
-  clickedIds,
-  handId,
-}) {
+export default function CardTable({ pkmnData, gameWon, handleClick, clickedIds }) {
   // Gets an idx between 0 and <max> that's not present in the <used> array
   const _getRandomUnselectedIdx = (max, used) => {
     let idx;
@@ -53,32 +47,21 @@ export default function CardTable({
   }, [clickedIds, gameWon, pkmnData]);
 
   return (
-    <>
-      <Hand key={handId}>
-        {pokemonToShow.map((pokemon) => {
-          const singlePkmnData = pkmnData.find((pkmn) => {
-            // console.log(pokemon, pkmn);
-            return pkmn.name === pokemon.name;
-          });
-          return (
-            <Card
-              pkmnData={singlePkmnData}
-              handleClick={handleClick}
-              gameWon={gameWon}
-              key={pokemon.name}
-              colorsOn={true}
-            />
-          );
-        })}
-      </Hand>
-    </>
-  );
-}
-
-function Hand({ id, children }) {
-  return (
-    <div className="card-table" key={id}>
-      {children}
+    <div className="card-table">
+      {pokemonToShow.map((pokemon) => {
+        const singlePkmnData = pkmnData.find((pkmn) => {
+          return pkmn.name === pokemon.name;
+        });
+        return (
+          <Card
+            key={pokemon.name}
+            pkmnData={singlePkmnData}
+            handleClick={handleClick}
+            gameWon={gameWon}
+            colorsOn={true}
+          />
+        );
+      })}
     </div>
   );
 }

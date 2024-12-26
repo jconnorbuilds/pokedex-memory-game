@@ -10,28 +10,12 @@ const capitalize = (string) => {
 };
 
 export default function Card({ pkmnData, handleClick, gameWon }) {
-  const [sprite, setSprite] = useState(null);
-  const [typeName, setTypeName] = useState(null);
-  const [ability, setAbility] = useState(null);
+  const sprite = pkmnData.isShiny
+    ? pkmnData.sprites.other['official-artwork'].front_shiny
+    : pkmnData.sprites.other['official-artwork'].front_default;
 
-  useEffect(() => {
-    const getPkmnData = () => {
-      // Get the pokemon's official artwork
-      const spriteData = pkmnData.isShiny
-        ? pkmnData.sprites.other['official-artwork'].front_shiny
-        : pkmnData.sprites.other['official-artwork'].front_default;
-
-      try {
-        setSprite(spriteData);
-        setTypeName(pkmnData.types[0].type.name);
-        setAbility(pkmnData.moves[0].move.name);
-      } catch (err) {
-        console.error(err, 'Pokemon data: ', pkmnData);
-      }
-    };
-
-    getPkmnData();
-  }, [pkmnData]);
+  const typeName = pkmnData.types[0].type.name;
+  const ability = pkmnData.moves[0].move.name;
 
   const toggleShadowHover = (e, isHovered) => {
     const shadow = e.target.querySelector('.card-shadow');
@@ -173,11 +157,7 @@ export default function Card({ pkmnData, handleClick, gameWon }) {
           </div>
 
           <div className="card__picture">
-            {sprite ? (
-              <img src={sprite} alt={pkmnData.name} width="168px" />
-            ) : (
-              <div>Loading sprites...</div>
-            )}
+            <img src={sprite} alt={pkmnData.name} width="168px" />
           </div>
           <hr />
           <div className="card__moves blur-bg">

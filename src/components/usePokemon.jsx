@@ -43,8 +43,6 @@ export default function usePokemon(showStarters, generation, level) {
   const [pokemonSpeciesData, setPokemonSpeciesData] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
 
-  useEffect(() => {}, [generation]);
-
   useEffect(() => {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
     const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
@@ -84,7 +82,6 @@ export default function usePokemon(showStarters, generation, level) {
       }
 
       if (!ignore) {
-        console.log('Use pokemon DOING STUFF');
         setNeedsNewPkmn(false);
         const speciesURLs = getPokemonSpeciesURLs(pkmnToFetch);
         const speciesData = await fetchPokemonSpeciesData(speciesURLs);

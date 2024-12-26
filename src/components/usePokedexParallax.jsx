@@ -8,15 +8,15 @@ export default function usePokedexParallax(pokedexIsOpen, mousePos, handleMouseM
     const sensX = 50;
     const sensY = 30;
 
-    if (pokedexIsOpen) {
-      setPokedexAngle((pokedexAngle) => {
-        return {
-          ...pokedexAngle,
-          x: (mousePos.y / window.innerHeight) * sensX - sensX / 2,
-          y: (mousePos.x / window.innerWidth) * -1 * sensY + sensY / 2,
-        };
-      });
-    }
+    if (!pokedexIsOpen) return;
+
+    setPokedexAngle((pokedexAngle) => {
+      return {
+        ...pokedexAngle,
+        x: (mousePos.y / window.innerHeight) * sensX - sensX / 2,
+        y: (mousePos.x / window.innerWidth) * -1 * sensY + sensY / 2,
+      };
+    });
 
     document.addEventListener('mousemove', (e) => handleMouseMove(e));
 

@@ -12,7 +12,6 @@ import useGenSizes from './useGenSizes.jsx';
 import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokedexParallax from './usePokedexParallax.jsx';
-import { p } from 'framer-motion/client';
 
 const AXES = ['x', 'y', 'z'];
 const LEVELS = ['easy', 'medium', 'hard'];
@@ -121,12 +120,15 @@ export default function App() {
   const handleGenerationSelect = createSelectionHandler(setGeneration);
   const handleLevelSelect = createSelectionHandler(setLevel);
 
-  const toggleDexOpenClosed = (e) => {
-    if (e.target.closest('.body__upper-overhang')) {
-      const willOpen = pokedexIsOpen !== true;
-      setPokedexIsOpen(willOpen);
-    }
-  };
+  const toggleDexOpenClosed = useCallback(
+    (e) => {
+      if (e.target.closest('.body__upper-overhang')) {
+        const willOpen = pokedexIsOpen !== true;
+        setPokedexIsOpen(willOpen);
+      }
+    },
+    [pokedexIsOpen],
+  );
 
   const updateScores = (newScore) => {
     setScore(newScore);
@@ -142,20 +144,21 @@ export default function App() {
   const resetGame = () => {
     const startersShown = showStarters[generation - 1];
 
-    setGameOn(true);
-    setGameWon(false);
     setScore(0);
     setClickedCardIds([]);
     setHandId(0);
+    setGameWon(false);
+    setGameOn(true);
 
     if (gameWon) {
-      requestNewPokemon();
       if (startersShown) hideStarters(generation);
+      requestNewPokemon();
     }
   };
 
   const handleCardClick = (id) => {
     if (!gameOn) return;
+
     const choiceSucceeded = (id) => !clickedCardIds.includes(id);
 
     if (choiceSucceeded(id)) {
@@ -225,7 +228,7 @@ export default function App() {
                   gameWon={gameWon}
                   handleClick={handleCardClick}
                   clickedIds={clickedCardIds}
-                  handId={handId}
+                  key={handId}
                 />
                 <div className="game-result">
                   {gameWon && <p>You win!</p>}
