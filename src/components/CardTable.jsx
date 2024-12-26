@@ -1,9 +1,13 @@
 import { useMemo } from 'react';
 import Card from './Card.jsx';
 
-export default function CardTable({ pokemon, gameWon, handleClick, clickedIds, handId }) {
-  // const [colorsOn, setColorsOn] = useState(true);
-
+export default function CardTable({
+  pkmnData,
+  gameWon,
+  handleClick,
+  clickedIds,
+  handId,
+}) {
   // Gets an idx between 0 and <max> that's not present in the <used> array
   const _getRandomUnselectedIdx = (max, used) => {
     let idx;
@@ -20,16 +24,16 @@ export default function CardTable({ pokemon, gameWon, handleClick, clickedIds, h
   // Selects a random subset of the <pokemon> prop
   const pokemonToShow = useMemo(() => {
     // Return all pokemon if player has won
-    if (gameWon) return pokemon;
+    if (gameWon) return pkmnData;
 
     const _selectPokemon = () => {
-      const numberOfPkmn = Math.floor(pokemon.length * 0.75);
+      const numberOfPkmn = Math.floor(pkmnData.length * 0.75);
       const usedIdxs = [];
       const selectedPokemon = [];
 
       for (let i = 0; i < numberOfPkmn; i++) {
-        const idx = _getRandomUnselectedIdx(pokemon.length, usedIdxs);
-        selectedPokemon.push(pokemon[idx]);
+        const idx = _getRandomUnselectedIdx(pkmnData.length, usedIdxs);
+        selectedPokemon.push(pkmnData[idx]);
         usedIdxs.push(idx);
       }
 
@@ -46,15 +50,19 @@ export default function CardTable({ pokemon, gameWon, handleClick, clickedIds, h
     } while (!_selectionIsValid(selectedPokemon));
 
     return selectedPokemon;
-  }, [clickedIds, gameWon, pokemon]);
+  }, [clickedIds, gameWon, pkmnData]);
 
   return (
     <>
       <Hand key={handId}>
         {pokemonToShow.map((pokemon) => {
+          const singlePkmnData = pkmnData.find((pkmn) => {
+            // console.log(pokemon, pkmn);
+            return pkmn.name === pokemon.name;
+          });
           return (
             <Card
-              pokemon={pokemon}
+              pkmnData={singlePkmnData}
               handleClick={handleClick}
               gameWon={gameWon}
               key={pokemon.name}

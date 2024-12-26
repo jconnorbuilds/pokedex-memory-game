@@ -3,60 +3,35 @@ import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandFist } from '@fortawesome/free-solid-svg-icons';
 
-export default function Card({ pokemon, handleClick, gameWon }) {
+const ANIMATION_DURATION = 1.25;
+
+const capitalize = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export default function Card({ pkmnData, handleClick, gameWon }) {
   const [sprite, setSprite] = useState(null);
   const [typeName, setTypeName] = useState(null);
   const [ability, setAbility] = useState(null);
 
   useEffect(() => {
-    // const COLORS = {
-    //   red: '#DA073B',
-    //   yellow: '#FFD452',
-    //   green: '#66BB6A',
-    //   blue: '#3498DB',
-    //   pink: '#FF8ADE',
-    //   black: '#1C1D21',
-    //   brown: '#97715E',
-    //   white: '#E9E9E9',
-    //   purple: 'rebeccapurple',
-    //   gray: '#8C8C8C',
-    // };
-
-    const getPokemonData = async () => {
-      // Get the pokemon's "color"
-      const result = await fetch(pokemon.url);
-      const data = await result.json();
-
+    const getPkmnData = () => {
       // Get the pokemon's official artwork
-      const pokemonResult = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.id}`);
-      const pokemonData = await pokemonResult.json();
-      const spriteData = pokemon.isShiny
-        ? pokemonData.sprites.other['official-artwork'].front_shiny
-        : pokemonData.sprites.other['official-artwork'].front_default;
-
-      // console.log(pokemonData);
-      setSprite(spriteData);
-      try {
-        setTypeName(pokemonData.types[0].type.name);
-      } catch (err) {
-        console.error(err);
-      }
+      const spriteData = pkmnData.isShiny
+        ? pkmnData.sprites.other['official-artwork'].front_shiny
+        : pkmnData.sprites.other['official-artwork'].front_default;
 
       try {
-        setAbility(pokemonData.moves[0].move.name);
+        setSprite(spriteData);
+        setTypeName(pkmnData.types[0].type.name);
+        setAbility(pkmnData.moves[0].move.name);
       } catch (err) {
-        console.error(err);
+        console.error(err, 'Pokemon data: ', pkmnData);
       }
     };
 
-    getPokemonData();
-  }, [pokemon.isShiny, pokemon.url]);
-
-  const capitalize = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
-  const ANIMATION_DURATION = 1.25;
+    getPkmnData();
+  }, [pkmnData]);
 
   const toggleShadowHover = (e, isHovered) => {
     const shadow = e.target.querySelector('.card-shadow');
@@ -155,7 +130,7 @@ export default function Card({ pokemon, handleClick, gameWon }) {
       initial="initial"
       className="card-wrapper"
       variants={cardWrapperVariants}
-      onClick={() => handleClick(pokemon.name)}
+      onClick={() => handleClick(pkmnData.name)}
       onHoverStart={(e) => toggleShadowHover(e, true)}
       onHoverEnd={(e) => toggleShadowHover(e, false)}
       whileHover={() => {
@@ -191,15 +166,15 @@ export default function Card({ pokemon, handleClick, gameWon }) {
         onAnimationStart={() => toggleDisableHover(true)}
         onAnimationComplete={() => toggleDisableHover(false)}
       >
-        <div className={`card__front ${pokemon.isShiny && 'shiny'} type-${typeName}`}>
+        <div className={`card__front ${pkmnData.isShiny && 'shiny'} type-${typeName}`}>
           <div className="card__name blur-bg">
-            <p>{capitalize(pokemon.name)}</p>
+            <p>{capitalize(pkmnData.name)}</p>
             <hr />
           </div>
 
           <div className="card__picture">
             {sprite ? (
-              <img src={sprite} alt={pokemon.name} width="168px" />
+              <img src={sprite} alt={pkmnData.name} width="168px" />
             ) : (
               <div>Loading sprites...</div>
             )}

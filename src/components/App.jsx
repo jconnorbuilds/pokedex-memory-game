@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import '../styles/App.css';
 import CardTable from './CardTable.jsx';
-import GenerationDisplay from './GenerationDisplay.jsx';
 import InputGroup from './InputGroup.jsx';
 import MenuButton from './MenuButton.jsx';
 import Pokedex from './Pokedex.jsx';
@@ -13,14 +12,13 @@ import useGenSizes from './useGenSizes.jsx';
 import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokedexParallax from './usePokedexParallax.jsx';
-import usePokemonData from './usePokemonData.jsx';
-import usePokemonSpeciesData from './usePokemonSpeciesData.jsx';
+import { p } from 'framer-motion/client';
 
 const AXES = ['x', 'y', 'z'];
 const LEVELS = ['easy', 'medium', 'hard'];
 const NUM_OF_GENERATIONS = 9;
 const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
-const SCENE_ROTATION_POKEDEX_OPEN = { x: 25, y: -10, z: 0 };
+const SCENE_ROTATION_POKEDEX_OPEN = { x: 15, y: -10, z: 0 };
 
 const createSingleAxisRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
@@ -46,12 +44,16 @@ export default function App() {
   const [handId, setHandId] = useState(0);
   const [genCompletion, setGenCompletion] = useState(savedGenCompletion || {});
   const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
-  const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
+  const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: null, y: null });
 
-  const { pokemon, requestNewPokemon } = usePokemon(showStarters, generation, level);
-  const pokemonSpeciesData = usePokemonSpeciesData(pokemon);
-  const pokemonData = usePokemonData(pokemonSpeciesData);
+  const { pokemonData, pokemonSpeciesData, requestNewPokemon } = usePokemon(
+    showStarters,
+    generation,
+    level,
+  );
+
+  // console.log(pokemonData);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
 
   useLocalStorage(showStarters, genCompletion);
@@ -152,10 +154,9 @@ export default function App() {
     }
   };
 
-  const choiceSucceeded = (id) => !clickedCardIds.includes(id);
-
   const handleCardClick = (id) => {
     if (!gameOn) return;
+    const choiceSucceeded = (id) => !clickedCardIds.includes(id);
 
     if (choiceSucceeded(id)) {
       const newClickedIds = clickedCardIds.concat([id]);
@@ -163,9 +164,9 @@ export default function App() {
       updateScores(score + 1);
 
       // Check if player wins round
-      if (newClickedIds.length === pokemon.length) {
+      if (newClickedIds.length === pokemonData.length) {
         // Keep track of seen pokemon per generation, without duplicates
-        const pokemonNames = pokemon.map((pkmn) => pkmn.name);
+        const pokemonNames = pokemonData.map((pkmn) => pkmn.name);
         const newData = {
           [generation]: genCompletion[generation]
             ? [...new Set(genCompletion[generation].concat(pokemonNames))]
@@ -217,10 +218,10 @@ export default function App() {
             className="game-area"
             style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
           >
-            {pokemon ? (
+            {pokemonData ? (
               <>
                 <CardTable
-                  pokemon={pokemon}
+                  pkmnData={pokemonData}
                   gameWon={gameWon}
                   handleClick={handleCardClick}
                   clickedIds={clickedCardIds}
