@@ -23,7 +23,7 @@ const createSingleAxisRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
 };
 
-let baseSceneRotation = SCENE_ROTATION_DEFAULT;
+// let baseSceneRotation = SCENE_ROTATION_DEFAULT;
 
 export default function App() {
   // Retrieve saved settings from localstorage
@@ -39,8 +39,6 @@ export default function App() {
   );
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
-  const [clickedCardIds, setClickedCardIds] = useState([]);
-  const [handId, setHandId] = useState(0);
   const [genCompletion, setGenCompletion] = useState(savedGenCompletion || {});
   const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
@@ -57,7 +55,7 @@ export default function App() {
 
   useLocalStorage(showStarters, genCompletion);
 
-  baseSceneRotation = pokedexIsOpen
+  const baseSceneRotation = pokedexIsOpen
     ? SCENE_ROTATION_POKEDEX_OPEN
     : SCENE_ROTATION_DEFAULT;
 
@@ -90,9 +88,25 @@ export default function App() {
   );
 
   useEffect(() => {
+    if (gameWon) {
+      const pokemonNames = pokemonData.map((pkmn) => pkmn.name);
+      setGenCompletion((previous) => {
+        if (previous[generation]) {
+          return {
+            ...previous,
+            [generation]: [...previous[generation], ...pokemonNames],
+          };
+        } else {
+          return { ...previous, [generation]: pokemonNames };
+        }
+      });
+    }
+  }, [gameWon, generation, pokemonData]);
+
+  useEffect(() => {
     setSceneAngle(baseSceneRotation);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
-  }, [pokedexIsOpen, setPokedexAngle]);
+  }, [pokedexIsOpen, setPokedexAngle, baseSceneRotation]);
 
   const setSceneRotation = createSingleAxisRotationSetter(setSceneAngle);
   const setPokedexRotation = createSingleAxisRotationSetter(setPokedexAngle);
@@ -144,9 +158,8 @@ export default function App() {
   const resetGame = () => {
     const startersShown = showStarters[generation - 1];
 
+    console.log('resetting game');
     setScore(0);
-    setClickedCardIds([]);
-    setHandId(0);
     setGameWon(false);
     setGameOn(true);
 
@@ -156,35 +169,16 @@ export default function App() {
     }
   };
 
-  const handleCardClick = (id) => {
-    if (!gameOn) return;
-
-    const choiceSucceeded = (id) => !clickedCardIds.includes(id);
-
-    if (choiceSucceeded(id)) {
-      const newClickedIds = clickedCardIds.concat([id]);
-      setClickedCardIds(newClickedIds);
-      updateScores(score + 1);
-
-      // Check if player wins round
-      if (newClickedIds.length === pokemonData.length) {
-        // Keep track of seen pokemon per generation, without duplicates
-        const pokemonNames = pokemonData.map((pkmn) => pkmn.name);
-        const newData = {
-          [generation]: genCompletion[generation]
-            ? [...new Set(genCompletion[generation].concat(pokemonNames))]
-            : pokemonNames,
-        };
-
-        setGameOn(false);
-        setGameWon(true);
-        setGenCompletion({ ...genCompletion, ...newData });
-      }
-      setHandId(handId + 1);
-    } else {
+  const gameStatusCallback = useCallback((status) => {
+    if (status === 'win') {
+      setGameWon(true);
       setGameOn(false);
+    } else if (status === 'lose') {
+      setGameOn(false);
+    } else {
+      console.log('Some other game state!!?');
     }
-  };
+  }, []);
 
   const renderAngleInputs = (labelPrefix, target, onChange) => {
     return (
@@ -226,9 +220,8 @@ export default function App() {
                 <CardTable
                   pkmnData={pokemonData}
                   gameWon={gameWon}
-                  handleClick={handleCardClick}
-                  clickedIds={clickedCardIds}
-                  key={handId}
+                  gameOn={gameOn}
+                  gameStatusCallback={gameStatusCallback}
                 />
                 <div className="game-result">
                   {gameWon && <p>You win!</p>}
