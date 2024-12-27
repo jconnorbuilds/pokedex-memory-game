@@ -5,15 +5,6 @@ const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 const getPokemonSpeciesURLs = (pkmnBasicData) =>
   pkmnBasicData.map((pokemon) => pokemon.url);
 
-const getAllPokemonInGeneration = async (generation) => {
-  const url = `https://pokeapi.co/api/v2/generation/${generation}`;
-  const result = await fetch(url);
-  const generationData = await result.json();
-  const pokemonSpecies = generationData.pokemon_species;
-
-  return pokemonSpecies;
-};
-
 const fetchPokemonSpeciesData = async (urls) => {
   try {
     const promises = urls.map((url) => fetch(url));
@@ -38,7 +29,7 @@ const fetchPokemonData = async (pkmnIDs) => {
   }
 };
 
-export default function usePokemon(showStarters, generation, level) {
+export default function usePokemon(allPokemon, showStarters, generation, level) {
   const [pokemonData, setPokemonData] = useState(null);
   const [pokemonSpeciesData, setPokemonSpeciesData] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
@@ -46,11 +37,10 @@ export default function usePokemon(showStarters, generation, level) {
   useEffect(() => {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
     const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
-
     const fetchPokemon = async () => {
-      if (!needsNewPkmn) return;
+      if (!needsNewPkmn || !allPokemon) return;
       let pkmnToFetch = [];
-      const allPokemon = await getAllPokemonInGeneration(generation);
+      // const allPokemon = await getAllPokemonInGeneration(generation);
       // Starter pokemon to always include on the first round
       if (showStarters[generation - 1]) {
         pkmnToFetch.push(allPokemon[0], allPokemon[1], allPokemon[2]);
@@ -72,12 +62,13 @@ export default function usePokemon(showStarters, generation, level) {
         }
       };
 
-      while (pkmnToFetch.length < LEVELS[level]) {
+      for (let i = 0; i < 25; i++) {
         try {
           const randomPokemon = selectPokemon(); // Can be undefined, which is a bug. This whole try/catch block should probably be reworked.
           pkmnToFetch.push(randomPokemon);
+          if (pkmnToFetch.length === LEVELS[level]) break;
         } catch (err) {
-          console.error(err);
+          console.error(err, `pkmn to fetch: ${pkmnToFetch}`);
         }
       }
 
@@ -102,7 +93,7 @@ export default function usePokemon(showStarters, generation, level) {
     return () => {
       ignore = true;
     };
-  }, [generation, level, needsNewPkmn, showStarters]);
+  }, [generation, level, needsNewPkmn, showStarters, allPokemon]);
 
   return {
     pokemonData,

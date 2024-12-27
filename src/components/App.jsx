@@ -27,33 +27,49 @@ const createSingleAxisRotationSetter = (setState) => {
 
 export default function App() {
   // Retrieve saved settings from localstorage
-  const savedStarters = JSON.parse(localStorage.getItem('showStarters'));
-  const savedGenCompletion = JSON.parse(localStorage.getItem('genCompletion'));
 
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [level, setLevel] = useState('easy');
   const [generation, setGeneration] = useState(1);
-  const [showStarters, setShowStarters] = useState(
-    savedStarters || Array(NUM_OF_GENERATIONS).fill(true),
+  const [showStarters, setShowStarters] = useLocalStorage(
+    'showStarters',
+    new Array(NUM_OF_GENERATIONS).fill(true),
   );
+  const [genCompletion, setGenCompletion] = useLocalStorage('genCompletion', {});
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
-  const [genCompletion, setGenCompletion] = useState(savedGenCompletion || {});
   const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: null, y: null });
+  const [allPokemon, setAllPokemon] = useState(null);
+  const genSizes = useGenSizes(NUM_OF_GENERATIONS);
+
+  useEffect(() => {
+    console.log('fetching all the pokemon');
+    const fetchAllPokemonInGeneration = async (generation) => {
+      try {
+        const url = `https://pokeapi.co/api/v2/generation/${generation}`;
+        const result = await fetch(url);
+        const generationData = await result.json();
+        const pokemonSpecies = generationData.pokemon_species;
+
+        setAllPokemon(pokemonSpecies);
+      } catch (err) {
+        `Unable to fetch all pokemon: ${err}`;
+      }
+    };
+    fetchAllPokemonInGeneration(generation);
+  }, [generation]);
 
   const { pokemonData, pokemonSpeciesData, requestNewPokemon } = usePokemon(
+    allPokemon,
     showStarters,
     generation,
     level,
   );
 
   // console.log(pokemonData);
-  const genSizes = useGenSizes(NUM_OF_GENERATIONS);
-
-  useLocalStorage(showStarters, genCompletion);
 
   const baseSceneRotation = pokedexIsOpen
     ? SCENE_ROTATION_POKEDEX_OPEN

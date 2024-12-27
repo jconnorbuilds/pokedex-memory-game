@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function useLocalStorage(showStarters, genCompletion) {
+export default function useLocalStorage(key, fallback) {
+  const [value, setValue] = useState(JSON.parse(localStorage.getItem(key)) ?? fallback);
   useEffect(() => {
-    localStorage.setItem('showStarters', JSON.stringify(showStarters));
-    localStorage.setItem('genCompletion', JSON.stringify(genCompletion));
-  }, [showStarters, genCompletion]);
+    localStorage.setItem(key, JSON.stringify(value));
+  }, [value, key]);
+  return [value, setValue];
 }
