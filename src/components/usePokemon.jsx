@@ -5,6 +5,19 @@ const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 const getPokemonSpeciesURLs = (pkmnBasicData) =>
   pkmnBasicData.map((pokemon) => pokemon.url);
 
+const fetchAllPokemonInGeneration = async (generation) => {
+  try {
+    const url = `https://pokeapi.co/api/v2/generation/${generation}`;
+    const result = await fetch(url);
+    const generationData = await result.json();
+    const pokemonSpecies = generationData.pokemon_species;
+
+    return pokemonSpecies;
+  } catch (err) {
+    `Unable to fetch all pokemon: ${err}`;
+  }
+};
+
 const fetchPokemonSpeciesData = async (urls) => {
   try {
     const promises = urls.map((url) => fetch(url));
@@ -29,21 +42,35 @@ const fetchPokemonData = async (pkmnIDs) => {
   }
 };
 
-export default function usePokemon(allPokemon, showStarters, generation, level) {
+export default function usePokemon(showStarters, generation, level) {
+  const [allPokemonInGen, setAllPokemonInGen] = useState(null);
   const [pokemonData, setPokemonData] = useState(null);
   const [pokemonSpeciesData, setPokemonSpeciesData] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
+  const [previousGen, setPreviousGen] = useState(generation);
 
   useEffect(() => {
     const LEVELS = { easy: 4, medium: 8, hard: 12 };
     const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
+
     const fetchPokemon = async () => {
-      if (!needsNewPkmn || !allPokemon) return;
+      if (!needsNewPkmn) return;
+      let allPokemon;
       let pkmnToFetch = [];
-      // const allPokemon = await getAllPokemonInGeneration(generation);
+
+      if (previousGen !== generation || !allPokemonInGen) {
+        console.log('GETTING A NEW GENERATION');
+        allPokemon = await fetchAllPokemonInGeneration(generation);
+        setAllPokemonInGen(allPokemon);
+        if (previousGen !== generation) setPreviousGen(generation);
+      } else {
+        console.log('Trying to get cached mons');
+        allPokemon = allPokemonInGen;
+      }
+      if (!allPokemon) return;
       // Starter pokemon to always include on the first round
       if (showStarters[generation - 1]) {
-        pkmnToFetch.push(allPokemon[0], allPokemon[1], allPokemon[2]);
+        pkmnToFetch.push(...allPokemon.slice(0, 3));
       }
 
       const _getRandomIdx = (range, offset = 0) =>
@@ -93,7 +120,7 @@ export default function usePokemon(allPokemon, showStarters, generation, level) 
     return () => {
       ignore = true;
     };
-  }, [generation, level, needsNewPkmn, showStarters, allPokemon]);
+  }, [generation, level, needsNewPkmn, showStarters, allPokemonInGen, previousGen]);
 
   return {
     pokemonData,

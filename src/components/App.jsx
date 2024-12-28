@@ -13,7 +13,6 @@ import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokedexParallax from './usePokedexParallax.jsx';
 
-const AXES = ['x', 'y', 'z'];
 const LEVELS = ['easy', 'medium', 'hard'];
 const NUM_OF_GENERATIONS = 9;
 const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
@@ -23,47 +22,23 @@ const createSingleAxisRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
 };
 
-// let baseSceneRotation = SCENE_ROTATION_DEFAULT;
-
 export default function App() {
-  // Retrieve saved settings from localstorage
-
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
   const [level, setLevel] = useState('easy');
   const [generation, setGeneration] = useState(1);
-  const [showStarters, setShowStarters] = useLocalStorage(
-    'showStarters',
-    new Array(NUM_OF_GENERATIONS).fill(true),
-  );
-  const [genCompletion, setGenCompletion] = useLocalStorage('genCompletion', {});
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
   const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
   const [mousePos, setMousePos] = useState({ x: null, y: null });
-  const [allPokemon, setAllPokemon] = useState(null);
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
-
-  useEffect(() => {
-    console.log('fetching all the pokemon');
-    const fetchAllPokemonInGeneration = async (generation) => {
-      try {
-        const url = `https://pokeapi.co/api/v2/generation/${generation}`;
-        const result = await fetch(url);
-        const generationData = await result.json();
-        const pokemonSpecies = generationData.pokemon_species;
-
-        setAllPokemon(pokemonSpecies);
-      } catch (err) {
-        `Unable to fetch all pokemon: ${err}`;
-      }
-    };
-    fetchAllPokemonInGeneration(generation);
-  }, [generation]);
-
+  const [showStarters, setShowStarters] = useLocalStorage(
+    'showStarters',
+    Array(NUM_OF_GENERATIONS).fill(true),
+  );
+  const [genCompletion, setGenCompletion] = useLocalStorage('genCompletion', {});
   const { pokemonData, pokemonSpeciesData, requestNewPokemon } = usePokemon(
-    allPokemon,
     showStarters,
     generation,
     level,
@@ -199,7 +174,7 @@ export default function App() {
   const renderAngleInputs = (labelPrefix, target, onChange) => {
     return (
       <InputGroup>
-        {AXES.map((axis) => {
+        {['x', 'y', 'z'].map((axis) => {
           return (
             <SetAngleInput
               key={`${labelPrefix}-${axis}`}
