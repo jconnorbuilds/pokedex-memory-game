@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 
-const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
-
-const getPokemonSpeciesURLs = (pkmnBasicData) =>
-  pkmnBasicData.map((pokemon) => pokemon.url);
+const getPokemonSpeciesURLs = (pkmnBasicData) => {
+  return pkmnBasicData.map((pokemon) => pokemon.url);
+};
 
 const fetchAllPokemonInGeneration = async (generation) => {
   try {
@@ -42,89 +41,37 @@ const fetchPokemonData = async (pkmnIDs) => {
   }
 };
 
-export default function usePokemon(showStarters, generation, level) {
+export default function usePokemon(generation) {
   const [allPokemonInGen, setAllPokemonInGen] = useState(null);
-  const [pokemonData, setPokemonData] = useState(null);
-  const [pokemonSpeciesData, setPokemonSpeciesData] = useState(null);
-  const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
   const [previousGen, setPreviousGen] = useState(generation);
 
   useEffect(() => {
-    const LEVELS = { easy: 4, medium: 8, hard: 12 };
-    const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
-
     const fetchPokemon = async () => {
-      if (!needsNewPkmn) return;
-      let allPokemon;
-      let pkmnToFetch = [];
-
-      if (previousGen !== generation || !allPokemonInGen) {
-        console.log('GETTING A NEW GENERATION');
-        allPokemon = await fetchAllPokemonInGeneration(generation);
-        setAllPokemonInGen(allPokemon);
-        if (previousGen !== generation) setPreviousGen(generation);
-      } else {
-        console.log('Trying to get cached mons');
-        allPokemon = allPokemonInGen;
-      }
-      if (!allPokemon) return;
-      // Starter pokemon to always include on the first round
-      if (showStarters[generation - 1]) {
-        pkmnToFetch.push(...allPokemon.slice(0, 3));
-      }
-
-      const _getRandomIdx = (range, offset = 0) =>
-        Math.floor(Math.random() * range - offset) + offset;
-
-      const _getRandomPokemon = () =>
-        allPokemon[_getRandomIdx(allPokemon.length, pkmnToFetch.length)];
-
-      const selectPokemon = () => {
-        const randomPokemon = _getRandomPokemon();
-        if (!pkmnToFetch.includes(randomPokemon)) return randomPokemon;
-
-        // Duplicate pokemon error handling
-        if (pkmnToFetch.length > new Set(pkmnToFetch).length) {
-          throw new Error(`Duplicate pokemon! ${pkmnToFetch}`);
-        }
-      };
-
-      for (let i = 0; i < 25; i++) {
-        try {
-          const randomPokemon = selectPokemon(); // Can be undefined, which is a bug. This whole try/catch block should probably be reworked.
-          pkmnToFetch.push(randomPokemon);
-          if (pkmnToFetch.length === LEVELS[level]) break;
-        } catch (err) {
-          console.error(err, `pkmn to fetch: ${pkmnToFetch}`);
-        }
-      }
-
       if (!ignore) {
-        setNeedsNewPkmn(false);
-        const speciesURLs = getPokemonSpeciesURLs(pkmnToFetch);
+        console.log('GETTING A NEW GENERATION');
+        const allPokemon = await fetchAllPokemonInGeneration(generation);
+        const speciesURLs = getPokemonSpeciesURLs(allPokemon);
         const speciesData = await fetchPokemonSpeciesData(speciesURLs);
         const pkmnData = await fetchPokemonData(speciesData.map((pokemon) => pokemon.id));
 
-        pkmnData.forEach((pkmn) =>
-          Object.defineProperty(pkmn, 'isShiny', { value: rollForShiny() }),
-        );
+        const pokemon = speciesData.map((pkmn, idx) => ({
+          name: pkmn.name,
+          data: pkmnData[idx],
+          speciesData: pkmn,
+        }));
 
-        setPokemonSpeciesData(speciesData);
-        setPokemonData(pkmnData);
+        setAllPokemonInGen(pokemon);
+        setPreviousGen(generation);
       }
     };
 
     let ignore = false;
-    fetchPokemon();
+    if (previousGen !== generation || !allPokemonInGen) fetchPokemon();
 
     return () => {
       ignore = true;
     };
-  }, [generation, level, needsNewPkmn, showStarters, allPokemonInGen, previousGen]);
+  }, [generation, previousGen, allPokemonInGen]);
 
-  return {
-    pokemonData,
-    pokemonSpeciesData,
-    requestNewPokemon: () => setNeedsNewPkmn(true),
-  };
+  return allPokemonInGen;
 }

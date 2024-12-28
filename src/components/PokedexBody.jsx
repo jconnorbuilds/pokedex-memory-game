@@ -1,10 +1,8 @@
-export default function PokedexBody({ pokemonData, pokemonSpeciesData }) {
-  const sprites = pokemonData?.map(
-    (pokemon) => pokemon.sprites.other['home'].front_default,
-  );
-  const names = pokemonSpeciesData?.map((pokemon) => pokemon.name);
-  const nationalDexNumbers = pokemonSpeciesData?.map(
-    (pokemon) => pokemon.pokedex_numbers[0].entry_number,
+export default function PokedexBody({ pokemon }) {
+  const sprites = pokemon?.map((pkmn) => pkmn.data.sprites.other['home'].front_default);
+  const names = pokemon?.map((pkmn) => pkmn.name);
+  const nationalDexNumbers = pokemon?.map(
+    (pokemon) => pokemon.speciesData.pokedex_numbers[0].entry_number,
   );
 
   return (

@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import Card from './Card.jsx';
 
-export default function CardTable({ pkmnData, gameWon, gameOn, gameStatusCallback }) {
+export default function CardTable({ pokemon, gameWon, gameOn, gameStatusCallback }) {
   const [clickedIds, setClickedIds] = useState([]);
   const [handId, setHandId] = useState(0);
 
@@ -21,7 +21,7 @@ export default function CardTable({ pkmnData, gameWon, gameOn, gameStatusCallbac
       const newClickedIds = clickedIds.concat([id]);
       setClickedIds(newClickedIds);
 
-      if (newClickedIds.length === pkmnData.length) {
+      if (newClickedIds.length === pokemon.length) {
         gameStatusCallback('win');
       } else {
         gameStatusCallback('playing');
@@ -49,18 +49,18 @@ export default function CardTable({ pkmnData, gameWon, gameOn, gameStatusCallbac
   const pokemonToShow = useMemo(() => {
     // console.log(pkmnData.map((pokemon) => pokemon.name));
     // Return all pokemon if player has won
-    if (clickedIds.length === pkmnData.length) {
-      return pkmnData;
+    if (clickedIds.length === pokemon.length) {
+      return pokemon;
     }
-    console.log('selecting pkmn');
+    // console.log(`selecting ${pokemon.length * 0.75} of ${pokemon.length} pkmn to show`);
     const _selectPokemon = () => {
-      const numberOfPkmn = Math.floor(pkmnData.length * 0.75);
+      const numberOfPkmn = Math.floor(pokemon.length * 0.75);
       const usedIdxs = [];
       const selectedPokemon = [];
 
       for (let i = 0; i < numberOfPkmn; i++) {
-        const idx = _getRandomUnselectedIdx(pkmnData.length, usedIdxs);
-        selectedPokemon.push(pkmnData[idx]);
+        const idx = _getRandomUnselectedIdx(pokemon.length, usedIdxs);
+        selectedPokemon.push(pokemon[idx]);
         usedIdxs.push(idx);
       }
 
@@ -83,15 +83,14 @@ export default function CardTable({ pkmnData, gameWon, gameOn, gameStatusCallbac
     }
 
     return selectedPokemon;
-  }, [clickedIds, pkmnData]);
+  }, [clickedIds, pokemon]);
 
   const renderCards = () => {
     const cards = pokemonToShow.map((pokemon) => {
-      const singlePkmnData = pkmnData.find((pkmn) => pkmn.name === pokemon.name);
       return (
         <Card
           key={pokemon.name}
-          pkmnData={singlePkmnData}
+          pokemon={pokemon}
           handleClick={handleClick}
           gameWon={gameWon}
           colorsOn={true}

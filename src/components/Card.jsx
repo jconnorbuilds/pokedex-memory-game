@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandFist } from '@fortawesome/free-solid-svg-icons';
@@ -9,13 +8,13 @@ const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-export default function Card({ pkmnData, handleClick, gameWon }) {
-  const sprite = pkmnData.isShiny
-    ? pkmnData.sprites.other['official-artwork'].front_shiny
-    : pkmnData.sprites.other['official-artwork'].front_default;
+export default function Card({ pokemon, handleClick, gameWon }) {
+  const sprite = pokemon.isShiny
+    ? pokemon.data.sprites.other['official-artwork'].front_shiny
+    : pokemon.data.sprites.other['official-artwork'].front_default;
 
-  const typeName = pkmnData.types[0].type.name;
-  const ability = pkmnData.moves[0].move.name;
+  const typeName = pokemon.data.types[0].type.name;
+  const ability = pokemon.data.moves[0].move.name;
 
   const toggleShadowHover = (e, isHovered) => {
     const shadow = e.target.querySelector('.card-shadow');
@@ -114,7 +113,7 @@ export default function Card({ pkmnData, handleClick, gameWon }) {
       initial="initial"
       className="card-wrapper"
       variants={cardWrapperVariants}
-      onClick={() => handleClick(pkmnData.name)}
+      onClick={() => handleClick(pokemon.name)}
       onHoverStart={(e) => toggleShadowHover(e, true)}
       onHoverEnd={(e) => toggleShadowHover(e, false)}
       whileHover={() => {
@@ -150,14 +149,14 @@ export default function Card({ pkmnData, handleClick, gameWon }) {
         onAnimationStart={() => toggleDisableHover(true)}
         onAnimationComplete={() => toggleDisableHover(false)}
       >
-        <div className={`card__front ${pkmnData.isShiny && 'shiny'} type-${typeName}`}>
+        <div className={`card__front ${pokemon.isShiny && 'shiny'} type-${typeName}`}>
           <div className="card__name blur-bg">
-            <p>{capitalize(pkmnData.name)}</p>
+            <p>{capitalize(pokemon.name)}</p>
             <hr />
           </div>
 
           <div className="card__picture">
-            <img src={sprite} alt={pkmnData.name} width="168px" />
+            <img src={sprite} alt={pokemon.name} width="168px" />
           </div>
           <hr />
           <div className="card__moves blur-bg">

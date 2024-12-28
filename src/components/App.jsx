@@ -12,6 +12,8 @@ import useGenSizes from './useGenSizes.jsx';
 import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokedexParallax from './usePokedexParallax.jsx';
+import usePokemonInPlay from './usePokemonInPlay.jsx';
+import { div } from 'framer-motion/client';
 
 const LEVELS = ['easy', 'medium', 'hard'];
 const NUM_OF_GENERATIONS = 9;
@@ -38,13 +40,12 @@ export default function App() {
     Array(NUM_OF_GENERATIONS).fill(true),
   );
   const [genCompletion, setGenCompletion] = useLocalStorage('genCompletion', {});
-  const { pokemonData, pokemonSpeciesData, requestNewPokemon } = usePokemon(
-    showStarters,
-    generation,
+  const allPokemonInGeneration = usePokemon(generation);
+  const { pokemonInPlay, getNextPokemonInPlay, requestNewPokemon } = usePokemonInPlay(
+    allPokemonInGeneration,
+    showStarters[generation - 1],
     level,
   );
-
-  // console.log(pokemonData);
 
   const baseSceneRotation = pokedexIsOpen
     ? SCENE_ROTATION_POKEDEX_OPEN
@@ -78,21 +79,22 @@ export default function App() {
     handleMouseMove,
   );
 
-  useEffect(() => {
-    if (gameWon) {
-      const pokemonNames = pokemonData.map((pkmn) => pkmn.name);
-      setGenCompletion((previous) => {
-        if (previous[generation]) {
-          return {
-            ...previous,
-            [generation]: [...previous[generation], ...pokemonNames],
-          };
-        } else {
-          return { ...previous, [generation]: pokemonNames };
-        }
-      });
-    }
-  }, [gameWon, generation, pokemonData]);
+  // WRITE A BETTER SOLUTION FOR GEN COMPLETION ON GAME WIN
+  // useEffect(() => {
+  //   if (gameWon) {
+  //     const pokemonNames = pokemonInPlay.map((pkmn) => pkmn.data.name);
+  //     setGenCompletion((previous) => {
+  //       if (previous[generation]) {
+  //         return {
+  //           ...previous,
+  //           [generation]: [...previous[generation], ...pokemonNames],
+  //         };
+  //       } else {
+  //         return { ...previous, [generation]: pokemonNames };
+  //       }
+  //     });
+  //   }
+  // }, [gameWon, generation, ]);
 
   useEffect(() => {
     setSceneAngle(baseSceneRotation);
@@ -189,6 +191,7 @@ export default function App() {
     );
   };
 
+  // return <div>under construction </div>;
   return (
     <div className="app">
       <header className="header container">
@@ -206,10 +209,10 @@ export default function App() {
             className="game-area"
             style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
           >
-            {pokemonData ? (
+            {pokemonInPlay ? (
               <>
                 <CardTable
-                  pkmnData={pokemonData}
+                  pokemon={pokemonInPlay}
                   gameWon={gameWon}
                   gameOn={gameOn}
                   gameStatusCallback={gameStatusCallback}
@@ -234,10 +237,7 @@ export default function App() {
             toggleOpen={toggleDexOpenClosed}
             style={{ transform: pokedexTransform }}
           >
-            <PokedexBody
-              pokemonData={pokemonData}
-              pokemonSpeciesData={pokemonSpeciesData}
-            ></PokedexBody>
+            <PokedexBody pokemon={pokemonInPlay}></PokedexBody>
             <PokedexLid>
               <section className="lid__menu-area">
                 <h2>Generation</h2>
@@ -260,7 +260,6 @@ export default function App() {
                       );
                     })}
                 </div>
-
                 <h2>Difficulty</h2>
                 <div onClick={handleLevelSelect} className="lid__difficulty-buttons">
                   {LEVELS.map((level) => {
