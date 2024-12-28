@@ -47,12 +47,11 @@ export default function CardTable({ pokemon, gameWon, gameOn, gameStatusCallback
 
   // Selects a random subset of the <pokemon> prop
   const pokemonToShow = useMemo(() => {
-    // console.log(pkmnData.map((pokemon) => pokemon.name));
     // Return all pokemon if player has won
     if (clickedIds.length === pokemon.length) {
       return pokemon;
     }
-    // console.log(`selecting ${pokemon.length * 0.75} of ${pokemon.length} pkmn to show`);
+
     const _selectPokemon = () => {
       const numberOfPkmn = Math.floor(pokemon.length * 0.75);
       const usedIdxs = [];

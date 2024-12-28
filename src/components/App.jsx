@@ -41,7 +41,7 @@ export default function App() {
   );
   const [genCompletion, setGenCompletion] = useLocalStorage('genCompletion', {});
   const allPokemonInGeneration = usePokemon(generation);
-  const { pokemonInPlay, getNextPokemonInPlay, requestNewPokemon } = usePokemonInPlay(
+  const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGeneration,
     showStarters[generation - 1],
     level,
