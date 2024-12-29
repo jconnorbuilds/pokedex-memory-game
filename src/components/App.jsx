@@ -153,7 +153,6 @@ export default function App() {
     const startersShown = showStarters[generation - 1];
 
     console.log('resetting game');
-    setScore(0);
     setGameWon(false);
     setGameOn(true);
 
@@ -163,9 +162,11 @@ export default function App() {
     }
   };
 
+  // TODO: reset score to 0 when the generation changes mid-hand
   const gameStatusCallback = useCallback(
     (status, data = {}) => {
       if (status === 'win') {
+        updateScores(score + 1);
         setGameWon(true);
         setGameOn(false);
         // Adds NEW pokemon to the list.
@@ -178,9 +179,12 @@ export default function App() {
         });
       } else if (status === 'lose') {
         setGameOn(false);
+        updateScores(0);
+      } else if (status === 'playing') {
+        updateScores(score + 1);
       }
     },
-    [generation, setGenCompletion],
+    [generation, setGenCompletion, score, updateScores],
   );
 
   const renderAngleInputs = (labelPrefix, target, onChange) => {
