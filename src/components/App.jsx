@@ -93,15 +93,19 @@ export default function App() {
   const setSceneRotation = createSingleAxisRotationSetter(setSceneAngle);
   const setPokedexRotation = createSingleAxisRotationSetter(setPokedexAngle);
 
-  let sceneTransform = `
+  const sceneTransform = {
+    transform: `
   rotateY(${sceneAngle.y}deg)
   rotateX(${sceneAngle.x}deg)
-  rotateZ(${sceneAngle.z}deg)`;
+  rotateZ(${sceneAngle.z}deg)`,
+  };
 
-  let pokedexTransform = `
+  const pokedexTransform = {
+    transform: `
   rotateX(${pokedexAngle.x}deg)
   rotateY(${pokedexAngle.y}deg)
-  rotateZ(${pokedexAngle.z}deg)`;
+  rotateZ(${pokedexAngle.z}deg)`,
+  };
 
   const createSelectionHandler = (setState) => {
     return (e) => {
@@ -166,8 +170,6 @@ export default function App() {
         });
       } else if (status === 'lose') {
         setGameOn(false);
-      } else {
-        console.log('Some other game state!!?');
       }
     },
     [generation, setGenCompletion],
@@ -191,6 +193,21 @@ export default function App() {
     );
   };
 
+  const renderResultButton = () => {
+    const gameLost = !gameOn && !gameWon;
+    return (
+      <div className="game-result">
+        {gameWon && <p>You win!</p>}
+        {gameLost && <p>You lose! </p>}
+        {!gameOn && (
+          <button className="play-again" onClick={resetGame}>
+            Play again
+          </button>
+        )}
+      </div>
+    );
+  };
+
   // return <div>under construction </div>;
   return (
     <div className="app">
@@ -198,44 +215,24 @@ export default function App() {
         <Scoreboard score={score} bestScore={bestScore} />
       </header>
       <main className="container">
-        <div
-          id="scene"
-          className="scene"
-          style={{
-            transform: sceneTransform,
-          }}
-        >
+        <div id="scene" className="scene" style={sceneTransform}>
           <div
             className="game-area"
             style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
           >
-            {pokemonInPlay ? (
-              <>
-                <CardTable
-                  pokemon={pokemonInPlay}
-                  gameWon={gameWon}
-                  gameOn={gameOn}
-                  gameStatusCallback={gameStatusCallback}
-                />
-                <div className="game-result">
-                  {gameWon && <p>You win!</p>}
-                  {!gameOn && !gameWon && <p>You lose! </p>}
-                  {!gameOn && (
-                    <button className="play-again" onClick={resetGame}>
-                      Play again
-                    </button>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div>Loading cards...</div>
-            )}{' '}
+            <CardTable
+              pokemon={pokemonInPlay}
+              gameWon={gameWon}
+              gameOn={gameOn}
+              generation={generation}
+              gameStatusCallback={gameStatusCallback}
+            />
+            <div className="game-result">{renderResultButton()}</div>
           </div>
-
           <Pokedex
             isOpen={pokedexIsOpen}
             toggleOpen={toggleDexOpenClosed}
-            style={{ transform: pokedexTransform }}
+            style={pokedexTransform}
           >
             <PokedexBody pokemon={pokemonInPlay}></PokedexBody>
             <PokedexLid>

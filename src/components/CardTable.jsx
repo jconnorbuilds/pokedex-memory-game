@@ -61,6 +61,7 @@ export default function CardTable({
 
   // Selects a random subset of the <pokemon> prop
   const pokemonToShow = useMemo(() => {
+    if (!pokemon) return;
     // Return all pokemon if player has won
     if (clickedIds.length === pokemon.length) {
       return pokemon;
@@ -115,7 +116,7 @@ export default function CardTable({
 
   return (
     <div className="card-table">
-      <Hand key={handId}>{renderCards()}</Hand>
+      {pokemon ? <Hand key={handId}>{renderCards()}</Hand> : <p>loading cards...</p>}
     </div>
   );
 }
