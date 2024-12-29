@@ -1,0 +1,16 @@
+.loadingBar {
+  background: #555;
+  height: 0.5em;
+  width: 0%;
+  transition: width 1s ease-out;
+}
+
+.loadingBarInit {
+  composes: loadingBar;
+  width: 0%;
+}
+
+.loadingBarFull {
+  composes: loadingBar;
+  width: 100%;
+}

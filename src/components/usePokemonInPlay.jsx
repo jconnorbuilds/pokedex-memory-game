@@ -3,39 +3,30 @@ import { useEffect, useState } from 'react';
 const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
 
-export default function usePokemonInPlay(
-  allPokemonInGeneration,
-  needsStarters,
-  levelSize,
-) {
+export default function usePokemonInPlay(allPokemonInGen, needsStarters, levelSize) {
   const [pokemonInPlay, setPokemonInPlay] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
 
   useEffect(() => {
     const generateSelection = () => {
       if (!ignore) {
-        if (!allPokemonInGeneration) return;
+        if (!allPokemonInGen) return;
 
         const _getRandomIdx = (range, offset = 0) =>
           Math.floor(Math.random() * range - offset) + offset;
 
         const _getRandomPokemon = () => {
-          const randomIdx = _getRandomIdx(
-            allPokemonInGeneration.length,
-            selectedPokemon.length,
-          );
-          if (!allPokemonInGeneration[randomIdx])
+          const randomIdx = _getRandomIdx(allPokemonInGen.length, selectedPokemon.length);
+          if (!allPokemonInGen[randomIdx])
             console.info(`Tried an invalid index: ${randomIdx}`);
-          return allPokemonInGeneration[randomIdx];
+          return allPokemonInGen[randomIdx];
         };
 
         // Starter pokemon to always include on the first round
-        const selectedPokemon = needsStarters
-          ? [...allPokemonInGeneration.slice(0, 3)]
-          : [];
+        const selectedPokemon = needsStarters ? [...allPokemonInGen.slice(0, 3)] : [];
 
         const selectSinglePokemon = () => {
-          // if (ignore) return;
+          if (ignore) return;
           const randomPokemon = _getRandomPokemon();
           // Check if data is unique. If unique, roll for shiny and then return.
           if (!selectedPokemon.map((pkmn) => pkmn.name).includes(randomPokemon.name)) {
@@ -80,7 +71,7 @@ export default function usePokemonInPlay(
     };
 
     // Relies on needsNewPkmn to trigger new card generation after each hand
-  }, [allPokemonInGeneration, needsStarters, levelSize, needsNewPkmn]);
+  }, [allPokemonInGen, needsStarters, levelSize, needsNewPkmn]);
 
   return {
     pokemonInPlay,

@@ -1,4 +1,6 @@
-export default function PokedexBody({ pokemon }) {
+import LoadingBar from './LoadingBar.jsx';
+
+export default function PokedexBody({ pokemon, isLoading }) {
   const sprites = pokemon?.map((pkmn) => pkmn.data.sprites.other['home'].front_default);
   const names = pokemon?.map((pkmn) => pkmn.name);
   const nationalDexNumbers = pokemon?.map(
@@ -29,23 +31,27 @@ export default function PokedexBody({ pokemon }) {
           <div className="screen screen--on">
             <div className="screen-frame">
               <div className="screen-inner">
-                {sprites ? (
-                  <img
-                    className="pokedex__pkmn-sprite"
-                    src={sprites[0]}
-                    alt="a pokemon"
-                  />
+                {true ? (
+                  <LoadingBar isLoading={isLoading} />
                 ) : (
-                  <div className="loading-dex-sprites">Loading...</div>
-                )}
-                <div className="screen-text">
-                  <div className="pokemon-info">
-                    <div className="pokemon-info__name">{names ? names[0] : '...'}</div>
-                    <div className="pokemon-info__number">
-                      #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
+                  <>
+                    <img
+                      className="pokedex__pkmn-sprite"
+                      src={sprites ? sprites[0] : 'loading sprites...'}
+                      alt="a pokemon"
+                    />
+                    <div className="screen-text">
+                      <div className="pokemon-info">
+                        <div className="pokemon-info__name">
+                          {names ? names[0] : '...'}
+                        </div>
+                        <div className="pokemon-info__number">
+                          #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

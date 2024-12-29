@@ -44,11 +44,14 @@ const fetchPokemonData = async (pkmnIDs) => {
 export default function usePokemon(generation) {
   const [allPokemonInGen, setAllPokemonInGen] = useState(null);
   const [previousGen, setPreviousGen] = useState(generation);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchPokemon = async () => {
       if (!ignore) {
+        setIsLoading(true);
         console.log('GETTING A NEW GENERATION');
+        setAllPokemonInGen(null);
         const allPokemon = await fetchAllPokemonInGeneration(generation);
         const speciesURLs = getPokemonSpeciesURLs(allPokemon);
         const speciesData = await fetchPokemonSpeciesData(speciesURLs);
@@ -62,6 +65,7 @@ export default function usePokemon(generation) {
 
         setAllPokemonInGen(pokemon);
         setPreviousGen(generation);
+        setIsLoading(false);
       }
     };
 
@@ -73,5 +77,5 @@ export default function usePokemon(generation) {
     };
   }, [generation, previousGen, allPokemonInGen]);
 
-  return allPokemonInGen;
+  return { allPokemonInGen, isLoading };
 }

@@ -36,7 +36,7 @@ export default function App() {
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
   const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
-  const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
+  const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
   const [mousePos, setMousePos] = useState({ x: null, y: null });
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const [showStarters, setShowStarters] = useLocalStorage(
@@ -51,9 +51,9 @@ export default function App() {
         .map((_, idx) => [idx + 1, []]),
     ),
   );
-  const allPokemonInGeneration = usePokemon(generation);
+  const { allPokemonInGen, isLoading } = usePokemon(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
-    allPokemonInGeneration,
+    allPokemonInGen,
     showStarters[generation - 1],
     level.size,
   );
@@ -246,7 +246,11 @@ export default function App() {
             toggleOpen={toggleDexOpenClosed}
             style={pokedexTransform}
           >
-            <PokedexBody pokemon={pokemonInPlay}></PokedexBody>
+            <PokedexBody
+              pokemonInPlay={pokemonInPlay}
+              pokemon={allPokemonInGen}
+              isLoading={isLoading}
+            ></PokedexBody>
             <PokedexLid>
               <section className="lid__menu-area">
                 <GenerationSelect
