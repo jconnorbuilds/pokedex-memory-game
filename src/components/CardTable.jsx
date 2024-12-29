@@ -1,16 +1,30 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import Card from './Card.jsx';
 
-export default function CardTable({ pokemon, gameWon, gameOn, gameStatusCallback }) {
+export default function CardTable({
+  pokemon,
+  gameWon,
+  gameOn,
+  generation,
+  gameStatusCallback,
+}) {
   const [clickedIds, setClickedIds] = useState([]);
   const [handId, setHandId] = useState(0);
+  const [prevGen, setPrevGen] = useState(generation);
+  const [prevGameStatus, setPrevGameStatus] = useState(gameOn);
 
-  useEffect(() => {
+  const gameStartedOrFinished = prevGameStatus !== gameOn;
+  const generationChanged = prevGen !== generation;
+  // Restart the game if it's a new game or new generation.
+  // Avoiding using useEffect as per the React docs: https://react.dev/learn/you-might-not-need-an-effect
+  if (gameStartedOrFinished || generationChanged) {
     if (gameOn) {
       setClickedIds([]);
       setHandId(0);
     }
-  }, [gameOn]);
+    setPrevGameStatus(gameOn);
+    setPrevGen(generation);
+  }
 
   const handleClick = (id) => {
     if (!gameOn) return;
