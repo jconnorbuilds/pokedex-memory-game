@@ -13,8 +13,14 @@ import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokedexParallax from './usePokedexParallax.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
+import GenerationSelect from './GenerationSelect.jsx';
+import DifficultySelect from './DifficultySelect.jsx';
 
-const LEVELS = ['easy', 'medium', 'hard'];
+const LEVELS = [
+  { name: 'Easy', size: 4 },
+  { name: 'Medium', size: 8 },
+  { name: 'Hard', size: 12 },
+];
 const NUM_OF_GENERATIONS = 9;
 const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
 const SCENE_ROTATION_POKEDEX_OPEN = { x: 15, y: -10, z: 0 };
@@ -26,7 +32,7 @@ const createSingleAxisRotationSetter = (setState) => {
 export default function App() {
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
-  const [level, setLevel] = useState('easy');
+  const [level, setLevel] = useState(LEVELS.find((l) => l.name === 'Easy'));
   const [generation, setGeneration] = useState(1);
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
@@ -50,7 +56,7 @@ export default function App() {
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGeneration,
     showStarters[generation - 1],
-    level,
+    level.size,
   );
 
   const baseSceneRotation = pokedexIsOpen
@@ -107,18 +113,21 @@ export default function App() {
   rotateZ(${pokedexAngle.z}deg)`,
   };
 
-  const createSelectionHandler = (setState) => {
-    return (e) => {
-      if (e.target.tagName === 'BUTTON') {
-        setState(e.target.value);
-        requestNewPokemon();
-        resetGame();
-      }
-    };
+  const handleGenerationSelect = (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      setGeneration(e.target.value);
+      requestNewPokemon();
+      resetGame();
+    }
   };
 
-  const handleGenerationSelect = createSelectionHandler(setGeneration);
-  const handleLevelSelect = createSelectionHandler(setLevel);
+  const handleLevelSelect = (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      setLevel(LEVELS.find((l) => l.name === e.target.value));
+      requestNewPokemon();
+      resetGame();
+    }
+  };
 
   const toggleDexOpenClosed = useCallback(
     (e) => {
@@ -236,40 +245,11 @@ export default function App() {
           >
             <PokedexBody pokemon={pokemonInPlay}></PokedexBody>
             <PokedexLid>
-              <section className="lid__menu-area">
-                <h2>Generation</h2>
-                <div onClick={handleGenerationSelect} className="lid__gen-buttons">
-                  {Array(10)
-                    .fill('')
-                    .map((_, idx) => {
-                      const genNumber = idx + 1;
-                      const needsLabel = genNumber <= NUM_OF_GENERATIONS;
-                      return (
-                        <MenuButton
-                          key={genNumber}
-                          className={
-                            +generation === genNumber ? 'lid__button--selected' : ''
-                          }
-                          value={needsLabel ? genNumber : 0}
-                        >
-                          {needsLabel ? genNumber : ''}
-                        </MenuButton>
-                      );
-                    })}
-                </div>
-                <h2>Difficulty</h2>
-                <div onClick={handleLevelSelect} className="lid__difficulty-buttons">
-                  {LEVELS.map((level) => {
-                    const levelNameFormatted =
-                      level.charAt(0).toUpperCase() + level.slice(1);
-                    return (
-                      <MenuButton key={level} value={level}>
-                        {levelNameFormatted}
-                      </MenuButton>
-                    );
-                  })}
-                </div>
-              </section>
+              <GenerationSelect
+                handleSelect={handleGenerationSelect}
+                generation={generation}
+              />
+              <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
               <div className="lid__display">
                 <p>Generation: {generation}</p>
                 <div>Pokémon caught</div>

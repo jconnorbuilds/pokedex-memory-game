@@ -4,7 +4,9 @@ export default function PokedexLid({ children }) {
       <div className="lid__main">
         <div className="lid__main__inside face">
           <div className="lid__main-content-wrapper">
-            <div className="lid__main-content">{children}</div>
+            <div className="lid__main-content">
+              <section className="lid__menu-area">{children}</section>
+            </div>
           </div>
         </div>
         <div className="lid__main__left vert-edge"></div>

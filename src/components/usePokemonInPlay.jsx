@@ -3,14 +3,17 @@ import { useEffect, useState } from 'react';
 const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
 
-export default function usePokemonInPlay(allPokemonInGeneration, needsStarters, level) {
+export default function usePokemonInPlay(
+  allPokemonInGeneration,
+  needsStarters,
+  levelSize,
+) {
   const [pokemonInPlay, setPokemonInPlay] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
 
   useEffect(() => {
     const generateSelection = () => {
       if (!ignore) {
-        const LEVELS = { easy: 4, medium: 8, hard: 12 };
         if (!allPokemonInGeneration) return;
 
         const _getRandomIdx = (range, offset = 0) =>
@@ -51,7 +54,7 @@ export default function usePokemonInPlay(allPokemonInGeneration, needsStarters, 
             const randomPokemon = selectSinglePokemon(); // Can be undefined, which is a bug. This whole try/catch block should probably be reworked.
             selectedPokemon.push(randomPokemon);
 
-            if (selectedPokemon.length === LEVELS[level]) break;
+            if (selectedPokemon.length === levelSize) break;
           } catch (err) {
             console.error(err, `pkmn to fetch: ${selectedPokemon}`);
           }
@@ -70,7 +73,7 @@ export default function usePokemonInPlay(allPokemonInGeneration, needsStarters, 
     };
 
     // Relies on needsNewPkmn to trigger new card generation after each hand
-  }, [allPokemonInGeneration, needsStarters, level, needsNewPkmn]);
+  }, [allPokemonInGeneration, needsStarters, levelSize, needsNewPkmn]);
 
   return {
     pokemonInPlay,
