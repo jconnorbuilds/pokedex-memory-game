@@ -24,6 +24,8 @@ export default function usePokemonInPlay(
             allPokemonInGeneration.length,
             selectedPokemon.length,
           );
+          if (!allPokemonInGeneration[randomIdx])
+            console.info(`Tried an invalid index: ${randomIdx}`);
           return allPokemonInGeneration[randomIdx];
         };
 
@@ -31,15 +33,19 @@ export default function usePokemonInPlay(
         const selectedPokemon = needsStarters
           ? [...allPokemonInGeneration.slice(0, 3)]
           : [];
+
         const selectSinglePokemon = () => {
           // if (ignore) return;
           const randomPokemon = _getRandomPokemon();
-
           // Check if data is unique. If unique, roll for shiny and then return.
-          if (!selectedPokemon.includes(randomPokemon)) {
+          if (!selectedPokemon.map((pkmn) => pkmn.name).includes(randomPokemon.name)) {
+            // if (!randomPokemon) throw new Error('Error getting a random pokemon');
+
             Object.defineProperty(randomPokemon, 'isShiny', {
               value: rollForShiny(),
+              configurable: true,
             });
+
             return randomPokemon;
           }
 
@@ -52,6 +58,7 @@ export default function usePokemonInPlay(
         for (let i = 0; i < 25; i++) {
           try {
             const randomPokemon = selectSinglePokemon(); // Can be undefined, which is a bug. This whole try/catch block should probably be reworked.
+            if (!randomPokemon) return;
             selectedPokemon.push(randomPokemon);
 
             if (selectedPokemon.length === levelSize) break;

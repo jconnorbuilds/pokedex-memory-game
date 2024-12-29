@@ -100,6 +100,7 @@ export default function CardTable({
   }, [clickedIds, pokemon]);
 
   const renderCards = () => {
+    if (!pokemon) return;
     const cards = pokemonToShow.map((pokemon) => {
       return (
         <Card
