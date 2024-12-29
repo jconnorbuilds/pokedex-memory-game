@@ -13,7 +13,6 @@ import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokedexParallax from './usePokedexParallax.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
-import { div } from 'framer-motion/client';
 
 const LEVELS = ['easy', 'medium', 'hard'];
 const NUM_OF_GENERATIONS = 9;
@@ -39,7 +38,14 @@ export default function App() {
     'showStarters',
     Array(NUM_OF_GENERATIONS).fill(true),
   );
-  const [genCompletion, setGenCompletion] = useLocalStorage('genCompletion', {});
+  const [genCompletion, setGenCompletion] = useLocalStorage(
+    'genCompletion',
+    Object.fromEntries(
+      Array(NUM_OF_GENERATIONS)
+        .fill('')
+        .map((_, idx) => [idx + 1, []]),
+    ),
+  );
   const allPokemonInGeneration = usePokemon(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGeneration,
@@ -78,23 +84,6 @@ export default function App() {
     mousePos,
     handleMouseMove,
   );
-
-  // WRITE A BETTER SOLUTION FOR GEN COMPLETION ON GAME WIN
-  // useEffect(() => {
-  //   if (gameWon) {
-  //     const pokemonNames = pokemonInPlay.map((pkmn) => pkmn.data.name);
-  //     setGenCompletion((previous) => {
-  //       if (previous[generation]) {
-  //         return {
-  //           ...previous,
-  //           [generation]: [...previous[generation], ...pokemonNames],
-  //         };
-  //       } else {
-  //         return { ...previous, [generation]: pokemonNames };
-  //       }
-  //     });
-  //   }
-  // }, [gameWon, generation, ]);
 
   useEffect(() => {
     setSceneAngle(baseSceneRotation);
@@ -162,16 +151,27 @@ export default function App() {
     }
   };
 
-  const gameStatusCallback = useCallback((status) => {
-    if (status === 'win') {
-      setGameWon(true);
-      setGameOn(false);
-    } else if (status === 'lose') {
-      setGameOn(false);
-    } else {
-      console.log('Some other game state!!?');
-    }
-  }, []);
+  const gameStatusCallback = useCallback(
+    (status, data = {}) => {
+      if (status === 'win') {
+        setGameWon(true);
+        setGameOn(false);
+        // Adds NEW pokemon to the list.
+        // TODO: update this to keep track of the number of times each pkmn has been caught
+        setGenCompletion((prev) => {
+          return {
+            ...prev,
+            [generation]: [...new Set([...prev[generation], ...data['pokemon']])],
+          };
+        });
+      } else if (status === 'lose') {
+        setGameOn(false);
+      } else {
+        console.log('Some other game state!!?');
+      }
+    },
+    [generation, setGenCompletion],
+  );
 
   const renderAngleInputs = (labelPrefix, target, onChange) => {
     return (

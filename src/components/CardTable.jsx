@@ -22,7 +22,7 @@ export default function CardTable({ pokemon, gameWon, gameOn, gameStatusCallback
       setClickedIds(newClickedIds);
 
       if (newClickedIds.length === pokemon.length) {
-        gameStatusCallback('win');
+        gameStatusCallback('win', { pokemon: pokemon.map((pkmn) => pkmn.name) });
       } else {
         gameStatusCallback('playing');
         setHandId(handId + 1);
