@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import '../styles/App.css';
 import CardTable from './CardTable.jsx';
 import InputGroup from './InputGroup.jsx';
-import MenuButton from './MenuButton.jsx';
 import Pokedex from './Pokedex.jsx';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
@@ -245,11 +244,13 @@ export default function App() {
           >
             <PokedexBody pokemon={pokemonInPlay}></PokedexBody>
             <PokedexLid>
-              <GenerationSelect
-                handleSelect={handleGenerationSelect}
-                generation={generation}
-              />
-              <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
+              <section className="lid__menu-area">
+                <GenerationSelect
+                  handleSelect={handleGenerationSelect}
+                  generation={generation}
+                />
+                <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
+              </section>
               <div className="lid__display">
                 <p>Generation: {generation}</p>
                 <div>Pokémon caught</div>
