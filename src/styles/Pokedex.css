@@ -60,7 +60,7 @@
   right: 0;
   transform: translateZ(40px);
   transform-origin: center;
-  transition: transform 0.75s linear, right 1s ease-in-out;
+  transition: transform 400ms linear, right 1s ease-in-out;
 
   &:is(.pokedex--open) {
     /* Not sure why this the magic value to center the pokedex */
@@ -80,7 +80,6 @@
 
 .pokedex button {
   padding: 0;
-  /* border: none; */
 }
 
 .gen-container {
@@ -117,7 +116,6 @@
 .body__main .vert-edge,
 .body__main .horiz-edge {
   position: absolute;
-  /* opacity: 0.8; */
 }
 
 .body__main .face {

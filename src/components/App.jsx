@@ -10,7 +10,6 @@ import SetAngleInput from './SetAngleInput.jsx';
 import useGenSizes from './useGenSizes.jsx';
 import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
-import usePokedexParallax from './usePokedexParallax.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
@@ -23,6 +22,7 @@ const LEVELS = [
 const NUM_OF_GENERATIONS = 9;
 const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
 const SCENE_ROTATION_POKEDEX_OPEN = { x: 15, y: -10, z: 0 };
+// const SCENE_ROTATION_POKEDEX_OPEN = { x: 0, y: 0, z: 0 };
 
 const createSingleAxisRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
@@ -37,7 +37,7 @@ export default function App() {
   const [gameOn, setGameOn] = useState(true);
   const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
-  const [mousePos, setMousePos] = useState({ x: null, y: null });
+
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const [showStarters, setShowStarters] = useLocalStorage(
     'showStarters',
@@ -62,54 +62,18 @@ export default function App() {
     ? SCENE_ROTATION_POKEDEX_OPEN
     : SCENE_ROTATION_DEFAULT;
 
-  const throttle = (cb, delay = 150) => {
-    let shouldWait = false;
-
-    // Return the throttled function
-    return (...args) => {
-      if (shouldWait) return;
-
-      cb(...args);
-      shouldWait = true;
-
-      setTimeout(() => {
-        shouldWait = false;
-      }, delay);
-    };
-  };
-
-  // The mousemove event handler, throttled to limit re-renders
-  const handleMouseMove = useCallback(
-    throttle((e) => setMousePos((state) => ({ ...state, x: e.clientX, y: e.clientY }))),
-    [],
-  );
-
-  const { pokedexAngle, setPokedexAngle } = usePokedexParallax(
-    pokedexIsOpen,
-    mousePos,
-    handleMouseMove,
-  );
-
   useEffect(() => {
     setSceneAngle(baseSceneRotation);
-    setPokedexAngle({ x: 0, y: 0, z: 0 });
-  }, [pokedexIsOpen, setPokedexAngle, baseSceneRotation]);
+    // setPokedexAngle({ x: 0, y: 0, z: 0 });
+  }, [pokedexIsOpen, baseSceneRotation]);
 
   const setSceneRotation = createSingleAxisRotationSetter(setSceneAngle);
-  const setPokedexRotation = createSingleAxisRotationSetter(setPokedexAngle);
 
   const sceneTransform = {
     transform: `
   rotateY(${sceneAngle.y}deg)
   rotateX(${sceneAngle.x}deg)
   rotateZ(${sceneAngle.z}deg)`,
-  };
-
-  const pokedexTransform = {
-    transform: `
-  rotateX(${pokedexAngle.x}deg)
-  rotateY(${pokedexAngle.y}deg)
-  rotateZ(${pokedexAngle.z}deg)`,
   };
 
   const handleGenerationSelect = (e) => {
@@ -241,11 +205,7 @@ export default function App() {
             />
             <div className="game-result">{renderResultButton()}</div>
           </div>
-          <Pokedex
-            isOpen={pokedexIsOpen}
-            toggleOpen={toggleDexOpenClosed}
-            style={pokedexTransform}
-          >
+          <Pokedex isOpen={pokedexIsOpen} toggleOpen={toggleDexOpenClosed}>
             <PokedexBody
               pokemonInPlay={pokemonInPlay}
               pokemon={allPokemonInGen}
@@ -281,7 +241,7 @@ export default function App() {
           </div>
           <div className="toolbar__widget">
             <h2>Pokedex</h2>
-            {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)}
+            {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
           </div>
         </div>
       </footer>
