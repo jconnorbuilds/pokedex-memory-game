@@ -50,7 +50,6 @@ export default function usePokemon(generation) {
     const fetchPokemon = async () => {
       if (!ignore) {
         setIsLoading(true);
-        console.log('GETTING A NEW GENERATION');
         setAllPokemonInGen(null);
         const allPokemon = await fetchAllPokemonInGeneration(generation);
         const speciesURLs = getPokemonSpeciesURLs(allPokemon);

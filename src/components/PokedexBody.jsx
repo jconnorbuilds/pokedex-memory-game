@@ -1,4 +1,5 @@
 import LoadingBar from './LoadingBar.jsx';
+import MainDisplay from './MainDisplay.jsx';
 
 export default function PokedexBody({ pokemon, isLoading }) {
   const sprites = pokemon?.map((pkmn) => pkmn.data.sprites.other['home'].front_default);
@@ -6,6 +7,14 @@ export default function PokedexBody({ pokemon, isLoading }) {
   const nationalDexNumbers = pokemon?.map(
     (pokemon) => pokemon.speciesData.pokedex_numbers[0].entry_number,
   );
+
+  let progress;
+
+  if (isLoading) {
+    progress = 0;
+  } else {
+    progress = 100;
+  }
 
   return (
     <div className="pokedex__body pokedex-font">
@@ -30,14 +39,13 @@ export default function PokedexBody({ pokemon, isLoading }) {
           </div>
           <div className="screen screen--on">
             <div className="screen-frame">
-              <div className="screen-inner">
-                {true ? (
-                  <LoadingBar isLoading={isLoading} />
-                ) : (
-                  <>
+              <div id="screen-inner" className="screen-inner">
+                <div className="screen--loading">
+                  <LoadingBar isLoading={isLoading} progress={progress} wait={1000} />
+                  <MainDisplay isLoading={isLoading} wait={1000}>
                     <img
                       className="pokedex__pkmn-sprite"
-                      src={sprites ? sprites[0] : 'loading sprites...'}
+                      src={sprites ? sprites[0] : '#'}
                       alt="a pokemon"
                     />
                     <div className="screen-text">
@@ -50,8 +58,8 @@ export default function PokedexBody({ pokemon, isLoading }) {
                         </div>
                       </div>
                     </div>
-                  </>
-                )}
+                  </MainDisplay>
+                </div>
               </div>
             </div>
           </div>

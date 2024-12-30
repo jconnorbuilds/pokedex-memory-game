@@ -1,17 +1,15 @@
 import styles from '../styles/LoadingBar.module.css';
+import useDelay from './useDelay.jsx';
 
-export default function LoadingBar({ isLoading }) {
-  let loadingAnimationClass = styles.loadingBarInit;
-
-  if (!isLoading) {
-    console.log('hitting me');
-    setTimeout((loadingAnimationClass = styles.loadingBarFull), 2000);
-  }
+export default function LoadingBar({ isLoading, progress, wait }) {
+  const hideLoader = useDelay(isLoading, wait);
 
   return (
-    <div className="screen--loading">
+    <div className={hideLoader ? styles.hidden : ''}>
       <p>Loading...</p>
-      <div className={loadingAnimationClass}></div>
+      <div className={styles.progressBarOuter}>
+        <div className={styles.progressBar} style={{ width: `${progress}%` }}></div>
+      </div>
     </div>
   );
 }

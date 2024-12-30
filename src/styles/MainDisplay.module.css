@@ -1,0 +1,7 @@
+.mainContentLoading {
+  display: none;
+}
+
+.mainContentShown {
+  display: block;
+}
