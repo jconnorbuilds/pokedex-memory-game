@@ -1,20 +1,12 @@
 import LoadingBar from './LoadingBar.jsx';
 import MainDisplay from './MainDisplay.jsx';
 
-export default function PokedexBody({ pokemon, isLoading }) {
+export default function PokedexBody({ pokemon, isLoading, progress }) {
   const sprites = pokemon?.map((pkmn) => pkmn.data.sprites.other['home'].front_default);
   const names = pokemon?.map((pkmn) => pkmn.name);
   const nationalDexNumbers = pokemon?.map(
     (pokemon) => pokemon.speciesData.pokedex_numbers[0].entry_number,
   );
-
-  let progress;
-
-  if (isLoading) {
-    progress = 0;
-  } else {
-    progress = 100;
-  }
 
   return (
     <div className="pokedex__body pokedex-font">

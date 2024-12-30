@@ -7,8 +7,8 @@ const getPokemonSpeciesURLs = (pkmnBasicData) => {
 const fetchAllPokemonInGeneration = async (generation) => {
   try {
     const url = `https://pokeapi.co/api/v2/generation/${generation}`;
-    const result = await fetch(url);
-    const generationData = await result.json();
+    const response = await fetch(url);
+    const generationData = await response.json();
     const pokemonSpecies = generationData.pokemon_species;
 
     return pokemonSpecies;
@@ -45,17 +45,26 @@ export default function usePokemon(generation) {
   const [allPokemonInGen, setAllPokemonInGen] = useState(null);
   const [previousGen, setPreviousGen] = useState(generation);
   const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const fetchPokemon = async () => {
+      setProgress(0);
       if (!ignore) {
+        // Set to loading and invalidate previous pokemon
         setIsLoading(true);
         setAllPokemonInGen(null);
+
+        // Fetch data and track progress
         const allPokemon = await fetchAllPokemonInGeneration(generation);
+        setProgress(10);
         const speciesURLs = getPokemonSpeciesURLs(allPokemon);
         const speciesData = await fetchPokemonSpeciesData(speciesURLs);
+        setProgress(75);
         const pkmnData = await fetchPokemonData(speciesData.map((pokemon) => pokemon.id));
+        setProgress(90);
 
+        // Create the final data object
         const pokemon = speciesData.map((pkmn, idx) => ({
           name: pkmn.name,
           data: pkmnData[idx],
@@ -64,6 +73,7 @@ export default function usePokemon(generation) {
 
         setAllPokemonInGen(pokemon);
         setPreviousGen(generation);
+        setProgress(100);
         setIsLoading(false);
       }
     };
@@ -76,5 +86,5 @@ export default function usePokemon(generation) {
     };
   }, [generation, previousGen, allPokemonInGen]);
 
-  return { allPokemonInGen, isLoading };
+  return { allPokemonInGen, isLoading, progress };
 }

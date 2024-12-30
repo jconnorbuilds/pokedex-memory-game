@@ -51,7 +51,7 @@ export default function App() {
         .map((_, idx) => [idx + 1, []]),
     ),
   );
-  const { allPokemonInGen, isLoading } = usePokemon(generation);
+  const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGen,
     showStarters[generation - 1],
@@ -250,6 +250,7 @@ export default function App() {
               pokemonInPlay={pokemonInPlay}
               pokemon={allPokemonInGen}
               isLoading={isLoading}
+              progress={progress}
             ></PokedexBody>
             <PokedexLid>
               <section className="lid__menu-area">
