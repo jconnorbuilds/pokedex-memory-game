@@ -1,11 +1,6 @@
-import styles from '../styles/MainDisplay.module.css';
-import useDelay from './useDelay.jsx';
-
-export default function MainDisplay({ isLoading, wait, children }) {
-  const showContent = useDelay(isLoading, wait);
-
+export default function MainDisplay({ children }) {
   return (
-    <div className={showContent ? styles.mainContentShown : styles.mainContentLoading}>
+    <div id={'main-display'} className="main-display">
       {children}
     </div>
   );

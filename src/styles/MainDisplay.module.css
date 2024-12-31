@@ -10,7 +10,6 @@
 .mainContentShown {
   display: grid;
   grid-template-rows: 2rem minmax(0, 1fr) 2rem;
-  max-height: 100%;
 }
 
 .basicInfo {
@@ -22,16 +21,15 @@
 }
 
 /* 
-  TYPE DZ
+  TYPE DISPLAY
 */
 
 .typeInfo {
   display: flex;
-  height: auto;
-  width: 100%;
-  background-color: #000057bb;
+  height: 100%;
+  background-color: #1a1a1add;
   color: #eee;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   padding-inline: 0.5rem;
 }
 
@@ -49,9 +47,18 @@
   justify-content: center;
   text-shadow: 1px 1px 1px #0006;
   padding-inline: 0.5rem;
-
   box-shadow: #0002 2px 5px 3px 3px inset, #0002 1px -2px 4px 4px inset,
     #0006 1px -3px 4px 1px inset;
+}
+
+.typePillLoading {
+  composes: typePill;
+  --loading-color: #aaa;
+  background: linear-gradient(
+    to bottom right,
+    var(--loading-color) 50%,
+    hsl(from var(--loading-color) h s 80) 50%
+  );
 }
 
 .typePillGrass {

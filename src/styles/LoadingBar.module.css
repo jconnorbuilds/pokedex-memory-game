@@ -1,3 +1,8 @@
+.loadingWrapper {
+  width: auto;
+  justify-self: center;
+}
+
 .progressBarOuter {
   width: 100%;
   border: 2px solid #555;

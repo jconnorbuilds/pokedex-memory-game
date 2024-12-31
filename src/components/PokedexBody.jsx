@@ -1,9 +1,14 @@
 import LoadingBar from './LoadingBar.jsx';
 import MainDisplay from './MainDisplay.jsx';
+import LoadedContent from './LoadedContent.jsx';
+import LoadingContent from './LoadingContent.jsx';
 
 import pdxStyles from '../styles/MainDisplay.module.css'; // pokedex screen styles
+import useDelay from './useDelay.jsx';
 
 export default function PokedexBody({ pokemon, isLoading, progress }) {
+  const loadingFinished = useDelay(isLoading, 1000);
+  // const loadingFinished = false;
   const sprites = pokemon?.map((pkmn) => pkmn.data.sprites.other['home'].front_default);
   const names = pokemon?.map((pkmn) => pkmn.name);
   const nationalDexNumbers = pokemon?.map(
@@ -12,18 +17,25 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
 
   // if (pokemon) console.log(pokemon[0].data.types);
 
-  const renderTypeDisplay = () => {
-    return pokemon[0].data.types.map((typeInfo) => {
-      const typeName = typeInfo.type.name;
-      const typeClassName =
-        'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
-
+  const renderTypeDisplay = (loading) => {
+    if (loading) {
       return (
-        <div key={typeInfo.type.name} className={pdxStyles.type}>
-          <span className={pdxStyles[typeClassName]}>{typeName}</span>
+        <div className={pdxStyles.type}>
+          <span className={pdxStyles.typePillLoading}>---</span>
         </div>
       );
-    });
+    } else if (pokemon) {
+      return pokemon[0]?.data.types.map((typeInfo) => {
+        const typeName = typeInfo.type.name;
+        const typeClassName =
+          'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
+        return (
+          <div key={typeInfo.type.name} className={pdxStyles.type}>
+            <span className={pdxStyles[typeClassName]}>{typeName}</span>
+          </div>
+        );
+      });
+    }
   };
 
   return (
@@ -50,25 +62,32 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
           <div className="screen screen--on">
             <div className="screen-frame">
               <div id="screen-inner" className="screen-inner">
-                <LoadingBar isLoading={isLoading} progress={progress} wait={1000} />
-                <MainDisplay isLoading={isLoading} wait={1000}>
-                  <div className={pdxStyles.typeInfo}>
-                    {pokemon && renderTypeDisplay()}
-                  </div>
-
-                  <div className={pdxStyles.pokemonImg}>
-                    <img
-                      className={pdxStyles.sprite}
-                      src={sprites ? sprites[0] : '#'}
-                      alt="a pokemon"
-                    />
-                  </div>
-                  <div className={pdxStyles.basicInfo}>
-                    <div className="pokemon-info__name">{names ? names[0] : '...'}</div>
-                    <div className="pokemon-info__number">
-                      #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
+                <MainDisplay>
+                  <LoadingContent loadingFinished={loadingFinished}>
+                    <div className={pdxStyles.typeInfo}>
+                      {renderTypeDisplay(!loadingFinished)}
                     </div>
-                  </div>
+                    <LoadingBar loadingFinished={loadingFinished} progress={progress} />
+                  </LoadingContent>
+                  <LoadedContent loadingFinished={loadingFinished}>
+                    <div className={pdxStyles.typeInfo}>
+                      {renderTypeDisplay(!loadingFinished)}
+                    </div>
+
+                    <div className={pdxStyles.pokemonImg}>
+                      <img
+                        className={pdxStyles.sprite}
+                        src={sprites ? sprites[0] : '#'}
+                        alt="a pokemon"
+                      />
+                    </div>
+                    <div className={pdxStyles.basicInfo}>
+                      <div className="pokemon-info__name">{names ? names[0] : '...'}</div>
+                      <div className="pokemon-info__number">
+                        #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
+                      </div>
+                    </div>
+                  </LoadedContent>
                 </MainDisplay>
               </div>
             </div>
