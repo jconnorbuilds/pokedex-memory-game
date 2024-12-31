@@ -167,19 +167,19 @@
 .screen {
   width: 100%;
   height: 55%;
-  transform: translateZ(3px);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.2em;
 
-  &::after {
+  /* Turning off to make debugging easier */
+  /* &::after {
     content: '';
     position: absolute;
     width: 100%;
     height: 100%;
     background-image: linear-gradient(60deg, #9111 50%, #ccc2 50%);
-  }
+  } */
 }
 
 .screen--on {
@@ -188,7 +188,6 @@
 
 .screen--on .screen-inner {
   background-color: #ccf;
-  box-shadow: 0 0 6px 2px #fff4;
 }
 
 .screen-frame {
@@ -205,29 +204,12 @@
   background-color: #0a0a0a;
   display: flex;
   flex-direction: column;
-  padding: 0.5em;
+  max-height: 100%;
 }
 
 .screen-inner:has(.screen--loading) {
   justify-content: center;
   align-items: center;
-}
-
-.pokedex__pkmn-sprite {
-  margin: auto;
-  max-height: 100%;
-  max-width: 100%;
-  min-width: 100%;
-  object-fit: contain;
-  height: auto;
-  image-rendering: pixelated;
-  opacity: 0.8;
-}
-
-.pokemon-info {
-  display: flex;
-  padding: 0 10px;
-  justify-content: space-between;
 }
 
 /* -------------------------------

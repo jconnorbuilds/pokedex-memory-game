@@ -1,12 +1,30 @@
 import LoadingBar from './LoadingBar.jsx';
 import MainDisplay from './MainDisplay.jsx';
 
+import pdxStyles from '../styles/MainDisplay.module.css'; // pokedex screen styles
+
 export default function PokedexBody({ pokemon, isLoading, progress }) {
   const sprites = pokemon?.map((pkmn) => pkmn.data.sprites.other['home'].front_default);
   const names = pokemon?.map((pkmn) => pkmn.name);
   const nationalDexNumbers = pokemon?.map(
     (pokemon) => pokemon.speciesData.pokedex_numbers[0].entry_number,
   );
+
+  // if (pokemon) console.log(pokemon[0].data.types);
+
+  const renderTypeDisplay = () => {
+    return pokemon[0].data.types.map((typeInfo) => {
+      const typeName = typeInfo.type.name;
+      const typeClassName =
+        'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
+
+      return (
+        <div key={typeInfo.type.name} className={pdxStyles.type}>
+          <span className={pdxStyles[typeClassName]}>{typeName}</span>
+        </div>
+      );
+    });
+  };
 
   return (
     <div className="pokedex__body pokedex-font">
@@ -32,26 +50,26 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
           <div className="screen screen--on">
             <div className="screen-frame">
               <div id="screen-inner" className="screen-inner">
-                <div className="screen--loading">
-                  <LoadingBar isLoading={isLoading} progress={progress} wait={1000} />
-                  <MainDisplay isLoading={isLoading} wait={1000}>
+                <LoadingBar isLoading={isLoading} progress={progress} wait={1000} />
+                <MainDisplay isLoading={isLoading} wait={1000}>
+                  <div className={pdxStyles.typeInfo}>
+                    {pokemon && renderTypeDisplay()}
+                  </div>
+
+                  <div className={pdxStyles.pokemonImg}>
                     <img
-                      className="pokedex__pkmn-sprite"
+                      className={pdxStyles.sprite}
                       src={sprites ? sprites[0] : '#'}
                       alt="a pokemon"
                     />
-                    <div className="screen-text">
-                      <div className="pokemon-info">
-                        <div className="pokemon-info__name">
-                          {names ? names[0] : '...'}
-                        </div>
-                        <div className="pokemon-info__number">
-                          #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
-                        </div>
-                      </div>
+                  </div>
+                  <div className={pdxStyles.basicInfo}>
+                    <div className="pokemon-info__name">{names ? names[0] : '...'}</div>
+                    <div className="pokemon-info__number">
+                      #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
                     </div>
-                  </MainDisplay>
-                </div>
+                  </div>
+                </MainDisplay>
               </div>
             </div>
           </div>

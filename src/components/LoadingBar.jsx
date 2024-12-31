@@ -7,10 +7,12 @@ export default function LoadingBar({ isLoading, progress, wait }) {
   const loadingClass = isLoadingOrHidden ? styles.progressBar : styles.progressBarFull;
 
   return (
-    <div className={hideLoader ? styles.hidden : ''}>
-      <p>Loading...</p>
-      <div className={styles.progressBarOuter}>
-        <div className={loadingClass} style={{ width: `${progress}%` }}></div>
+    <div className="screen--loading">
+      <div className={hideLoader ? styles.hidden : ''}>
+        <p>Loading...</p>
+        <div className={styles.progressBarOuter}>
+          <div className={loadingClass} style={{ width: `${progress}%` }}></div>
+        </div>
       </div>
     </div>
   );
