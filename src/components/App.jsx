@@ -3,8 +3,6 @@ import '../styles/App.css';
 import CardTable from './CardTable.jsx';
 import InputGroup from './InputGroup.jsx';
 import Pokedex from './Pokedex.jsx';
-import PokedexBody from './PokedexBody.jsx';
-import PokedexLid from './PokedexLid.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
 import useGenSizes from './useGenSizes.jsx';
@@ -13,7 +11,6 @@ import usePokemon from './usePokemon.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
-import PokedexLidDisplay from './PokedexLidDisplay.jsx';
 
 const LEVELS = [
   { name: 'Easy', size: 4 },

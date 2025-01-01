@@ -17,12 +17,17 @@ export default function Pokedex({
 }) {
   const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
+  const [currentPokemon, setCurrentPokemon] = useState(null);
   const loadingFinished = useDelay(isLoading, 1000);
-  const [currentPokemon, setCurrentPokemon] = useState(pokemon ? pokemon[0] : null);
 
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
+  }
+
+  // Set the pokemon on initial load
+  if (pokemon && currentPokemon?.name !== pokemon[0].name) {
+    setCurrentPokemon(pokemon[0]);
   }
 
   const pokedexTransform = {

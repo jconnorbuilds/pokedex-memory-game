@@ -574,6 +574,7 @@
 .lid__main-content {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   padding: 0.75rem;
   height: 100%;
   border: 2px solid var(--dex-color-shade);
