@@ -1,10 +1,10 @@
 import styles from '../styles/MainDisplay.module.css';
 
-export default function LoadedContent({ loadingFinished, children }) {
+export default function LoadedContent({ isLoading, children }) {
   return (
     <div
       id="loaded-screen"
-      className={loadingFinished ? styles.mainContentShown : styles.mainContentLoading}
+      className={isLoading ? styles.mainContentLoading : styles.mainContentShown}
     >
       {children}
     </div>

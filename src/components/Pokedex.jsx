@@ -5,6 +5,8 @@ import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
 import PokedexLidDisplay from './PokedexLidDisplay.jsx';
 
+import useDelay from './useDelay.jsx';
+
 export default function Pokedex({
   pokemon,
   isOpen,
@@ -15,10 +17,8 @@ export default function Pokedex({
 }) {
   const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
-  // const [currentPokemon, setCurrentPokemon] = useState(pokemon ? pokemon[0] : null);
-  console.log(pokemon);
-
-  const currentPokemon = pokemon ? pokemon[0] : null;
+  const loadingFinished = useDelay(isLoading, 1000);
+  const [currentPokemon, setCurrentPokemon] = useState(pokemon ? pokemon[0] : null);
 
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
@@ -42,7 +42,7 @@ export default function Pokedex({
       >
         <PokedexBody
           pokemon={currentPokemon}
-          isLoading={isLoading}
+          isLoading={!loadingFinished}
           progress={progress}
         ></PokedexBody>
         <PokedexLid>

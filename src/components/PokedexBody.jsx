@@ -7,7 +7,6 @@ import pdxStyles from '../styles/MainDisplay.module.css'; // pokedex screen styl
 import useDelay from './useDelay.jsx';
 
 export default function PokedexBody({ pokemon, isLoading, progress }) {
-  const loadingFinished = useDelay(isLoading, 1000);
   // const loadingFinished = false;
   const sprite = pokemon?.data.sprites.other['home'].front_default;
   const name = pokemon?.name;
@@ -59,15 +58,15 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
             <div className="screen-frame">
               <div id="screen-inner" className="screen-inner">
                 <MainDisplay>
-                  <LoadingContent loadingFinished={loadingFinished}>
+                  <LoadingContent isLoading={isLoading}>
                     <div className={pdxStyles.typeInfo}>
-                      {renderTypeDisplay(!loadingFinished)}
+                      {renderTypeDisplay(isLoading)}
                     </div>
-                    <LoadingBar loadingFinished={loadingFinished} progress={progress} />
+                    <LoadingBar isLoading={isLoading} progress={progress} />
                   </LoadingContent>
-                  <LoadedContent loadingFinished={loadingFinished}>
+                  <LoadedContent isLoading={isLoading}>
                     <div className={pdxStyles.typeInfo}>
-                      {renderTypeDisplay(!loadingFinished)}
+                      {renderTypeDisplay(isLoading)}
                     </div>
 
                     <div className={pdxStyles.pokemonImg}>

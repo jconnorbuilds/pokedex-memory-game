@@ -1,12 +1,12 @@
 import styles from '../styles/LoadingBar.module.css';
 
-export default function LoadingBar({ loadingFinished, progress }) {
+export default function LoadingBar({ isLoading, progress }) {
   return (
     <div className={styles.loadingWrapper}>
       <p>Loading...</p>
       <div className={styles.progressBarOuter}>
         <div
-          className={loadingFinished ? styles.progressBarFull : styles.progressBar}
+          className={isLoading ? styles.progressBar : styles.progressBarFull}
           style={{ width: `${progress}%` }}
         ></div>
       </div>
