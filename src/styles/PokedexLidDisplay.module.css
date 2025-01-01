@@ -3,7 +3,10 @@
   color: #ddd;
   font-size: 1rem;
   height: 65%;
-  width: 100%;
+  width: calc (100% + 1.5rem + 4px);
+  margin: -0.75rem;
   background-color: #1a1a1a;
   border: 2px solid black;
+  display: flex;
+  align-items: start;
 }
