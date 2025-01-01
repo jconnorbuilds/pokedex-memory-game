@@ -1,10 +1,24 @@
 import '../styles/Pokedex.css';
 import { useState } from 'react';
 import usePokedexParallax from './usePokedexParallax.jsx';
+import PokedexBody from './PokedexBody.jsx';
+import PokedexLid from './PokedexLid.jsx';
+import PokedexLidDisplay from './PokedexLidDisplay.jsx';
 
-export default function Pokedex({ children, isOpen, toggleOpen }) {
+export default function Pokedex({
+  pokemon,
+  isOpen,
+  isLoading,
+  progress,
+  toggleOpen,
+  children,
+}) {
   const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
+  // const [currentPokemon, setCurrentPokemon] = useState(pokemon ? pokemon[0] : null);
+  console.log(pokemon);
+
+  const currentPokemon = pokemon ? pokemon[0] : null;
 
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
@@ -26,7 +40,15 @@ export default function Pokedex({ children, isOpen, toggleOpen }) {
         onClick={toggleOpen}
         style={pokedexTransform}
       >
-        {children}
+        <PokedexBody
+          pokemon={currentPokemon}
+          isLoading={isLoading}
+          progress={progress}
+        ></PokedexBody>
+        <PokedexLid>
+          <PokedexLidDisplay pokemon={currentPokemon}></PokedexLidDisplay>
+          {children}
+        </PokedexLid>
       </div>
     </div>
   );

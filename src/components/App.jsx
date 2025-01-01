@@ -13,6 +13,7 @@ import usePokemon from './usePokemon.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
+import PokedexLidDisplay from './PokedexLidDisplay.jsx';
 
 const LEVELS = [
   { name: 'Easy', size: 4 },
@@ -205,26 +206,20 @@ export default function App() {
             />
             <div className="game-result">{renderResultButton()}</div>
           </div>
-          <Pokedex isOpen={pokedexIsOpen} toggleOpen={toggleDexOpenClosed}>
-            <PokedexBody
-              pokemonInPlay={pokemonInPlay}
-              pokemon={allPokemonInGen}
-              isLoading={isLoading}
-              progress={progress}
-            ></PokedexBody>
-            <PokedexLid>
-              <section className="lid__menu-area">
-                <GenerationSelect
-                  handleSelect={handleGenerationSelect}
-                  generation={generation}
-                />
-                <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
-              </section>
-              <div className="lid__display">
-                <p>Generation: {generation}</p>
-                <div>Pokémon caught</div>
-              </div>
-            </PokedexLid>
+          <Pokedex
+            pokemon={allPokemonInGen}
+            isOpen={pokedexIsOpen}
+            isLoading={isLoading}
+            progress={progress}
+            toggleOpen={toggleDexOpenClosed}
+          >
+            <section className="lid__menu-area">
+              <GenerationSelect
+                handleSelect={handleGenerationSelect}
+                generation={generation}
+              />
+              <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
+            </section>
           </Pokedex>
         </div>
       </main>

@@ -9,13 +9,9 @@ import useDelay from './useDelay.jsx';
 export default function PokedexBody({ pokemon, isLoading, progress }) {
   const loadingFinished = useDelay(isLoading, 1000);
   // const loadingFinished = false;
-  const sprites = pokemon?.map((pkmn) => pkmn.data.sprites.other['home'].front_default);
-  const names = pokemon?.map((pkmn) => pkmn.name);
-  const nationalDexNumbers = pokemon?.map(
-    (pokemon) => pokemon.speciesData.pokedex_numbers[0].entry_number,
-  );
-
-  // if (pokemon) console.log(pokemon[0].data.types);
+  const sprite = pokemon?.data.sprites.other['home'].front_default;
+  const name = pokemon?.name;
+  const nationalDexNumber = pokemon?.speciesData.pokedex_numbers[0].entry_number;
 
   const renderTypeDisplay = (loading) => {
     if (loading) {
@@ -25,7 +21,7 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
         </div>
       );
     } else if (pokemon) {
-      return pokemon[0]?.data.types.map((typeInfo) => {
+      return pokemon?.data.types.map((typeInfo) => {
         const typeName = typeInfo.type.name;
         const typeClassName =
           'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
@@ -77,14 +73,14 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
                     <div className={pdxStyles.pokemonImg}>
                       <img
                         className={pdxStyles.sprite}
-                        src={sprites ? sprites[0] : '#'}
+                        src={sprite ? sprite : '#'}
                         alt="a pokemon"
                       />
                     </div>
                     <div className={pdxStyles.basicInfo}>
-                      <div className="pokemon-info__name">{names ? names[0] : '...'}</div>
+                      <div className="pokemon-info__name">{name ? name : '...'}</div>
                       <div className="pokemon-info__number">
-                        #{nationalDexNumbers ? nationalDexNumbers[0] : '...'}
+                        #{nationalDexNumber ? nationalDexNumber : '...'}
                       </div>
                     </div>
                   </LoadedContent>
