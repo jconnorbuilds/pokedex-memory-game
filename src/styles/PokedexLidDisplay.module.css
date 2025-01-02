@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Turret+Road:wght@200;300;400;500;700;800&display=swap');
+
 .lidDisplay {
-  padding-inline: 1ch;
+  font-family: 'Turret Road', sans-serif;
   color: #ddd;
   font-size: 1rem;
   height: 65%;
@@ -7,6 +9,18 @@
   margin: -0.75rem;
   background-color: #1a1a1a;
   border: 2px solid black;
-  display: flex;
-  align-items: start;
+}
+
+.statsMenu {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-content: center;
+}
+
+.statsMenu button {
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #444;
 }

@@ -8,14 +8,19 @@ import {
   Filler,
   Tooltip,
   Legend,
+  defaults,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import { useRef, useEffect } from 'react';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 export default function PokedexLidDisplay({ pokemon }) {
-  console.log(pokemon);
+  defaults.font.family = "'Turret Road', 'Roboto'";
+  defaults.font.weight = 500;
+
   const blankData = {};
+
   const stats = pokemon?.data.stats;
   const statNamesFormatted = stats?.map((stat) => {
     const statNames = {
@@ -58,29 +63,30 @@ export default function PokedexLidDisplay({ pokemon }) {
       r: {
         beginAtZero: true,
         angleLines: {
-          color: '#DDD',
+          color: '#AAA',
         },
         grid: {
-          color: '#444',
+          color: '#CCC',
         },
         pointLabels: {
           display: true,
           padding: 0,
+          color: '#888',
         },
         suggestedMax: 200,
         ticks: {
           backdropColor: '#0006',
           color: '#bbb',
+          textStrokeColor: 'green',
+          textStrokeWidth: 2,
         },
       },
     },
+
     plugins: {
       legend: {
         align: 'start',
         position: 'chartArea',
-        // padding: 50,
-        // height: 50,
-        // display: false,
       },
     },
   };
@@ -88,6 +94,10 @@ export default function PokedexLidDisplay({ pokemon }) {
   return (
     <>
       <div className={styles.lidDisplay}>
+        <div className={styles.statsMenu}>
+          <button>Stats</button>
+          <button>Compare</button>
+        </div>
         {pokemon ? <Radar data={data} options={options}></Radar> : null}
       </div>
     </>
