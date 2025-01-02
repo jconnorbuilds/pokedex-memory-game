@@ -6,7 +6,13 @@ import LoadingContent from './LoadingContent.jsx';
 import pdxStyles from '../styles/MainDisplay.module.css'; // pokedex screen styles
 import { useState } from 'react';
 
-export default function PokedexBody({ allPokemon, currentPokemon, isLoading, progress }) {
+export default function PokedexBody({
+  allPokemon,
+  currentPokemon,
+  setCurrentPokemon,
+  isLoading,
+  progress,
+}) {
   const [pokedexMode, setPokedexMode] = useState('list-mode');
 
   // const loadingFinished = false;
@@ -17,28 +23,42 @@ export default function PokedexBody({ allPokemon, currentPokemon, isLoading, pro
   const renderTypeDisplay = (loading) => {
     if (loading) {
       return (
-        <div className={pdxStyles.type}>
-          <span className={pdxStyles.typePillLoading}>---</span>
+        <div className={pdxStyles.types}>
+          <div className={pdxStyles.type}>
+            <span className={pdxStyles.typePillLoading}>---</span>
+          </div>
         </div>
       );
     } else if (currentPokemon) {
-      return currentPokemon?.data.types.map((typeInfo) => {
-        const typeName = typeInfo.type.name;
-        const typeClassName =
-          'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
-        return (
-          <div key={typeInfo.type.name} className={pdxStyles.type}>
-            <span className={pdxStyles[typeClassName]}>{typeName}</span>
+      return (
+        <>
+          <div className={pdxStyles.types}>
+            {currentPokemon?.data.types.map((typeInfo) => {
+              const typeName = typeInfo.type.name;
+              const typeClassName =
+                'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
+              return (
+                <div key={typeInfo.type.name} className={pdxStyles.type}>
+                  <span className={pdxStyles[typeClassName]}>{typeName}</span>
+                </div>
+              );
+            })}
           </div>
-        );
-      });
+          <button
+            onClick={() => setPokedexMode('list-mode')}
+            className={pdxStyles.showList}
+          >
+            Choose pkmn
+          </button>
+        </>
+      );
     }
   };
 
   const renderSinglePkmnMode = () => {
     return (
       <div className={pdxStyles.modeSinglePokemon}>
-        <div className={pdxStyles.typeInfo}>{renderTypeDisplay(isLoading)}</div>
+        <div className={pdxStyles.menuBar}>{renderTypeDisplay(isLoading)}</div>
         <div className={pdxStyles.pokemonImg}>
           <img className={pdxStyles.sprite} src={sprite ? sprite : '#'} alt="a pokemon" />
         </div>
@@ -56,7 +76,13 @@ export default function PokedexBody({ allPokemon, currentPokemon, isLoading, pro
     return (
       <div className={pdxStyles.pokemonList} tabIndex={0}>
         {allPokemon?.map((pkmn) => (
-          <button key={pkmn.name}>{pkmn.name}</button>
+          <button
+            onClick={(e) => selectPokemon(e.target.value)}
+            value={pkmn.name}
+            key={pkmn.name}
+          >
+            {pkmn.name}
+          </button>
         ))}
       </div>
     );
@@ -69,6 +95,14 @@ export default function PokedexBody({ allPokemon, currentPokemon, isLoading, pro
       return renderListMode();
     }
   };
+
+  const selectPokemon = (pokemonName) => {
+    console.log(pokemonName);
+    setCurrentPokemon(allPokemon.find((pkmn) => pkmn.name === pokemonName));
+    setPokedexMode('single-pkmn');
+  };
+
+  console.log('current mon:', currentPokemon);
 
   return (
     <div className="pokedex__body pokedex-font">
@@ -96,7 +130,7 @@ export default function PokedexBody({ allPokemon, currentPokemon, isLoading, pro
               <div id="screen-inner" className="screen-inner">
                 <MainDisplay>
                   <LoadingContent isLoading={isLoading}>
-                    <div className={pdxStyles.typeInfo}>
+                    <div className={pdxStyles.menuBar}>
                       {renderTypeDisplay(isLoading)}
                     </div>
                     <LoadingBar isLoading={isLoading} progress={progress} />

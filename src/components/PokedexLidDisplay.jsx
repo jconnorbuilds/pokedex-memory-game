@@ -63,20 +63,21 @@ export default function PokedexLidDisplay({ pokemon }) {
       r: {
         beginAtZero: true,
         angleLines: {
-          color: '#AAA',
+          color: ['rgba(75, 192, 192, 0.6)', 'rebeccapurple'],
+          lineWidth: 3,
         },
         grid: {
-          color: '#CCC',
+          color: '#888',
         },
         pointLabels: {
           display: true,
           padding: 0,
-          color: '#888',
+          color: '#CCC',
         },
-        suggestedMax: 200,
+        suggestedMax: 180,
         ticks: {
           backdropColor: '#0006',
-          color: '#bbb',
+          color: '#CCC',
           textStrokeColor: 'green',
           textStrokeWidth: 2,
         },

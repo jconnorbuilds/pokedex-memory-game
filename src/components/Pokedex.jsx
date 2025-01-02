@@ -26,9 +26,12 @@ export default function Pokedex({
   }
 
   // Set the pokemon on initial load
-  if (pokemon && currentPokemon?.name !== pokemon[0].name) {
+  if (pokemon && !currentPokemon) {
     setCurrentPokemon(pokemon[0]);
   }
+
+  // Invalidate the current pokemon when new pokemon are loaded
+  if (isLoading && currentPokemon) setCurrentPokemon(null);
 
   const pokedexTransform = {
     transform: `
@@ -50,6 +53,7 @@ export default function Pokedex({
           currentPokemon={currentPokemon}
           isLoading={!loadingFinished}
           progress={progress}
+          setCurrentPokemon={setCurrentPokemon}
         ></PokedexBody>
         <PokedexLid>
           <PokedexLidDisplay pokemon={currentPokemon}></PokedexLidDisplay>
