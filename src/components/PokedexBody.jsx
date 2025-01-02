@@ -4,13 +4,15 @@ import LoadedContent from './LoadedContent.jsx';
 import LoadingContent from './LoadingContent.jsx';
 
 import pdxStyles from '../styles/MainDisplay.module.css'; // pokedex screen styles
-import useDelay from './useDelay.jsx';
+import { useState } from 'react';
 
-export default function PokedexBody({ pokemon, isLoading, progress }) {
+export default function PokedexBody({ allPokemon, currentPokemon, isLoading, progress }) {
+  const [pokedexMode, setPokedexMode] = useState('list-mode');
+
   // const loadingFinished = false;
-  const sprite = pokemon?.data.sprites.other['home'].front_default;
-  const name = pokemon?.name;
-  const nationalDexNumber = pokemon?.speciesData.pokedex_numbers[0].entry_number;
+  const sprite = currentPokemon?.data.sprites.other['home'].front_default;
+  const name = currentPokemon?.name;
+  const nationalDexNumber = currentPokemon?.speciesData.pokedex_numbers[0].entry_number;
 
   const renderTypeDisplay = (loading) => {
     if (loading) {
@@ -19,8 +21,8 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
           <span className={pdxStyles.typePillLoading}>---</span>
         </div>
       );
-    } else if (pokemon) {
-      return pokemon?.data.types.map((typeInfo) => {
+    } else if (currentPokemon) {
+      return currentPokemon?.data.types.map((typeInfo) => {
         const typeName = typeInfo.type.name;
         const typeClassName =
           'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
@@ -30,6 +32,41 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
           </div>
         );
       });
+    }
+  };
+
+  const renderSinglePkmnMode = () => {
+    return (
+      <div className={pdxStyles.modeSinglePokemon}>
+        <div className={pdxStyles.typeInfo}>{renderTypeDisplay(isLoading)}</div>
+        <div className={pdxStyles.pokemonImg}>
+          <img className={pdxStyles.sprite} src={sprite ? sprite : '#'} alt="a pokemon" />
+        </div>
+        <div className={pdxStyles.basicInfo}>
+          <div className="pokemon-info__name">{name ? name : '...'}</div>
+          <div className="pokemon-info__number">
+            #{nationalDexNumber ? nationalDexNumber : '...'}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderListMode = () => {
+    return (
+      <div className={pdxStyles.pokemonList} tabIndex={0}>
+        {allPokemon?.map((pkmn) => (
+          <button key={pkmn.name}>{pkmn.name}</button>
+        ))}
+      </div>
+    );
+  };
+
+  const renderMainContent = (mode) => {
+    if (mode === 'single-pkmn') {
+      return renderSinglePkmnMode();
+    } else if (mode === 'list-mode') {
+      return renderListMode();
     }
   };
 
@@ -65,23 +102,7 @@ export default function PokedexBody({ pokemon, isLoading, progress }) {
                     <LoadingBar isLoading={isLoading} progress={progress} />
                   </LoadingContent>
                   <LoadedContent isLoading={isLoading}>
-                    <div className={pdxStyles.typeInfo}>
-                      {renderTypeDisplay(isLoading)}
-                    </div>
-
-                    <div className={pdxStyles.pokemonImg}>
-                      <img
-                        className={pdxStyles.sprite}
-                        src={sprite ? sprite : '#'}
-                        alt="a pokemon"
-                      />
-                    </div>
-                    <div className={pdxStyles.basicInfo}>
-                      <div className="pokemon-info__name">{name ? name : '...'}</div>
-                      <div className="pokemon-info__number">
-                        #{nationalDexNumber ? nationalDexNumber : '...'}
-                      </div>
-                    </div>
+                    {renderMainContent(pokedexMode)}
                   </LoadedContent>
                 </MainDisplay>
               </div>

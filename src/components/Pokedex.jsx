@@ -46,7 +46,8 @@ export default function Pokedex({
         style={pokedexTransform}
       >
         <PokedexBody
-          pokemon={currentPokemon}
+          allPokemon={pokemon}
+          currentPokemon={currentPokemon}
           isLoading={!loadingFinished}
           progress={progress}
         ></PokedexBody>
