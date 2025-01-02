@@ -5,7 +5,7 @@ export default function usePokedexParallax(pokedexIsOpen) {
 
   const setParallax = useCallback((e) => {
     // Sensitivity (range of motion in degrees) for X and Y directions
-    const sensX = 50;
+    const sensX = 10;
     const sensY = 50;
     if (e.target.closest('#pokedex')) {
       // TODO: Set the parallax angle based on the position on the pokedex rather than client
