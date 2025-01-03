@@ -11,6 +11,7 @@ import usePokemon from './usePokemon.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
+import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
 
 const LEVELS = [
   { name: 'Easy', size: 4 },
@@ -113,7 +114,6 @@ export default function App() {
   const resetGame = () => {
     const startersShown = showStarters[generation - 1];
 
-    console.log('resetting game');
     setGameWon(false);
     setGameOn(true);
 
@@ -203,19 +203,28 @@ export default function App() {
             <div className="game-result">{renderResultButton()}</div>
           </div>
           <Pokedex
-            pokemon={allPokemonInGen}
+            allPokemon={allPokemonInGen}
             isOpen={pokedexIsOpen}
             isLoading={isLoading}
             progress={progress}
             toggleOpen={toggleDexOpenClosed}
+            handleGenerationSelect={handleGenerationSelect}
+            handleLevelSelect={handleLevelSelect}
+            generation={generation}
+            levels={LEVELS}
           >
-            <section className="lid__menu-area">
+            <GameOptionsMenu
+              handleGenerationSelect={handleGenerationSelect}
+              handleLevelSelect={handleLevelSelect}
+              generation={generation}
+              levels={LEVELS}
+            >
               <GenerationSelect
                 handleSelect={handleGenerationSelect}
                 generation={generation}
-              />
+              ></GenerationSelect>
               <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
-            </section>
+            </GameOptionsMenu>
           </Pokedex>
         </div>
       </main>

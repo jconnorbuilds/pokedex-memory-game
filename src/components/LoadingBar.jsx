@@ -1,8 +1,8 @@
 import styles from '../styles/LoadingBar.module.css';
 
-export default function LoadingBar({ isLoading, progress }) {
+export default function LoadingBar({ isLoading, hide, progress }) {
   return (
-    <div className={styles.loadingWrapper}>
+    <div className={hide ? styles.hidden : styles.loadingWrapper}>
       <p>Loading...</p>
       <div className={styles.progressBarOuter}>
         <div

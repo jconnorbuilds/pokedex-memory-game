@@ -4,11 +4,12 @@ import usePokedexParallax from './usePokedexParallax.jsx';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
 import PokedexLidDisplay from './PokedexLidDisplay.jsx';
+import MainDisplay from './MainDisplay.jsx';
 
 import useDelay from './useDelay.jsx';
 
 export default function Pokedex({
-  pokemon,
+  allPokemon,
   isOpen,
   isLoading,
   progress,
@@ -26,8 +27,8 @@ export default function Pokedex({
   }
 
   // Set the pokemon on initial load
-  if (pokemon && !currentPokemon) {
-    setCurrentPokemon(pokemon[0]);
+  if (allPokemon && !currentPokemon) {
+    setCurrentPokemon(allPokemon[0]);
   }
 
   // Invalidate the current pokemon when new pokemon are loaded
@@ -48,13 +49,16 @@ export default function Pokedex({
         onClick={toggleOpen}
         style={pokedexTransform}
       >
-        <PokedexBody
-          allPokemon={pokemon}
-          currentPokemon={currentPokemon}
-          isLoading={!loadingFinished}
-          progress={progress}
-          setCurrentPokemon={setCurrentPokemon}
-        ></PokedexBody>
+        <PokedexBody>
+          <MainDisplay
+            allPokemon={allPokemon}
+            currentPokemon={currentPokemon}
+            isLoading={isLoading}
+            loadingFinished={loadingFinished}
+            progress={progress}
+            setCurrentPokemon={setCurrentPokemon}
+          ></MainDisplay>
+        </PokedexBody>
         <PokedexLid>
           <PokedexLidDisplay pokemon={currentPokemon}></PokedexLidDisplay>
           {children}
