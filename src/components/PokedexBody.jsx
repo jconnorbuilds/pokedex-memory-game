@@ -57,8 +57,7 @@ export default function PokedexBody({
 
   const renderSinglePkmnMode = () => {
     return (
-      <div className={pdxStyles.modeSinglePokemon}>
-        <div className={pdxStyles.menuBar}>{renderTypeDisplay(isLoading)}</div>
+      <>
         <div className={pdxStyles.pokemonImg}>
           <img className={pdxStyles.sprite} src={sprite ? sprite : '#'} alt="a pokemon" />
         </div>
@@ -68,23 +67,26 @@ export default function PokedexBody({
             #{nationalDexNumber ? nationalDexNumber : '...'}
           </div>
         </div>
-      </div>
+      </>
     );
   };
 
   const renderListMode = () => {
     return (
-      <div className={pdxStyles.pokemonList} tabIndex={0}>
-        {allPokemon?.map((pkmn) => (
-          <button
-            onClick={(e) => selectPokemon(e.target.value)}
-            value={pkmn.name}
-            key={pkmn.name}
-          >
-            {pkmn.name}
-          </button>
-        ))}
-      </div>
+      <>
+        {/* <div className={pdxStyles.menuBar}>{renderTypeDisplay(isLoading)}</div> */}
+        <div className={pdxStyles.pokemonList} tabIndex={0}>
+          {allPokemon?.map((pkmn) => (
+            <button
+              onClick={(e) => selectPokemon(e.target.value)}
+              value={pkmn.name}
+              key={pkmn.name}
+            >
+              {pkmn.name}
+            </button>
+          ))}
+        </div>
+      </>
     );
   };
 
@@ -129,8 +131,8 @@ export default function PokedexBody({
           </div>
           <div className="screen screen--on">
             <MainDisplay>
+              <div className={pdxStyles.menuBar}>{renderTypeDisplay(isLoading)}</div>
               <LoadingContent isLoading={isLoading}>
-                <div className={pdxStyles.menuBar}>{renderTypeDisplay(isLoading)}</div>
                 <LoadingBar isLoading={isLoading} progress={progress} />
               </LoadingContent>
               <LoadedContent isLoading={isLoading}>

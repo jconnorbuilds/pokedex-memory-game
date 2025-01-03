@@ -5,6 +5,6 @@
 .shown {
   display: grid;
   width: 100%;
-  grid-template-rows: 2rem minmax(0, 1fr);
+  grid-template-rows: max-content minmax(0, 1fr);
   align-items: center;
 }
