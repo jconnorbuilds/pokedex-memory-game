@@ -20,7 +20,6 @@ const LEVELS = [
 const NUM_OF_GENERATIONS = 9;
 const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
 const SCENE_ROTATION_POKEDEX_OPEN = { x: 15, y: -10, z: 0 };
-// const SCENE_ROTATION_POKEDEX_OPEN = { x: 0, y: 0, z: 0 };
 
 const createSingleAxisRotationSetter = (setState) => {
   return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));

@@ -13,7 +13,7 @@ export default function PokedexBody({
   isLoading,
   progress,
 }) {
-  const [pokedexMode, setPokedexMode] = useState('list-mode');
+  const [pokedexMode, setPokedexMode] = useState('single-pkmn');
 
   // const loadingFinished = false;
   const sprite = currentPokemon?.data.sprites.other['home'].front_default;
@@ -97,16 +97,18 @@ export default function PokedexBody({
   };
 
   const selectPokemon = (pokemonName) => {
-    console.log(pokemonName);
     setCurrentPokemon(allPokemon.find((pkmn) => pkmn.name === pokemonName));
     setPokedexMode('single-pkmn');
   };
 
-  console.log('current mon:', currentPokemon);
-
   return (
     <div className="pokedex__body pokedex-font">
       <div className="body__main">
+        <div className="body__main__back face"></div>
+        <div className="body__main__bottom horiz-edge"></div>
+        <div className="body__main__left vert-edge"></div>
+        <div className="body__main__right vert-edge"></div>
+        <div className="body__main__top horiz-edge"></div>
         <div className="body__main__front face">
           <div className="body__upper-overhang">
             <div className="upper-overhang__front face">
@@ -118,29 +120,23 @@ export default function PokedexBody({
               </svg>
             </div>
 
-            <div className="upper-overhang__left vert-edge"></div>
-            <div className="upper-overhang__right vert-edge"></div>
-            <div className="upper-overhang__top horiz-edge"></div>
             <div className="upper-overhang__bottom flat1 horiz-edge"></div>
             <div className="upper-overhang__bottom flat2 horiz-edge"></div>
             <div className="upper-overhang__bottom slant1 horiz-edge"></div>
+            <div className="upper-overhang__left vert-edge"></div>
+            <div className="upper-overhang__right vert-edge"></div>
+            <div className="upper-overhang__top horiz-edge"></div>
           </div>
           <div className="screen screen--on">
-            <div className="screen-frame">
-              <div id="screen-inner" className="screen-inner">
-                <MainDisplay>
-                  <LoadingContent isLoading={isLoading}>
-                    <div className={pdxStyles.menuBar}>
-                      {renderTypeDisplay(isLoading)}
-                    </div>
-                    <LoadingBar isLoading={isLoading} progress={progress} />
-                  </LoadingContent>
-                  <LoadedContent isLoading={isLoading}>
-                    {renderMainContent(pokedexMode)}
-                  </LoadedContent>
-                </MainDisplay>
-              </div>
-            </div>
+            <MainDisplay>
+              <LoadingContent isLoading={isLoading}>
+                <div className={pdxStyles.menuBar}>{renderTypeDisplay(isLoading)}</div>
+                <LoadingBar isLoading={isLoading} progress={progress} />
+              </LoadingContent>
+              <LoadedContent isLoading={isLoading}>
+                {renderMainContent(pokedexMode)}
+              </LoadedContent>
+            </MainDisplay>
           </div>
           <div className="body__buttons">
             <div className="buttons__dpad"></div>
@@ -150,11 +146,6 @@ export default function PokedexBody({
             </div>
           </div>
         </div>
-        <div className="body__main__left vert-edge"></div>
-        <div className="body__main__right vert-edge"></div>
-        <div className="body__main__top horiz-edge"></div>
-        <div className="body__main__bottom horiz-edge"></div>
-        <div className="body__main__back face"></div>
       </div>
     </div>
   );

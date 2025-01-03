@@ -5,17 +5,17 @@
 }
 
 .mainContentShown {
-  flex: 1;
-  display: flex;
-  min-width: 100%;
-  /* height: 100%; */
-  /* max-height: 100%; */
+  /* display: flex; */
+  height: 100%;
 }
 
 .modeSinglePokemon {
   display: grid;
   flex: 1;
-  grid-template-rows: 2rem minmax(0, 1fr) 2rem;
+  height: 100%;
+  max-height: 100%;
+  line-height: 1.25;
+  grid-template-rows: 1lh minmax(0, 1fr) 1lh;
 }
 
 .basicInfo {
@@ -23,7 +23,7 @@
   align-items: center;
   padding-inline: 0.5rem;
   justify-content: space-between;
-  font-size: 1rem;
+  /* font-size: 1rem; */
 }
 
 /* 
@@ -104,38 +104,32 @@
   );
 }
 
-.pokemonImg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-block-width: 10px;
-  /* width: 100%; */
+.pokemonImg img {
+  max-width: 100%;
+  height: auto;
+  /* max-height: 100%; */
+  padding: 0.5rem;
 }
 
 .sprite {
   opacity: 0.8;
   max-width: 100%;
   height: auto;
+  max-height: 100%;
 }
 
 .pokemonList {
-  position: relative;
-  display: block;
   padding-inline: 0.5rem;
   min-width: 100%;
-  max-height: 100%;
   font-size: 1rem;
-  /* overflow-y: scroll; */
-
-  /* overscroll-behavior: contain; */
-  /* will-change: transform; */
+  display: flex;
+  flex-direction: column;
 }
 
-.pokemonList button {
+.pokemonList > * {
+  flex: 1;
   display: block;
   border: none;
-  width: 100%;
-  max-height: 100%;
   border-radius: 0;
   background-color: inherit;
   color: inherit;

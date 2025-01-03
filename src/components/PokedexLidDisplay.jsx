@@ -11,7 +11,6 @@ import {
   defaults,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
-import { useRef, useEffect } from 'react';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 

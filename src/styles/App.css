@@ -30,12 +30,11 @@
   transition: transform 1s linear;
   width: 100vw;
   position: relative;
-  z-index: 1;
   /* background-color: rebeccapurple; */
 
   &:has(.pokedex--open) {
     /* Allows pokedex to appear perfectly rectangular with no skewing */
-    perspective: none;
+    /* perspective: none; */
   }
 }
 
@@ -141,6 +140,7 @@ header .input-group {
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
+  /* display: none; */
 }
 
 .card {
@@ -287,7 +287,7 @@ hr {
 
   &:has(+ .pokedex-wrapper .pokedex--open) {
     opacity: 0;
-    visibility: hidden;
+    display: hidden;
   }
 }
 
