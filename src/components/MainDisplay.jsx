@@ -25,8 +25,6 @@ export default function MainDisplay({
     setPokedexMode('single-pkmn');
   };
 
-  console.log('LOADING FINISHED? ', loadingFinished);
-
   const renderSinglePkmnMode = () => {
     return (
       <>
@@ -45,20 +43,17 @@ export default function MainDisplay({
 
   const renderListMode = () => {
     return (
-      <>
-        {/* <div className={pdxStyles.menuBar}>{renderTypeDisplay(isLoading)}</div> */}
-        <div className={pdxStyles.pokemonList} tabIndex={0}>
-          {allPokemon?.map((pkmn) => (
-            <button
-              onClick={(e) => selectPokemon(e.target.value)}
-              value={pkmn.name}
-              key={pkmn.name}
-            >
-              {pkmn.name}
-            </button>
-          ))}
-        </div>
-      </>
+      <div className={pdxStyles.pokemonList} tabIndex={0}>
+        {allPokemon?.map((pkmn) => (
+          <button
+            onClick={(e) => selectPokemon(e.target.value)}
+            value={pkmn.name}
+            key={pkmn.name}
+          >
+            {pkmn.name}
+          </button>
+        ))}
+      </div>
     );
   };
 

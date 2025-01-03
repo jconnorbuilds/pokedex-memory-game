@@ -2,37 +2,33 @@ import styles from '../styles/MainDisplay.module.css';
 
 function TypePill({ typeInfo }) {
   {
-    const typeName = typeInfo ? typeInfo.type.name : null;
-    const typeClassName = typeInfo
-      ? 'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1)
-      : 'typePillLoading';
+    const typeName = typeInfo?.type?.name ?? '---';
+    const isUnknownType = typeName === '---';
+
+    const typeClassName = isUnknownType
+      ? 'typePillLoading'
+      : 'typePill' + typeName.charAt(0).toUpperCase() + typeName.slice(1);
+
     return (
       <div className={styles.type}>
-        <span className={styles[typeClassName]}>{typeName || '---'}</span>
+        <span className={styles[typeClassName]}>{typeName}</span>
       </div>
     );
   }
 }
 
 export default function PokemonTypes({ currentPokemon, loadingFinished }) {
-  const types = currentPokemon?.data.types || null;
+  // Set types to an empty array if still loading, but this implementation might be buggy...
+  const types = loadingFinished ? currentPokemon?.data.types : [];
   const renderTypePill = (data) => {
     return data.map((typeInfo) => (
-      <TypePill
-        key={typeInfo ? typeInfo.type.name : 0}
-        typeInfo={typeInfo || null}
-        styles={styles}
-      />
+      <TypePill key={typeInfo ? typeInfo.type.name : 0} typeInfo={typeInfo || null} />
     ));
   };
 
   return (
     <div className={styles.types}>
-      {types && loadingFinished ? (
-        renderTypePill(types)
-      ) : (
-        <TypePill typeInfo={null} styles={styles} />
-      )}
+      {types?.length ? renderTypePill(types) : <TypePill typeInfo={null} />}
     </div>
   );
 }

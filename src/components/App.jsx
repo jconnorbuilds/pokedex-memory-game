@@ -208,17 +208,8 @@ export default function App() {
             isLoading={isLoading}
             progress={progress}
             toggleOpen={toggleDexOpenClosed}
-            handleGenerationSelect={handleGenerationSelect}
-            handleLevelSelect={handleLevelSelect}
-            generation={generation}
-            levels={LEVELS}
           >
-            <GameOptionsMenu
-              handleGenerationSelect={handleGenerationSelect}
-              handleLevelSelect={handleLevelSelect}
-              generation={generation}
-              levels={LEVELS}
-            >
+            <GameOptionsMenu>
               <GenerationSelect
                 handleSelect={handleGenerationSelect}
                 generation={generation}

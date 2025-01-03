@@ -57,10 +57,10 @@ export default function Pokedex({
             loadingFinished={loadingFinished}
             progress={progress}
             setCurrentPokemon={setCurrentPokemon}
-          ></MainDisplay>
+          />
         </PokedexBody>
         <PokedexLid>
-          <PokedexLidDisplay pokemon={currentPokemon}></PokedexLidDisplay>
+          <PokedexLidDisplay pokemon={currentPokemon} />
           {children}
         </PokedexLid>
       </div>
