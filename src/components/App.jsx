@@ -13,6 +13,11 @@ import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
 import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
 import UseScore from './UseScore.jsx';
+import Scene from './Scene.jsx';
+import useSceneRotation from './useSceneRotation.jsx';
+import GameArea from './GameArea.jsx';
+import Button from './Button.jsx';
+import GameResult from './GameResult.jsx';
 
 const LEVELS = [
   { name: 'Easy', size: 4 },
@@ -21,22 +26,17 @@ const LEVELS = [
 ];
 
 const NUM_OF_GENERATIONS = 9;
-const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
-const SCENE_ROTATION_POKEDEX_OPEN = { x: 15, y: -10, z: 0 };
-
-const createSingleAxisRotationSetter = (setState) => {
-  return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
-};
 
 export default function App() {
   const [level, setLevel] = useState(LEVELS.find((l) => l.name === 'Easy'));
   const [generation, setGeneration] = useState(1);
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
-  const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
+
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { score, best, incrementScore, resetScore } = UseScore();
+  const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
 
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const [showStarters, setShowStarters] = useLocalStorage(
@@ -51,30 +51,13 @@ export default function App() {
         .map((_, idx) => [idx + 1, []]),
     ),
   );
+
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGen,
     showStarters[generation - 1],
     level.size,
   );
-
-  const baseSceneRotation = pokedexIsOpen
-    ? SCENE_ROTATION_POKEDEX_OPEN
-    : SCENE_ROTATION_DEFAULT;
-
-  useEffect(() => {
-    setSceneAngle(baseSceneRotation);
-    // setPokedexAngle({ x: 0, y: 0, z: 0 });
-  }, [pokedexIsOpen, baseSceneRotation]);
-
-  const setSceneRotation = createSingleAxisRotationSetter(setSceneAngle);
-
-  const sceneTransform = {
-    transform: `
-  rotateY(${sceneAngle.y}deg)
-  rotateX(${sceneAngle.x}deg)
-  rotateZ(${sceneAngle.z}deg)`,
-  };
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
@@ -145,7 +128,7 @@ export default function App() {
     [generation, setGenCompletion, incrementScore, resetScore],
   );
 
-  const renderAngleInputs = (labelPrefix, target, onChange) => {
+  function AngleInputs({ labelPrefix, target, onChange }) {
     return (
       <InputGroup>
         {['x', 'y', 'z'].map((axis) => {
@@ -161,35 +144,17 @@ export default function App() {
         })}
       </InputGroup>
     );
-  };
-
-  const renderResultButton = () => {
-    const gameLost = !gameOn && !gameWon;
-    return (
-      <div className="game-result">
-        {gameWon && <p>You win!</p>}
-        {gameLost && <p>You lose! </p>}
-        {!gameOn && (
-          <button className="play-again" onClick={resetGame}>
-            Play again
-          </button>
-        )}
-      </div>
-    );
-  };
+  }
 
   // return <div>under construction </div>;
   return (
     <div className="app">
-      <header className="header container">
-        <Scoreboard scores={{ score, best }} />
-      </header>
       <main className="container">
-        <div id="scene" className="scene" style={sceneTransform}>
-          <div
-            className="game-area"
-            style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
-          >
+        <header className="header container">
+          <Scoreboard scores={{ score, best }} />
+        </header>
+        <Scene rotation={sceneRotation}>
+          <GameArea pokedexIsOpen={pokedexIsOpen}>
             <CardTable
               pokemon={pokemonInPlay}
               gameWon={gameWon}
@@ -197,8 +162,12 @@ export default function App() {
               generation={generation}
               gameStatusCallback={gameStatusCallback}
             />
-            <div className="game-result">{renderResultButton()}</div>
-          </div>
+            <GameResult>
+              <Button action={resetGame} styles="game-result">
+                Play Again
+              </Button>
+            </GameResult>
+          </GameArea>
           <Pokedex
             allPokemon={allPokemonInGen}
             isOpen={pokedexIsOpen}
@@ -214,25 +183,29 @@ export default function App() {
               <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
             </GameOptionsMenu>
           </Pokedex>
-        </div>
+        </Scene>
+        <footer className="footer container">
+          <div className="placeholder">
+            <p>
+              ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>
+            </p>
+          </div>
+          <div className="dev-toolbar">
+            <div className="toolbar__widget">
+              <h2>Scene</h2>
+              <AngleInputs
+                labelPrefix={'scene'}
+                target={sceneRotation}
+                onChange={setSceneRotationAxis}
+              ></AngleInputs>
+            </div>
+            <div className="toolbar__widget">
+              <h2>Pokedex</h2>
+              {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
+            </div>
+          </div>
+        </footer>
       </main>
-      <footer className="footer container">
-        <div className="placeholder">
-          <p>
-            ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>
-          </p>
-        </div>
-        <div className="dev-toolbar">
-          <div className="toolbar__widget">
-            <h2>Scene</h2>
-            {renderAngleInputs('scene', sceneAngle, setSceneRotation)}
-          </div>
-          <div className="toolbar__widget">
-            <h2>Pokedex</h2>
-            {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
