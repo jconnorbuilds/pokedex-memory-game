@@ -6,7 +6,10 @@ export default function CardTable({
   gameWon,
   gameOn,
   generation,
-  gameStatusCallback,
+  incrementScore,
+  resetScore,
+  updateGameProgress,
+  reportGameStatus,
 }) {
   const [clickedIds, setClickedIds] = useState([]);
   const [handId, setHandId] = useState(0);
@@ -32,17 +35,21 @@ export default function CardTable({
     const successfulChoice = !clickedIds.includes(id);
 
     if (successfulChoice) {
+      incrementScore();
+
       const newClickedIds = clickedIds.concat([id]);
       setClickedIds(newClickedIds);
 
       if (newClickedIds.length === pokemon.length) {
-        gameStatusCallback('win', { pokemon: pokemon.map((pkmn) => pkmn.name) });
+        updateGameProgress({ pokemon: pokemon.map((pkmn) => pkmn.name) }, generation);
+        reportGameStatus('win');
       } else {
-        gameStatusCallback('playing');
+        reportGameStatus('playing');
         setHandId(handId + 1);
       }
     } else {
-      gameStatusCallback('lose');
+      reportGameStatus('lose');
+      resetScore();
     }
   };
 

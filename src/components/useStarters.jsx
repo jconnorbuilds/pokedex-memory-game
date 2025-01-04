@@ -1,21 +1,21 @@
 import { NUM_OF_GENERATIONS } from './constants.js';
 import useLocalStorage from './useLocalStorage.jsx';
 
-export default function useStarters() {
+// Is this hook necessary?
+export default function useStarters(currentGen) {
   const [showStarters, setShowStarters] = useLocalStorage(
-    'showStarters',
+    'drawStarters',
     Array(NUM_OF_GENERATIONS).fill(true),
   );
 
-  const shouldShowStartersForGen = (gen) => {
-    return showStarters[gen - 1];
-  };
+  const drawStarters = showStarters[currentGen - 1];
 
-  const hideStartersForGen = (gen) => {
+  const dontDrawStarters = () => {
     const newStarters = showStarters.map((show, idx) =>
-      idx + 1 === +gen ? false : show,
+      idx + 1 === +currentGen ? false : show,
     );
     setShowStarters(newStarters);
   };
-  return { shouldShowStartersForGen, hideStartersForGen };
+
+  return { drawStarters, dontDrawStarters };
 }

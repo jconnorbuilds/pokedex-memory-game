@@ -20,31 +20,35 @@ import useGameProgress from './useGameProgress.jsx';
 
 import * as Game from './constants.js';
 import useStarters from './useStarters.jsx';
+import useGameStatus from './useGameStatus.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'Easy'));
   const [generation, setGeneration] = useState(1);
-  const [gameWon, setGameWon] = useState(false);
-  const [gameOn, setGameOn] = useState(true);
-
-  const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
+  const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
 
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
   const { updateGameProgress } = useGameProgress();
-  const { shouldShowStartersForGen, hideStartersForGen } = useStarters({ generation });
+  const { drawStarters, dontDrawStarters } = useStarters(generation);
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGen,
-    generation,
+    drawStarters,
     level.size,
   );
+  const { gameOn, gameWon, nextGame, getGameStatus, reportGameStatus, setGameStatus } =
+    useGameStatus({
+      drawStarters,
+      dontDrawStarters,
+      requestNewPokemon,
+    });
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
       setGeneration(e.target.value);
       requestNewPokemon();
-      resetGame();
+      nextGame();
     }
   };
 
@@ -52,7 +56,7 @@ export default function App() {
     if (e.target.tagName === 'BUTTON') {
       setLevel(Game.LEVELS.find((l) => l.name === e.target.value));
       requestNewPokemon();
-      resetGame();
+      nextGame();
     }
   };
 
@@ -64,38 +68,6 @@ export default function App() {
       }
     },
     [pokedexIsOpen],
-  );
-
-  const resetGame = () => {
-    const startersShown = shouldShowStartersForGen(generation);
-
-    setGameWon(false);
-    setGameOn(true);
-
-    if (gameWon) {
-      if (startersShown) hideStartersForGen(generation);
-      requestNewPokemon();
-    }
-  };
-
-  // TODO: reset score to 0 when the generation changes mid-hand
-  const gameStatusCallback = useCallback(
-    (status, data = {}) => {
-      if (status === 'win') {
-        incrementScore();
-        setGameWon(true);
-        setGameOn(false);
-
-        // Adds NEW pokemon to the list.
-        updateGameProgress(data, generation);
-      } else if (status === 'lose') {
-        setGameOn(false);
-        resetScore();
-      } else if (status === 'playing') {
-        incrementScore();
-      }
-    },
-    [generation, updateGameProgress, incrementScore, resetScore],
   );
 
   function AngleInputs({ labelPrefix, target, onChange }) {
@@ -130,10 +102,14 @@ export default function App() {
               gameWon={gameWon}
               gameOn={gameOn}
               generation={generation}
-              gameStatusCallback={gameStatusCallback}
+              incrementScore={incrementScore}
+              resetScore={resetScore}
+              updateGameProgress={updateGameProgress}
+              reportGameStatus={reportGameStatus}
+              setGameStatus={setGameStatus}
             />
             <GameResult gameOn={gameOn} gameWon={gameWon}>
-              <Button action={resetGame} styles="game-result">
+              <Button action={nextGame} styles="game-result">
                 Play Again
               </Button>
             </GameResult>
