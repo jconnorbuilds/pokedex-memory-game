@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
+import useStarters from './useStarters.jsx';
 
 const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
 
-export default function usePokemonInPlay(allPokemonInGen, needsStarters, levelSize) {
+export default function usePokemonInPlay(allPokemonInGen, currentGen, levelSize) {
   const [pokemonInPlay, setPokemonInPlay] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
+  const { shouldShowStartersForGen } = useStarters();
+  const needsStarters = shouldShowStartersForGen(currentGen);
 
   useEffect(() => {
     const generateSelection = () => {

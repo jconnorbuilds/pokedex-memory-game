@@ -5,7 +5,6 @@ import InputGroup from './InputGroup.jsx';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
-import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
@@ -20,6 +19,7 @@ import GameResult from './GameResult.jsx';
 import useGameProgress from './useGameProgress.jsx';
 
 import * as Game from './constants.js';
+import useStarters from './useStarters.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'Easy'));
@@ -32,16 +32,11 @@ export default function App() {
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
   const { updateGameProgress } = useGameProgress();
-
-  const [showStarters, setShowStarters] = useLocalStorage(
-    'showStarters',
-    Array(Game.NUM_OF_GENERATIONS).fill(true),
-  );
-
+  const { shouldShowStartersForGen, hideStartersForGen } = useStarters({ generation });
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGen,
-    showStarters[generation - 1],
+    generation,
     level.size,
   );
 
@@ -71,20 +66,14 @@ export default function App() {
     [pokedexIsOpen],
   );
 
-  const hideStarters = (currentGen) => {
-    setShowStarters(
-      showStarters.map((gen, idx) => (idx + 1 === +currentGen ? false : gen)),
-    );
-  };
-
   const resetGame = () => {
-    const startersShown = showStarters[generation - 1];
+    const startersShown = shouldShowStartersForGen(generation);
 
     setGameWon(false);
     setGameOn(true);
 
     if (gameWon) {
-      if (startersShown) hideStarters(generation);
+      if (startersShown) hideStartersForGen(generation);
       requestNewPokemon();
     }
   };
@@ -96,8 +85,8 @@ export default function App() {
         incrementScore();
         setGameWon(true);
         setGameOn(false);
-        // Adds NEW pokemon to the list.
 
+        // Adds NEW pokemon to the list.
         updateGameProgress(data, generation);
       } else if (status === 'lose') {
         setGameOn(false);
@@ -143,7 +132,7 @@ export default function App() {
               generation={generation}
               gameStatusCallback={gameStatusCallback}
             />
-            <GameResult>
+            <GameResult gameOn={gameOn} gameWon={gameWon}>
               <Button action={resetGame} styles="game-result">
                 Play Again
               </Button>
