@@ -12,12 +12,14 @@ import usePokemonInPlay from './usePokemonInPlay.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
 import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
+import UseScore from './UseScore.jsx';
 
 const LEVELS = [
   { name: 'Easy', size: 4 },
   { name: 'Medium', size: 8 },
   { name: 'Hard', size: 12 },
 ];
+
 const NUM_OF_GENERATIONS = 9;
 const SCENE_ROTATION_DEFAULT = { x: 40, y: 20, z: -5 };
 const SCENE_ROTATION_POKEDEX_OPEN = { x: 15, y: -10, z: 0 };
@@ -27,14 +29,14 @@ const createSingleAxisRotationSetter = (setState) => {
 };
 
 export default function App() {
-  const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
   const [level, setLevel] = useState(LEVELS.find((l) => l.name === 'Easy'));
   const [generation, setGeneration] = useState(1);
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
   const [sceneAngle, setSceneAngle] = useState(SCENE_ROTATION_DEFAULT);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
+
+  const { score, best, incrementScore, resetScore } = UseScore();
 
   const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const [showStarters, setShowStarters] = useLocalStorage(
@@ -100,11 +102,6 @@ export default function App() {
     [pokedexIsOpen],
   );
 
-  const updateScores = (newScore) => {
-    setScore(newScore);
-    if (newScore > bestScore) setBestScore(newScore);
-  };
-
   const hideStarters = (currentGen) => {
     setShowStarters(
       showStarters.map((gen, idx) => (idx + 1 === +currentGen ? false : gen)),
@@ -127,7 +124,7 @@ export default function App() {
   const gameStatusCallback = useCallback(
     (status, data = {}) => {
       if (status === 'win') {
-        updateScores(score + 1);
+        incrementScore();
         setGameWon(true);
         setGameOn(false);
         // Adds NEW pokemon to the list.
@@ -140,12 +137,12 @@ export default function App() {
         });
       } else if (status === 'lose') {
         setGameOn(false);
-        updateScores(0);
+        resetScore();
       } else if (status === 'playing') {
-        updateScores(score + 1);
+        incrementScore();
       }
     },
-    [generation, setGenCompletion, score, updateScores],
+    [generation, setGenCompletion, incrementScore, resetScore],
   );
 
   const renderAngleInputs = (labelPrefix, target, onChange) => {
@@ -185,7 +182,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="header container">
-        <Scoreboard score={score} bestScore={bestScore} />
+        <Scoreboard scores={{ score, best }} />
       </header>
       <main className="container">
         <div id="scene" className="scene" style={sceneTransform}>
