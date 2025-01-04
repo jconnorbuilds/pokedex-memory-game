@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-
-export default function useGenSizes(numberOfGenerations) {
+import { NUM_OF_GENERATIONS } from './constants.js';
+export default function useGenSizes() {
   const [genSizes, setGenSizes] = useState({});
+
   useEffect(() => {
     const fetchGenerationData = async () => {
       const pokemonInGen = {};
-      for (let i = 0; i < numberOfGenerations; i++) {
+      for (let i = 0; i < NUM_OF_GENERATIONS; i++) {
         const genNumber = i + 1;
         const url = `https://pokeapi.co/api/v2/generation/${genNumber}`;
         const result = await fetch(url);
@@ -17,7 +18,7 @@ export default function useGenSizes(numberOfGenerations) {
 
     const generationData = fetchGenerationData();
     generationData.then((res) => setGenSizes(res));
-  }, [numberOfGenerations]);
+  }, []);
 
-  return genSizes;
+  return { genSizes };
 }

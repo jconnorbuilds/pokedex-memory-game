@@ -1,11 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import '../styles/App.css';
 import CardTable from './CardTable.jsx';
 import InputGroup from './InputGroup.jsx';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
-import useGenSizes from './useGenSizes.jsx';
 import useLocalStorage from './useLocalStorage.jsx';
 import usePokemon from './usePokemon.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
@@ -18,17 +17,12 @@ import useSceneRotation from './useSceneRotation.jsx';
 import GameArea from './GameArea.jsx';
 import Button from './Button.jsx';
 import GameResult from './GameResult.jsx';
+import useGameProgress from './useGameProgress.jsx';
 
-const LEVELS = [
-  { name: 'Easy', size: 4 },
-  { name: 'Medium', size: 8 },
-  { name: 'Hard', size: 12 },
-];
-
-const NUM_OF_GENERATIONS = 9;
+import * as Game from './constants.js';
 
 export default function App() {
-  const [level, setLevel] = useState(LEVELS.find((l) => l.name === 'Easy'));
+  const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'Easy'));
   const [generation, setGeneration] = useState(1);
   const [gameWon, setGameWon] = useState(false);
   const [gameOn, setGameOn] = useState(true);
@@ -37,19 +31,11 @@ export default function App() {
 
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
+  const { updateGameProgress } = useGameProgress();
 
-  const genSizes = useGenSizes(NUM_OF_GENERATIONS);
   const [showStarters, setShowStarters] = useLocalStorage(
     'showStarters',
-    Array(NUM_OF_GENERATIONS).fill(true),
-  );
-  const [genCompletion, setGenCompletion] = useLocalStorage(
-    'genCompletion',
-    Object.fromEntries(
-      Array(NUM_OF_GENERATIONS)
-        .fill('')
-        .map((_, idx) => [idx + 1, []]),
-    ),
+    Array(Game.NUM_OF_GENERATIONS).fill(true),
   );
 
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
@@ -69,7 +55,7 @@ export default function App() {
 
   const handleLevelSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
-      setLevel(LEVELS.find((l) => l.name === e.target.value));
+      setLevel(Game.LEVELS.find((l) => l.name === e.target.value));
       requestNewPokemon();
       resetGame();
     }
@@ -111,13 +97,8 @@ export default function App() {
         setGameWon(true);
         setGameOn(false);
         // Adds NEW pokemon to the list.
-        // TODO: update this to keep track of the number of times each pkmn has been caught
-        setGenCompletion((prev) => {
-          return {
-            ...prev,
-            [generation]: [...new Set([...prev[generation], ...data['pokemon']])],
-          };
-        });
+
+        updateGameProgress(data, generation);
       } else if (status === 'lose') {
         setGameOn(false);
         resetScore();
@@ -125,7 +106,7 @@ export default function App() {
         incrementScore();
       }
     },
-    [generation, setGenCompletion, incrementScore, resetScore],
+    [generation, updateGameProgress, incrementScore, resetScore],
   );
 
   function AngleInputs({ labelPrefix, target, onChange }) {
@@ -180,7 +161,7 @@ export default function App() {
                 handleSelect={handleGenerationSelect}
                 generation={generation}
               ></GenerationSelect>
-              <DifficultySelect handleSelect={handleLevelSelect} levels={LEVELS} />
+              <DifficultySelect handleSelect={handleLevelSelect} levels={Game.LEVELS} />
             </GameOptionsMenu>
           </Pokedex>
         </Scene>
