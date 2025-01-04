@@ -1,8 +1,7 @@
-export default function GameResult({ gameOn, gameWon, children }) {
-  const gameLost = !gameOn && !gameWon;
+export default function GameResult({ gameOn, gameStatus, children }) {
   const getResultText = () => {
-    if (gameWon) return <p>You Win!</p>;
-    if (gameLost) return <p>You Lost!</p>;
+    if (gameStatus === 'won') return <p>You Win!</p>;
+    if (gameStatus === 'lost') return <p>You Lost!</p>;
   };
 
   return (

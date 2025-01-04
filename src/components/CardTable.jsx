@@ -2,14 +2,16 @@ import { useMemo, useState } from 'react';
 import Card from './Card.jsx';
 
 export default function CardTable({
-  pokemon,
-  gameWon,
+  gameStatus,
+  reportGameStatus,
   gameOn,
   generation,
   incrementScore,
   resetScore,
   updateGameProgress,
-  reportGameStatus,
+  pokemonInPlay,
+  drawStarters,
+  dontDrawStarters,
 }) {
   const [clickedIds, setClickedIds] = useState([]);
   const [handId, setHandId] = useState(0);
@@ -40,15 +42,19 @@ export default function CardTable({
       const newClickedIds = clickedIds.concat([id]);
       setClickedIds(newClickedIds);
 
-      if (newClickedIds.length === pokemon.length) {
-        updateGameProgress({ pokemon: pokemon.map((pkmn) => pkmn.name) }, generation);
-        reportGameStatus('win');
+      if (newClickedIds.length === pokemonInPlay.length) {
+        updateGameProgress(
+          { pokemon: pokemonInPlay.map((pkmn) => pkmn.name) },
+          generation,
+        );
+        if (drawStarters) dontDrawStarters();
+        reportGameStatus('won');
       } else {
         reportGameStatus('playing');
         setHandId(handId + 1);
       }
     } else {
-      reportGameStatus('lose');
+      reportGameStatus('lost');
       resetScore();
     }
   };
@@ -68,20 +74,20 @@ export default function CardTable({
 
   // Selects a random subset of the <pokemon> prop
   const pokemonToShow = useMemo(() => {
-    if (!pokemon) return;
+    if (!pokemonInPlay) return;
     // Return all pokemon if player has won
-    if (clickedIds.length === pokemon.length) {
-      return pokemon;
+    if (clickedIds.length === pokemonInPlay.length) {
+      return pokemonInPlay;
     }
 
     const _selectPokemon = () => {
-      const numberOfPkmn = Math.floor(pokemon.length * 0.75);
+      const numberOfPkmn = Math.floor(pokemonInPlay.length * 0.75);
       const usedIdxs = [];
       const selectedPokemon = [];
 
       for (let i = 0; i < numberOfPkmn; i++) {
-        const idx = _getRandomUnselectedIdx(pokemon.length, usedIdxs);
-        selectedPokemon.push(pokemon[idx]);
+        const idx = _getRandomUnselectedIdx(pokemonInPlay.length, usedIdxs);
+        selectedPokemon.push(pokemonInPlay[idx]);
         usedIdxs.push(idx);
       }
 
@@ -104,18 +110,17 @@ export default function CardTable({
     }
 
     return selectedPokemon;
-  }, [clickedIds, pokemon]);
+  }, [clickedIds, pokemonInPlay]);
 
   const renderCards = () => {
-    if (!pokemon) return;
+    if (!pokemonInPlay) return;
     const cards = pokemonToShow.map((pokemon) => {
       return (
         <Card
           key={pokemon.name}
           pokemon={pokemon}
           handleClick={handleClick}
-          gameWon={gameWon}
-          colorsOn={true}
+          gameStatus={gameStatus}
         />
       );
     });
@@ -124,7 +129,11 @@ export default function CardTable({
 
   return (
     <div className="card-table">
-      {pokemon ? <Hand key={handId}>{renderCards()}</Hand> : <p>loading cards...</p>}
+      {pokemonInPlay ? (
+        <Hand key={handId}>{renderCards()}</Hand>
+      ) : (
+        <p>loading cards...</p>
+      )}
     </div>
   );
 }

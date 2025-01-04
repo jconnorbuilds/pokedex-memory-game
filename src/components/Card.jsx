@@ -8,7 +8,7 @@ const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-export default function Card({ pokemon, handleClick, gameWon }) {
+export default function Card({ pokemon, handleClick, gameStatus }) {
   const sprite = pokemon.isShiny
     ? pokemon.data.sprites.other['official-artwork'].front_shiny
     : pokemon.data.sprites.other['official-artwork'].front_default;
@@ -120,13 +120,13 @@ export default function Card({ pokemon, handleClick, gameWon }) {
         const hover = !document.querySelector('.card-table.no-hover');
         if (hover) return 'hover';
       }}
-      animate={gameWon ? 'win' : 'flip'}
+      animate={gameStatus === 'won' ? 'win' : 'flip'}
     >
       <motion.div
         initial="initial"
         variants={shadowVariants}
         className="card-shadow"
-        animate={gameWon ? 'win' : 'flip'}
+        animate={gameStatus === 'won' ? 'win' : 'flip'}
         style={{
           position: 'absolute',
           width: '100%',
@@ -142,7 +142,7 @@ export default function Card({ pokemon, handleClick, gameWon }) {
         initial="initial"
         className="card"
         variants={cardVariants}
-        animate={gameWon ? 'win' : 'flip'}
+        animate={gameStatus === 'won' ? 'win' : 'flip'}
         transition={{
           duration: ANIMATION_DURATION,
         }}

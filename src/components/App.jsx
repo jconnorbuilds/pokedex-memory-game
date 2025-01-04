@@ -6,7 +6,6 @@ import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
 import usePokemon from './usePokemon.jsx';
-import usePokemonInPlay from './usePokemonInPlay.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
 import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
@@ -17,9 +16,10 @@ import GameArea from './GameArea.jsx';
 import Button from './Button.jsx';
 import GameResult from './GameResult.jsx';
 import useGameProgress from './useGameProgress.jsx';
+import useStarters from './useStarters.jsx';
+import usePokemonInPlay from './usePokemonInPlay.jsx';
 
 import * as Game from './constants.js';
-import useStarters from './useStarters.jsx';
 import useGameStatus from './useGameStatus.jsx';
 
 export default function App() {
@@ -30,19 +30,17 @@ export default function App() {
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
   const { updateGameProgress } = useGameProgress();
-  const { drawStarters, dontDrawStarters } = useStarters(generation);
+
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
+  const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
+
+  // Get this out of APP
+  const { drawStarters, dontDrawStarters } = useStarters(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGen,
-    drawStarters,
+    drawStarters ? [...allPokemonInGen.slice(0, 3)] : [],
     level.size,
   );
-  const { gameOn, gameWon, nextGame, getGameStatus, reportGameStatus, setGameStatus } =
-    useGameStatus({
-      drawStarters,
-      dontDrawStarters,
-      requestNewPokemon,
-    });
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
@@ -69,6 +67,11 @@ export default function App() {
     },
     [pokedexIsOpen],
   );
+
+  const startNextGame = () => {
+    nextGame();
+    if (gameStatus === 'won') requestNewPokemon();
+  };
 
   function AngleInputs({ labelPrefix, target, onChange }) {
     return (
@@ -98,18 +101,22 @@ export default function App() {
         <Scene rotation={sceneRotation}>
           <GameArea pokedexIsOpen={pokedexIsOpen}>
             <CardTable
-              pokemon={pokemonInPlay}
-              gameWon={gameWon}
+              allPokemon={allPokemonInGen}
+              level={level}
               gameOn={gameOn}
+              gameStatus={gameStatus}
+              reportGameStatus={reportGameStatus}
               generation={generation}
               incrementScore={incrementScore}
               resetScore={resetScore}
               updateGameProgress={updateGameProgress}
-              reportGameStatus={reportGameStatus}
-              setGameStatus={setGameStatus}
+              pokemonInPlay={pokemonInPlay}
+              drawStarters={drawStarters}
+              dontDrawStarters={dontDrawStarters}
+              requestNewPkmn={requestNewPokemon}
             />
-            <GameResult gameOn={gameOn} gameWon={gameWon}>
-              <Button action={nextGame} styles="game-result">
+            <GameResult gameOn={gameOn} gameStatus={gameStatus}>
+              <Button action={startNextGame} styles="game-result">
                 Play Again
               </Button>
             </GameResult>
