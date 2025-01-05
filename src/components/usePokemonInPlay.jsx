@@ -11,19 +11,15 @@ export default function usePokemonInPlay(allPokemonInGen, initialPkmn, levelSize
     const generateSelection = () => {
       if (!ignore) {
         if (!allPokemonInGen || !needsNewPkmn) return;
+        const selectedPokemon = initialPkmn || [];
 
         const _getRandomIdx = (range, offset = 0) =>
           Math.floor(Math.random() * range - offset) + offset;
 
         const _getRandomPokemon = () => {
           const randomIdx = _getRandomIdx(allPokemonInGen.length, selectedPokemon.length);
-          if (!allPokemonInGen[randomIdx])
-            console.info(`Tried an invalid index: ${randomIdx}`);
           return allPokemonInGen[randomIdx];
         };
-
-        // Starter pokemon to always include on the first round
-        const selectedPokemon = initialPkmn;
 
         const selectSinglePokemon = () => {
           if (ignore) return;
