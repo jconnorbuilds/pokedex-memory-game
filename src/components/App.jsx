@@ -5,17 +5,17 @@ import InputGroup from './InputGroup.jsx';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
-import usePokemon from './usePokemon.jsx';
+import usePokemon from './usePokemon.js';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
 import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
-import UseScore from './UseScore.jsx';
+import UseScore from './UseScore.js';
 import Scene from './Scene.jsx';
-import useSceneRotation from './useSceneRotation.jsx';
+import useSceneRotation from './useSceneRotation.js';
 import GameArea from './GameArea.jsx';
 
 import * as Game from './constants.js';
-import useGameStatus from './useGameStatus.jsx';
+import useGameStatus from './useGameStatus.js';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'Easy'));

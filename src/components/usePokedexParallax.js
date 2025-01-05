@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import useThrottle from './useThrottle.jsx';
+import useThrottle from './useThrottle.js';
 export default function usePokedexParallax(pokedexIsOpen) {
   const [pokedexAngle, setPokedexAngle] = useState({ x: 0, y: 0, z: 0 });
 

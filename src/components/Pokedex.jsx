@@ -1,12 +1,12 @@
 import '../styles/Pokedex.css';
 import { useState } from 'react';
-import usePokedexParallax from './usePokedexParallax.jsx';
+import usePokedexParallax from './usePokedexParallax.js';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
 import PokedexLidDisplay from './PokedexLidDisplay.jsx';
 import MainDisplay from './MainDisplay.jsx';
 
-import useDelay from './useDelay.jsx';
+import useDelay from './useDelay.js';
 
 export default function Pokedex({
   allPokemon,

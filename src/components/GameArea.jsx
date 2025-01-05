@@ -1,10 +1,10 @@
-import useStarters from './useStarters.jsx';
-import usePokemonInPlay from './usePokemonInPlay.jsx';
+import useStarters from './useStarters.js';
+import usePokemonInPlay from './usePokemonInPlay.js';
 
 import CardTable from './CardTable.jsx';
 import GameResult from './GameResult.jsx';
 import Button from './Button.jsx';
-import useGameProgress from './useGameProgress.jsx';
+import useGameProgress from './useGameProgress.js';
 
 export default function GameArea({
   level,

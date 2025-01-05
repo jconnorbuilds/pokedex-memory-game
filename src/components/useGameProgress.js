@@ -1,6 +1,6 @@
 import * as Game from './constants.js';
-import useGenSizes from './useGenSizes.jsx';
-import useLocalStorage from './useLocalStorage.jsx';
+import useGenSizes from './useGenSizes.js';
+import useLocalStorage from './useLocalStorage.js';
 
 export default function useGameProgress() {
   const initial = Object.fromEntries(

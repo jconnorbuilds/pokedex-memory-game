@@ -1,5 +1,5 @@
 import { NUM_OF_GENERATIONS } from './constants.js';
-import useLocalStorage from './useLocalStorage.jsx';
+import useLocalStorage from './useLocalStorage.js';
 
 // Is this hook necessary?
 export default function useStarters(currentGen) {
