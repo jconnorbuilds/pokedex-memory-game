@@ -11,17 +11,16 @@ export default function CardTable({
   onGameLost,
   pokemonInPlay,
 }) {
-  const [selectedNames, setSelectedNames] = useState([]);
   const [handId, setHandId] = useState(0);
   const [prevGen, setPrevGen] = useState(generation);
   const [prevGameStatus, setPrevGameStatus] = useState(gameOn);
+  const [selectedNames, setSelectedNames] = useState([]);
+
   const { pokemonToShow } = usePokemonSubset({ pokemonInPlay, selectedNames });
 
   const gameStartedOrFinished = prevGameStatus !== gameOn;
   const generationChanged = prevGen !== generation;
 
-  // Restart the game if it's a new game or new generation.
-  // Avoiding using useEffect as per the React docs: https://react.dev/learn/you-might-not-need-an-effect
   if (gameStartedOrFinished || generationChanged) {
     if (gameOn) {
       setSelectedNames([]);
@@ -30,6 +29,9 @@ export default function CardTable({
     setPrevGameStatus(gameOn);
     setPrevGen(generation);
   }
+
+  // Restart the game if it's a new game or new generation.
+  // Avoiding using useEffect as per the React docs: https://react.dev/learn/you-might-not-need-an-effect
 
   const handleSuccessfulChoice = (id) => {
     const newClickedIds = selectedNames.concat([id]);

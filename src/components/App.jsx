@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 // import { GameContext } from './GameContext.js';
 import '../styles/App.css';
 import InputGroup from './InputGroup.jsx';
@@ -13,9 +13,6 @@ import UseScore from './UseScore.jsx';
 import Scene from './Scene.jsx';
 import useSceneRotation from './useSceneRotation.jsx';
 import GameArea from './GameArea.jsx';
-import useGameProgress from './useGameProgress.jsx';
-import useStarters from './useStarters.jsx';
-import usePokemonInPlay from './usePokemonInPlay.jsx';
 
 import * as Game from './constants.js';
 import useGameStatus from './useGameStatus.jsx';
@@ -27,34 +24,14 @@ export default function App() {
 
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
-  const { updateGameProgress } = useGameProgress();
-
+  const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
 
-  const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
-
   // Get this out of APP
-  const { drawStarters, dontDrawStarters } = useStarters(generation);
-  const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
-    allPokemonInGen,
-    drawStarters,
-    level.size,
-  );
-
-  const handleGameWon = (data) => {
-    updateGameProgress(data, generation);
-    reportGameStatus('won');
-  };
-
-  const handleGameLost = () => {
-    reportGameStatus('lost');
-    resetScore();
-  };
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
       setGeneration(e.target.value);
-      requestNewPokemon();
       nextGame();
     }
   };
@@ -62,7 +39,6 @@ export default function App() {
   const handleLevelSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
       setLevel(Game.LEVELS.find((l) => l.name === e.target.value));
-      requestNewPokemon();
       nextGame();
     }
   };
@@ -104,18 +80,17 @@ export default function App() {
         </header>
         <Scene rotation={sceneRotation}>
           <GameArea
+            level={level}
+            allPokemonInGen={allPokemonInGen}
             pokedexIsOpen={pokedexIsOpen}
             generation={generation}
+            resetScore={resetScore}
+            incrementScore={incrementScore}
+            handleGenerationSelect={handleGenerationSelect}
             gameOn={gameOn}
             gameStatus={gameStatus}
-            incrementScore={incrementScore}
-            onGameWon={handleGameWon}
-            onGameLost={handleGameLost}
-            pokemonInPlay={pokemonInPlay}
             nextGame={nextGame}
-            drawStarters={drawStarters}
-            requestNewPokemon={requestNewPokemon}
-            dontDrawStarters={dontDrawStarters}
+            reportGameStatus={reportGameStatus}
           ></GameArea>
           <Pokedex
             allPokemon={allPokemonInGen}
