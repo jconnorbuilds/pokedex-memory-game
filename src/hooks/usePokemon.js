@@ -70,6 +70,7 @@ export default function usePokemon(generation) {
           data: pkmnData[idx],
           speciesData: pkmn,
         }));
+        pokemon.sort((pkmn1, pkmn2) => pkmn1.data.id - pkmn2.data.id);
 
         setAllPokemonInGen(pokemon);
         setPreviousGen(generation);
