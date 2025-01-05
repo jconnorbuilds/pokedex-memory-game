@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+// import { GameContext } from './GameContext.js';
 import '../styles/App.css';
 import CardTable from './CardTable.jsx';
 import InputGroup from './InputGroup.jsx';
@@ -38,9 +39,19 @@ export default function App() {
   const { drawStarters, dontDrawStarters } = useStarters(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGen,
-    drawStarters ? [...allPokemonInGen.slice(0, 3)] : [],
+    drawStarters,
     level.size,
   );
+
+  const handleGameWon = (data) => {
+    updateGameProgress(data, generation);
+    reportGameStatus('won');
+  };
+
+  const handleGameLost = () => {
+    reportGameStatus('lost');
+    resetScore();
+  };
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
@@ -69,8 +80,12 @@ export default function App() {
   );
 
   const startNextGame = () => {
+    console.log(gameStatus);
+    if (drawStarters) dontDrawStarters();
+    if (gameStatus === 'won') {
+      requestNewPokemon();
+    }
     nextGame();
-    if (gameStatus === 'won') requestNewPokemon();
   };
 
   function AngleInputs({ labelPrefix, target, onChange }) {
@@ -101,19 +116,13 @@ export default function App() {
         <Scene rotation={sceneRotation}>
           <GameArea pokedexIsOpen={pokedexIsOpen}>
             <CardTable
-              allPokemon={allPokemonInGen}
-              level={level}
+              generation={generation}
               gameOn={gameOn}
               gameStatus={gameStatus}
-              reportGameStatus={reportGameStatus}
-              generation={generation}
               incrementScore={incrementScore}
-              resetScore={resetScore}
-              updateGameProgress={updateGameProgress}
+              onGameWon={handleGameWon}
+              onGameLost={handleGameLost}
               pokemonInPlay={pokemonInPlay}
-              drawStarters={drawStarters}
-              dontDrawStarters={dontDrawStarters}
-              requestNewPkmn={requestNewPokemon}
             />
             <GameResult gameOn={gameOn} gameStatus={gameStatus}>
               <Button action={startNextGame} styles="game-result">
@@ -121,6 +130,7 @@ export default function App() {
               </Button>
             </GameResult>
           </GameArea>
+
           <Pokedex
             allPokemon={allPokemonInGen}
             isOpen={pokedexIsOpen}

@@ -3,15 +3,15 @@ import { useEffect, useState } from 'react';
 const SHINY_ODDS = 20; //Full odds is 1 in 8192, post-Gen 6 is 1 in 4096
 const rollForShiny = () => Math.floor(Math.random() * 65536) < 65536 / SHINY_ODDS;
 
-export default function usePokemonInPlay(allPokemonInGen, initialPkmn, levelSize) {
+export default function usePokemonInPlay(allPokemonInGen, drawStarters, levelSize) {
   const [pokemonInPlay, setPokemonInPlay] = useState(null);
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
 
   useEffect(() => {
     const generateSelection = () => {
       if (!ignore) {
-        if (!allPokemonInGen || !needsNewPkmn) return;
-        const selectedPokemon = initialPkmn || [];
+        if (!allPokemonInGen) return;
+        const selectedPokemon = drawStarters ? [...allPokemonInGen.slice(0, 3)] : [];
 
         const _getRandomIdx = (range, offset = 0) =>
           Math.floor(Math.random() * range - offset) + offset;
@@ -67,7 +67,7 @@ export default function usePokemonInPlay(allPokemonInGen, initialPkmn, levelSize
     };
 
     // Relies on needsNewPkmn to trigger new card generation after each hand
-  }, [allPokemonInGen, levelSize, initialPkmn, needsNewPkmn]);
+  }, [allPokemonInGen, levelSize, drawStarters, needsNewPkmn]);
 
   return {
     pokemonInPlay,

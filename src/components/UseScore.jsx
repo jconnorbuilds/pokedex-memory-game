@@ -15,7 +15,6 @@ export default function UseScore() {
 
   const resetScore = useCallback(() => {
     setScore(0);
-    setBest(0);
   }, []);
 
   return { score, best, incrementScore, resetScore };
