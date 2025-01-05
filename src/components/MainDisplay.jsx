@@ -51,20 +51,18 @@ export default function MainDisplay({
     } else if (mode === 'list') {
       return (
         <DisplayListMode
-          filteredPkmn={filteredPkmn}
+          filteredPkmn={filteredPkmn ?? allPokemon}
           selectPokemon={selectPokemon}
-          styles={pdxStyles}
         />
       );
     }
   };
 
   function filterPkmn(e) {
-    const allPkmn = [...allPokemon];
-    const filtered = allPkmn.filter((pkmn) => {
-      return pkmn.name.includes(e.target.value.toLowerCase());
-    });
-    setFilteredPkmn(filtered);
+    const filterString = e.target.value?.toLowerCase();
+    !filterString
+      ? setFilteredPkmn(allPokemon)
+      : setFilteredPkmn(allPokemon.filter((pkmn) => pkmn.name.includes(filterString)));
   }
 
   function renderMenuBar(pokedexMode) {

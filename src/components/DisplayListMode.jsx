@@ -1,6 +1,8 @@
-export default function DisplayListMode({ filteredPkmn, selectPokemon, styles }) {
+import styles from '../styles/DisplayListMode.module.css';
+
+export default function DisplayListMode({ filteredPkmn, selectPokemon }) {
   return (
-    <div className={styles.pokemonList} tabIndex={0}>
+    <div className={styles.displayList} tabIndex={0}>
       {filteredPkmn?.map((pkmn) => (
         <button
           onClick={(e) => selectPokemon(e.target.value)}
