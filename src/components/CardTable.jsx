@@ -11,11 +11,11 @@ export default function CardTable({
   onGameLost,
   pokemonInPlay,
 }) {
-  const [clickedIds, setClickedIds] = useState([]);
+  const [selectedNames, setSelectedNames] = useState([]);
   const [handId, setHandId] = useState(0);
   const [prevGen, setPrevGen] = useState(generation);
   const [prevGameStatus, setPrevGameStatus] = useState(gameOn);
-  const { pokemonToShow } = usePokemonSubset({ pokemonInPlay, clickedIds });
+  const { pokemonToShow } = usePokemonSubset({ pokemonInPlay, selectedNames });
 
   const gameStartedOrFinished = prevGameStatus !== gameOn;
   const generationChanged = prevGen !== generation;
@@ -24,7 +24,7 @@ export default function CardTable({
   // Avoiding using useEffect as per the React docs: https://react.dev/learn/you-might-not-need-an-effect
   if (gameStartedOrFinished || generationChanged) {
     if (gameOn) {
-      setClickedIds([]);
+      setSelectedNames([]);
       setHandId(0);
     }
     setPrevGameStatus(gameOn);
@@ -32,11 +32,11 @@ export default function CardTable({
   }
 
   const handleSuccessfulChoice = (id) => {
-    const newClickedIds = clickedIds.concat([id]);
+    const newClickedIds = selectedNames.concat([id]);
     const gameWon = newClickedIds.length === pokemonInPlay.length;
 
     incrementScore();
-    setClickedIds(newClickedIds);
+    setSelectedNames(newClickedIds);
 
     if (gameWon) {
       onGameWon({ pokemon: pokemonInPlay.map((pkmn) => pkmn.name) });
@@ -47,7 +47,7 @@ export default function CardTable({
 
   const handleChoice = (id) => {
     if (!gameOn) return;
-    const successfulChoice = !clickedIds.includes(id);
+    const successfulChoice = !selectedNames.includes(id);
 
     if (successfulChoice) {
       handleSuccessfulChoice(id);
