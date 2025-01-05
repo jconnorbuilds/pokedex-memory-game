@@ -1,9 +1,9 @@
 import styles from '../styles/PokedexMenuBar.module.css';
 
-export default function PokemonListFilter({}) {
+export default function PokemonListFilter({ filterPkmn }) {
   return (
     <div className={styles.filter}>
-      <input type="text" placeholder="SEARCH" />
+      <input type="text" placeholder="SEARCH" onChange={filterPkmn} />
     </div>
   );
 }

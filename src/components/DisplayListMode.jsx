@@ -1,16 +1,4 @@
-import { useState } from 'react';
-
-export default function DisplayListMode({ allPokemon, selectPokemon, styles }) {
-  const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
-
-  function filterPkmn(str) {
-    const current = [...filteredPkmn];
-    const filtered = current.filter((pkmn) => {
-      return pkmn.name.includes(str.toLowerCase());
-    });
-    setFilteredPkmn(filtered);
-  }
-
+export default function DisplayListMode({ filteredPkmn, selectPokemon, styles }) {
   return (
     <div className={styles.pokemonList} tabIndex={0}>
       {filteredPkmn?.map((pkmn) => (

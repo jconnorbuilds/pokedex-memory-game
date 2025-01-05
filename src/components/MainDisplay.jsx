@@ -17,6 +17,7 @@ export default function MainDisplay({
   progress,
 }) {
   const [pokedexMode, setPokedexMode] = useState('singlePkmn');
+  const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
 
   const sprite = currentPokemon?.data.sprites.other['home'].front_default;
   const name = currentPokemon?.name || '---';
@@ -50,13 +51,21 @@ export default function MainDisplay({
     } else if (mode === 'list') {
       return (
         <DisplayListMode
-          allPokemon={allPokemon}
+          filteredPkmn={filteredPkmn}
           selectPokemon={selectPokemon}
           styles={pdxStyles}
         />
       );
     }
   };
+
+  function filterPkmn(e) {
+    const allPkmn = [...allPokemon];
+    const filtered = allPkmn.filter((pkmn) => {
+      return pkmn.name.includes(e.target.value.toLowerCase());
+    });
+    setFilteredPkmn(filtered);
+  }
 
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
@@ -76,7 +85,7 @@ export default function MainDisplay({
     } else if (pokedexMode === 'list') {
       return (
         <MenuBar mode={pokedexMode}>
-          <PokemonListFilter></PokemonListFilter>
+          <PokemonListFilter filterPkmn={filterPkmn}></PokemonListFilter>
           {loadingFinished && (
             <Button action={() => setPokedexMode('singlePkmn')} styles={mbStyles}>
               Back
