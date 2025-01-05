@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import pdxStyles from '../styles/MainDisplay.module.css'; // pokedex screen styles
+import mbStyles from '../styles/PokedexMenuBar.module.css';
 import LoadingBar from './LoadingBar.jsx';
 import MenuBar from './MenuBar.jsx';
 import Button from './Button.jsx';
 import PokemonTypes from './PokemonTypes.jsx';
+import PokemonListFilter from './PokemonListFilter.jsx';
+import DisplayListMode from './DisplayListMode.jsx';
 
 export default function MainDisplay({
   allPokemon,
@@ -13,7 +16,7 @@ export default function MainDisplay({
   loadingFinished,
   progress,
 }) {
-  const [pokedexMode, setPokedexMode] = useState('single-pkmn');
+  const [pokedexMode, setPokedexMode] = useState('singlePkmn');
 
   const sprite = currentPokemon?.data.sprites.other['home'].front_default;
   const name = currentPokemon?.name || '---';
@@ -22,10 +25,10 @@ export default function MainDisplay({
 
   const selectPokemon = (pokemonName) => {
     setCurrentPokemon(allPokemon.find((pkmn) => pkmn.name === pokemonName));
-    setPokedexMode('single-pkmn');
+    setPokedexMode('singlePkmn');
   };
 
-  const renderSinglePkmnMode = () => {
+  const DisplaySinglePkmnMode = ({}) => {
     return (
       <>
         <div className={pdxStyles.pokemonImg}>
@@ -41,40 +44,52 @@ export default function MainDisplay({
     );
   };
 
-  const renderListMode = () => {
-    return (
-      <div className={pdxStyles.pokemonList} tabIndex={0}>
-        {allPokemon?.map((pkmn) => (
-          <button
-            onClick={(e) => selectPokemon(e.target.value)}
-            value={pkmn.name}
-            key={pkmn.name}
-          >
-            {pkmn.name}
-          </button>
-        ))}
-      </div>
-    );
-  };
-
   const renderMainContent = (mode) => {
-    if (mode === 'single-pkmn') {
-      return renderSinglePkmnMode();
-    } else if (mode === 'list-mode') {
-      return renderListMode();
+    if (mode === 'singlePkmn') {
+      return <DisplaySinglePkmnMode />;
+    } else if (mode === 'list') {
+      return (
+        <DisplayListMode
+          allPokemon={allPokemon}
+          selectPokemon={selectPokemon}
+          styles={pdxStyles}
+        />
+      );
     }
   };
 
+  function renderMenuBar(pokedexMode) {
+    if (pokedexMode === 'singlePkmn') {
+      return (
+        <MenuBar mode={pokedexMode}>
+          <PokemonTypes
+            currentPokemon={currentPokemon}
+            loadingFinished={loadingFinished}
+          />
+          {loadingFinished && (
+            <Button action={() => setPokedexMode('list')} styles={mbStyles}>
+              Choose pkmn
+            </Button>
+          )}
+        </MenuBar>
+      );
+    } else if (pokedexMode === 'list') {
+      return (
+        <MenuBar mode={pokedexMode}>
+          <PokemonListFilter></PokemonListFilter>
+          {loadingFinished && (
+            <Button action={() => setPokedexMode('singlePkmn')} styles={mbStyles}>
+              Back
+            </Button>
+          )}
+        </MenuBar>
+      );
+    }
+  }
+
   return (
     <div className="screen screen--on">
-      <MenuBar>
-        <PokemonTypes currentPokemon={currentPokemon} loadingFinished={loadingFinished} />
-        {loadingFinished && (
-          <Button action={() => setPokedexMode('list-mode')} styles={pdxStyles}>
-            Choose pkmn
-          </Button>
-        )}
-      </MenuBar>
+      {renderMenuBar(pokedexMode)}
       {!loadingFinished ? (
         <LoadingBar isLoading={isLoading} hide={loadingFinished} progress={progress} />
       ) : (

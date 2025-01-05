@@ -34,28 +34,6 @@
   TYPE DISPLAY
 */
 
-.menuBar {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  height: 1.5lh;
-  background-color: #1a1a1add;
-  color: #eee;
-  font-size: 0.7rem;
-  padding-inline: 0.5rem;
-}
-
-.menuBar .showList {
-  border: none;
-  background-color: transparent;
-  padding-inline: 1rem;
-  border-radius: 0;
-
-  &:hover {
-    background-color: pink;
-  }
-}
-
 .types {
   display: flex;
   align-items: center;

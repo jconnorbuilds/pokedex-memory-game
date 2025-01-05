@@ -1,7 +1,3 @@
-export default function Button({ action, styles, children }) {
-  return (
-    <button onClick={action} className={styles.showList}>
-      {children}
-    </button>
-  );
+export default function Button({ action, styles = null, children }) {
+  return <button onClick={action}>{children}</button>;
 }

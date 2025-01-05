@@ -1,0 +1,40 @@
+.menuBar {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  justify-content: space-between;
+  height: 1.5lh;
+  background-color: #1a1a1add;
+  color: #eee;
+  font-size: 0.8rem;
+  padding-inline: 0.5rem;
+}
+
+.menuBarSinglePkmn {
+  composes: menuBar;
+}
+
+.menuBarList {
+  composes: menuBar;
+}
+
+.menuBar button {
+  border: none;
+  background-color: transparent;
+  padding-inline: 1rem;
+  border-radius: 0;
+
+  &:hover {
+    background-color: pink;
+  }
+}
+
+.filter input {
+  width: 100%;
+  background-color: inherit;
+  color: inherit;
+  border: none;
+  height: 1.5lh;
+  text-align: center;
+  font-weight: 600;
+}
