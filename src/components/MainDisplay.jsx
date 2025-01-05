@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import pdxStyles from '../styles/MainDisplay.module.css'; // pokedex screen styles
+import { useState } from 'react'; // pokedex screen styles
 import mbStyles from '../styles/PokedexMenuBar.module.css';
 import LoadingBar from './LoadingBar.jsx';
 import MenuBar from './MenuBar.jsx';
@@ -7,6 +6,7 @@ import Button from './Button.jsx';
 import PokemonTypes from './PokemonTypes.jsx';
 import PokemonListFilter from './PokemonListFilter.jsx';
 import DisplayListMode from './DisplayListMode.jsx';
+import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
 
 export default function MainDisplay({
   allPokemon,
@@ -19,35 +19,16 @@ export default function MainDisplay({
   const [pokedexMode, setPokedexMode] = useState('singlePkmn');
   const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
 
-  const sprite = currentPokemon?.data.sprites.other['home'].front_default;
-  const name = currentPokemon?.name || '---';
-  const nationalDexNumber =
-    currentPokemon?.speciesData.pokedex_numbers[0].entry_number || 0;
-
   const selectPokemon = (pokemonName) => {
-    setCurrentPokemon(allPokemon.find((pkmn) => pkmn.name === pokemonName));
-    setPokedexMode('singlePkmn');
-  };
+    const selected = allPokemon.find((pkmn) => pkmn.name === pokemonName);
 
-  const DisplaySinglePkmnMode = ({}) => {
-    return (
-      <>
-        <div className={pdxStyles.pokemonImg}>
-          <img className={pdxStyles.sprite} src={sprite ? sprite : '#'} alt="a pokemon" />
-        </div>
-        <div className={pdxStyles.basicInfo}>
-          <div className="pokemon-info__name">{name ? name : '...'}</div>
-          <div className="pokemon-info__number">
-            #{nationalDexNumber ? nationalDexNumber : '...'}
-          </div>
-        </div>
-      </>
-    );
+    setCurrentPokemon(selected);
+    setPokedexMode('singlePkmn');
   };
 
   const renderMainContent = (mode) => {
     if (mode === 'singlePkmn') {
-      return <DisplaySinglePkmnMode />;
+      return <DisplaySinglePkmnMode currentPokemon={currentPokemon} />;
     } else if (mode === 'list') {
       return (
         <DisplayListMode
