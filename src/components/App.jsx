@@ -27,8 +27,6 @@ export default function App() {
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
 
-  // Get this out of APP
-
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
       setGeneration(e.target.value);
@@ -84,9 +82,8 @@ export default function App() {
             allPokemonInGen={allPokemonInGen}
             pokedexIsOpen={pokedexIsOpen}
             generation={generation}
-            resetScore={resetScore}
             incrementScore={incrementScore}
-            handleGenerationSelect={handleGenerationSelect}
+            resetScore={resetScore}
             gameOn={gameOn}
             gameStatus={gameStatus}
             nextGame={nextGame}
@@ -104,7 +101,7 @@ export default function App() {
                 handleSelect={handleGenerationSelect}
                 generation={generation}
               ></GenerationSelect>
-              <DifficultySelect handleSelect={handleLevelSelect} levels={Game.LEVELS} />
+              <DifficultySelect handleSelect={handleLevelSelect} />
             </GameOptionsMenu>
           </Pokedex>
         </Scene>

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import useStarters from './useStarters.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
 
@@ -13,6 +12,7 @@ export default function GameArea({
   pokedexIsOpen,
   generation,
   incrementScore,
+  resetScore,
   gameOn,
   gameStatus,
   nextGame,
@@ -41,6 +41,7 @@ export default function GameArea({
 
   const handleGameLost = () => {
     reportGameStatus('lost');
+    resetScore();
   };
 
   return (

@@ -1,5 +1,5 @@
 import MenuButton from './MenuButton.jsx';
-const NUM_OF_GENERATIONS = 9;
+import * as Game from './constants.js';
 
 export default function GenerationSelect({ generation, handleSelect }) {
   return (
@@ -10,7 +10,7 @@ export default function GenerationSelect({ generation, handleSelect }) {
           .fill('')
           .map((_, idx) => {
             const genNumber = idx + 1;
-            const needsLabel = genNumber <= NUM_OF_GENERATIONS;
+            const needsLabel = genNumber <= Game.NUM_OF_GENERATIONS;
             return (
               <MenuButton
                 key={genNumber}
