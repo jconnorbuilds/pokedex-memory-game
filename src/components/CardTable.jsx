@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Card from './Card.jsx';
-import usePokemonSubset from './usePokemonSubset.js';
+import usePokemonSubset from '../hooks/usePokemonSubset.js';
 
 export default function CardTable({
   generation,

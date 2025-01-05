@@ -1,4 +1,4 @@
-import * as Game from './constants.js';
+import * as Game from '../components/constants.js';
 import useGenSizes from './useGenSizes.js';
 import useLocalStorage from './useLocalStorage.js';
 
