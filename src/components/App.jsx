@@ -78,9 +78,9 @@ export default function App() {
         </header>
         <Scene rotation={sceneRotation}>
           <GameArea
+            style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
             level={level}
             allPokemonInGen={allPokemonInGen}
-            pokedexIsOpen={pokedexIsOpen}
             generation={generation}
             incrementScore={incrementScore}
             resetScore={resetScore}

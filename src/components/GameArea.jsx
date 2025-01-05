@@ -9,7 +9,7 @@ import useGameProgress from './useGameProgress.jsx';
 export default function GameArea({
   level,
   allPokemonInGen,
-  pokedexIsOpen,
+  style,
   generation,
   incrementScore,
   resetScore,
@@ -19,15 +19,15 @@ export default function GameArea({
   reportGameStatus,
 }) {
   const { updateGameProgress } = useGameProgress();
-  const { drawStarters, dontDrawStarters } = useStarters(generation);
+  const { includeStarters, dontIncludeStarters } = useStarters(generation);
   const { pokemonInPlay, requestNewPokemon } = usePokemonInPlay(
     allPokemonInGen,
-    drawStarters,
+    includeStarters,
     level.size,
   );
 
   const startNextGame = () => {
-    if (drawStarters) dontDrawStarters();
+    if (includeStarters) dontIncludeStarters();
     if (gameStatus === 'won') {
       requestNewPokemon();
     }
@@ -45,7 +45,7 @@ export default function GameArea({
   };
 
   return (
-    <div className="game-area" style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}>
+    <div className="game-area" style={style}>
       <CardTable
         generation={generation}
         gameOn={gameOn}
