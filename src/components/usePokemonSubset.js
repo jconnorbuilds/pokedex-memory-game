@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 function shuffle(array) {
   const arr = [...array];
   for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * i + 1);
+    const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
@@ -16,13 +16,11 @@ function getRandomSubset(array, subsetSize) {
 }
 
 export default function usePokemonSubset({ pokemonInPlay, selectedNames }) {
-  // Gets an idx between 0 and <max> that's not present in the <used> array
-
   function isValidSubset(subset, usedNames) {
     return subset.some((pkmn) => !usedNames.includes(pkmn.name));
   }
 
-  // Selects a random subset of the <pokemon> prop
+  // Selects a random subset of the cards currently in play
   const pokemonToShow = useMemo(() => {
     if (!pokemonInPlay) return;
     if (selectedNames.length === pokemonInPlay.length) {
@@ -30,14 +28,15 @@ export default function usePokemonSubset({ pokemonInPlay, selectedNames }) {
       return pokemonInPlay;
     }
 
+    // Keep 1/4 of the cards hidden during regular turns
     const subsetSize = Math.floor(pokemonInPlay.length * 0.75);
 
+    // TODO: make this more robust
     for (let attempt = 0; attempt < 50; attempt++) {
       const selection = getRandomSubset(pokemonInPlay, subsetSize);
       if (isValidSubset(selection, selectedNames)) return selection;
     }
 
-    // TODO: make this more robust
     console.error('Unable to make valid pokemon selection in 50 attempts');
     return [];
   }, [selectedNames, pokemonInPlay]);
