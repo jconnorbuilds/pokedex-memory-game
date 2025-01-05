@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 // import { GameContext } from './GameContext.js';
 import '../styles/App.css';
-import CardTable from './CardTable.jsx';
 import InputGroup from './InputGroup.jsx';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
@@ -14,8 +13,6 @@ import UseScore from './UseScore.jsx';
 import Scene from './Scene.jsx';
 import useSceneRotation from './useSceneRotation.jsx';
 import GameArea from './GameArea.jsx';
-import Button from './Button.jsx';
-import GameResult from './GameResult.jsx';
 import useGameProgress from './useGameProgress.jsx';
 import useStarters from './useStarters.jsx';
 import usePokemonInPlay from './usePokemonInPlay.jsx';
@@ -33,6 +30,7 @@ export default function App() {
   const { updateGameProgress } = useGameProgress();
 
   const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
+
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
 
   // Get this out of APP
@@ -79,15 +77,6 @@ export default function App() {
     [pokedexIsOpen],
   );
 
-  const startNextGame = () => {
-    console.log(gameStatus);
-    if (drawStarters) dontDrawStarters();
-    if (gameStatus === 'won') {
-      requestNewPokemon();
-    }
-    nextGame();
-  };
-
   function AngleInputs({ labelPrefix, target, onChange }) {
     return (
       <InputGroup>
@@ -114,23 +103,20 @@ export default function App() {
           <Scoreboard scores={{ score, best }} />
         </header>
         <Scene rotation={sceneRotation}>
-          <GameArea pokedexIsOpen={pokedexIsOpen}>
-            <CardTable
-              generation={generation}
-              gameOn={gameOn}
-              gameStatus={gameStatus}
-              incrementScore={incrementScore}
-              onGameWon={handleGameWon}
-              onGameLost={handleGameLost}
-              pokemonInPlay={pokemonInPlay}
-            />
-            <GameResult gameOn={gameOn} gameStatus={gameStatus}>
-              <Button action={startNextGame} styles="game-result">
-                Play Again
-              </Button>
-            </GameResult>
-          </GameArea>
-
+          <GameArea
+            pokedexIsOpen={pokedexIsOpen}
+            generation={generation}
+            gameOn={gameOn}
+            gameStatus={gameStatus}
+            incrementScore={incrementScore}
+            onGameWon={handleGameWon}
+            onGameLost={handleGameLost}
+            pokemonInPlay={pokemonInPlay}
+            nextGame={nextGame}
+            drawStarters={drawStarters}
+            requestNewPokemon={requestNewPokemon}
+            dontDrawStarters={dontDrawStarters}
+          ></GameArea>
           <Pokedex
             allPokemon={allPokemonInGen}
             isOpen={pokedexIsOpen}
