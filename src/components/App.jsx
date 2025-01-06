@@ -20,7 +20,7 @@ import useGameStatus from '../hooks/useGameStatus.js';
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'Easy'));
   const [generation, setGeneration] = useState(1);
-  const [pokedexIsOpen, setPokedexIsOpen] = useState(false);
+  const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);

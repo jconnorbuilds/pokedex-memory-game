@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import styles from '../styles/DisplaySinglePkmnMode.module.css';
 
 export default function DisplaySinglePkmnMode({ currentPokemon }) {
@@ -6,20 +5,6 @@ export default function DisplaySinglePkmnMode({ currentPokemon }) {
   const name = currentPokemon?.name || '---';
   const nationalDexNumber =
     currentPokemon?.speciesData.pokedex_numbers[0].entry_number || 0;
-
-  useEffect(() => {
-    async function fetchEvolutionChain(url) {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data;
-    }
-    // TODO: Recursively get the evolution chain
-    if (currentPokemon) {
-      fetchEvolutionChain(currentPokemon?.speciesData.evolution_chain.url)
-        .then((data) => console.log(data))
-        .catch((err) => console.error(err));
-    }
-  }, [currentPokemon]);
 
   return (
     <>
