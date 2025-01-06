@@ -14,9 +14,11 @@ export default function DisplaySinglePkmnMode({ currentPokemon }) {
       return data;
     }
     // TODO: Recursively get the evolution chain
-    fetchEvolutionChain(currentPokemon.speciesData.evolution_chain.url).then((data) =>
-      console.log(data),
-    );
+    if (currentPokemon) {
+      fetchEvolutionChain(currentPokemon?.speciesData.evolution_chain.url)
+        .then((data) => console.log(data))
+        .catch((err) => console.error(err));
+    }
   }, [currentPokemon]);
 
   return (
