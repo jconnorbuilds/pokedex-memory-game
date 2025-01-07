@@ -14,13 +14,12 @@ import { Radar } from 'react-chartjs-2';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-export default function PokedexLidDisplay({ pokemon }) {
+export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
 
-  const blankData = {};
-
   const stats = pokemon?.data.stats;
+
   const statNamesFormatted = stats?.map((stat) => {
     const statNames = {
       hp: 'HP',
@@ -32,6 +31,40 @@ export default function PokedexLidDisplay({ pokemon }) {
     };
     return statNames[stat.stat.name];
   });
+
+  const generateDataset = (pokemon) => {
+    return {
+      label: pokemon?.name,
+      data: stats?.map((stat) => stat.base_stat),
+      backgroundColor: 'rgba(75, 192, 192, 0.6)',
+      borderColor: 'rgba(75, 192, 192, 0.9)',
+      borderWidth: 2,
+      pointColor: 'rgba(153, 102, 255)',
+      pointHoverBorderColor: '#FFF',
+      pointHoverBorderWidth: 3,
+      pointHoverRadius: 5,
+      pointStyle: 'rect',
+      pointHitRadius: 10,
+      pointSize: 4,
+    };
+  };
+
+  const generateDatasets = (evolutionChain, datasets = []) => {
+    console.log(evolutionChain);
+    datasets.push(generateDataset(evolutionChain.pkmn));
+    console.log(datasets);
+    if (!evolutionChain.evolvesTo) return datasets;
+    return generateDatasets(evolutionChain.evolvesTo[0], datasets);
+  };
+
+  if (evolutionChain) {
+    // debugger;
+
+    generateDatasets(evolutionChain);
+  }
+
+  const blankData = {};
+
   const data = pokemon
     ? {
         labels: statNamesFormatted,
@@ -58,6 +91,15 @@ export default function PokedexLidDisplay({ pokemon }) {
     : blankData;
 
   const options = {
+    datasets: {},
+    elements: {
+      line: {
+        tension: 0.15,
+      },
+      point: {
+        pointBorderWidth: 0,
+      },
+    },
     scales: {
       r: {
         beginAtZero: true,

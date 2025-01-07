@@ -37,8 +37,13 @@ export default function Pokedex({
             data.evolves_to.map((next) => compositeEvolutionChainData(next)),
           ),
         };
+      } else {
+        return {
+          pkmn: allPokemon.find((pkmn) => pkmn.name === data.species.name),
+        };
       }
 
+      // Re-implement the retry logic (get cached pkmn or fetch one-off)
       // Find and return the cached pokemon if it's already loaded
       const cachedPkmn = allPokemon.find((pkmn) => pkmn.name === data.species.name);
       if (cachedPkmn) return cachedPkmn;
@@ -54,13 +59,13 @@ export default function Pokedex({
       const response = await fetch(url);
       const data = await response.json();
       const compositeData = await compositeEvolutionChainData(data.chain);
-      console.log(compositeData);
-      return data;
+      // console.log(compositeData);
+      return compositeData;
     }
     // TODO: Recursively get the evolution chain
     if (currentPokemon) {
-      fetchEvolutionChain(currentPokemon?.speciesData.evolution_chain.url)
-        .then((data) => console.log(data.chain))
+      fetchEvolutionChain(currentPokemon.speciesData.evolution_chain.url)
+        .then((data) => setEvolutionChain(data))
         .catch((err) => console.error(err));
     }
   }, [currentPokemon, allPokemon]);
@@ -104,7 +109,7 @@ export default function Pokedex({
           />
         </PokedexBody>
         <PokedexLid>
-          <PokedexLidDisplay pokemon={currentPokemon} />
+          <PokedexLidDisplay pokemon={currentPokemon} evolutionChain={evolutionChain} />
           {children}
         </PokedexLid>
       </div>
