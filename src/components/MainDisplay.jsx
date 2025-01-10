@@ -7,6 +7,7 @@ import PokemonTypes from './PokemonTypes.jsx';
 import PokemonListFilter from './PokemonListFilter.jsx';
 import DisplayListMode from './DisplayListMode.jsx';
 import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
+import styles from '../styles/MainDisplay.module.css';
 
 export default function MainDisplay({
   allPokemon,
@@ -15,6 +16,7 @@ export default function MainDisplay({
   isLoading,
   loadingFinished,
   progress,
+  screenOn = true,
 }) {
   const [pokedexMode, setPokedexMode] = useState('singlePkmn');
   const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
@@ -76,13 +78,23 @@ export default function MainDisplay({
   }
 
   return (
-    <div className="screen screen--on">
-      {renderMenuBar(pokedexMode)}
-      {!loadingFinished ? (
-        <LoadingBar isLoading={isLoading} hide={loadingFinished} progress={progress} />
-      ) : (
-        renderMainContent(pokedexMode)
-      )}
+    <div className={styles.screenBorder}>
+      <div className={styles.screenWrapper}>
+        <div
+          className={`${styles[`${pokedexMode}Mode`]} ${screenOn ? styles.screenOn : ''}`}
+        >
+          {renderMenuBar(pokedexMode)}
+          {!loadingFinished ? (
+            <LoadingBar
+              isLoading={isLoading}
+              hide={loadingFinished}
+              progress={progress}
+            />
+          ) : (
+            renderMainContent(pokedexMode)
+          )}
+        </div>
+      </div>
     </div>
   );
 }
