@@ -29,43 +29,75 @@ export default function Pokedex({
       return data;
     }
 
-    const compositeEvolutionChainData = async (data) => {
-      if (data.evolves_to.length) {
+    const fetchPokemonData = async (pkmnID) => {
+      const url = `https://pokeapi.co/api/v2/pokemon/${pkmnID}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        throw new Error(`Failed to fetch SINGLE pokemon data: ${error}`);
+      }
+    };
+
+    const fetchAndFormatData = async (data) => {
+      // console.log('async data', data);
+      const pkmnSpeciesData = await fetchSinglePkmn(data.species.url);
+      // console.log('singlepkmn', singlePkmn);
+      // const pkmnUrl = getPokemonSpeciesURLs([pkmnSpeciesData]);
+      const pkmnData = await fetchPokemonData(pkmnSpeciesData.id);
+      console.log(pkmnData);
+
+      const compositeData = {
+        name: pkmnData.name,
+        data: pkmnData,
+        speciesData: pkmnSpeciesData,
+      };
+
+      return compositeData;
+    };
+
+    const getEvolutionPkmn = async (data) => {
+      // console.log(data);
+      // Find and return the cached pokemon if it's already loaded
+      const cachedPkmn = allPokemon.find((pkmn) => pkmn.name === data.species.name);
+      // console.log('cachedPkmn', cachedPkmn);
+
+      if (cachedPkmn) return cachedPkmn;
+
+      // Otherwise, fetch it
+      const fetchedPkmn = await fetchAndFormatData(data);
+      // return singlePkmnData;
+      return fetchedPkmn;
+    };
+
+    const compositeEvolutionChainData = async (evoChainData) => {
+      // console.log('evoChainData', evoChainData);
+      if (evoChainData.evolves_to.length) {
         return {
-          pkmn: allPokemon.find((pkmn) => pkmn.name === data.species.name),
+          pkmn: await getEvolutionPkmn(evoChainData),
           evolvesTo: await Promise.all(
-            data.evolves_to.map((next) => compositeEvolutionChainData(next)),
+            evoChainData.evolves_to.map((next) => compositeEvolutionChainData(next)),
           ),
         };
       } else {
         return {
-          pkmn: allPokemon.find((pkmn) => pkmn.name === data.species.name),
+          pkmn: allPokemon.find((pkmn) => pkmn.name === evoChainData.species.name),
         };
       }
-
-      // Re-implement the retry logic (get cached pkmn or fetch one-off)
-      // Find and return the cached pokemon if it's already loaded
-      const cachedPkmn = allPokemon.find((pkmn) => pkmn.name === data.species.name);
-      if (cachedPkmn) return cachedPkmn;
-
-      // Otherwise, fetch it
-      // TODO: Probably need to re-do this with the logic from the original pokemon data fetch
-      const singlePkmnData = await fetchSinglePkmn(data.species.url);
-
-      return singlePkmnData;
     };
 
     async function fetchEvolutionChain(url) {
       const response = await fetch(url);
       const data = await response.json();
       const compositeData = await compositeEvolutionChainData(data.chain);
-      // console.log(compositeData);
       return compositeData;
     }
+
     // TODO: Recursively get the evolution chain
     if (currentPokemon) {
       fetchEvolutionChain(currentPokemon.speciesData.evolution_chain.url)
-        .then((data) => setEvolutionChain(data))
+        .then((data) => setEvolutionChain([data]))
         .catch((err) => console.error(err));
     }
   }, [currentPokemon, allPokemon]);

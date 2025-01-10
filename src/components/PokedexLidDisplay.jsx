@@ -18,8 +18,9 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
 
-  const stats = pokemon?.data.stats;
+  console.log('evolution chain', evolutionChain);
 
+  const stats = pokemon?.data.stats;
   const statNamesFormatted = stats?.map((stat) => {
     const statNames = {
       hp: 'HP',
@@ -33,8 +34,10 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
   });
 
   const generateDataset = (pokemon) => {
+    console.log('dataset pkmn', pokemon ? pokemon : 'loading...');
+    const stats = pokemon ? pokemon.data.stats : undefined;
     return {
-      label: pokemon?.name,
+      label: pokemon ? pokemon.name : '',
       data: stats?.map((stat) => stat.base_stat),
       backgroundColor: 'rgba(75, 192, 192, 0.6)',
       borderColor: 'rgba(75, 192, 192, 0.9)',
@@ -50,45 +53,28 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
   };
 
   const generateDatasets = (evolutionChain, datasets = []) => {
-    console.log(evolutionChain);
-    datasets.push(generateDataset(evolutionChain.pkmn));
-    console.log(datasets);
-    if (!evolutionChain.evolvesTo) return datasets;
-    return generateDatasets(evolutionChain.evolvesTo[0], datasets);
+    const dataset = generateDataset(evolutionChain[0].pkmn);
+    console.log('DATASET', dataset);
+    datasets.push(dataset);
+    // console.log('datasets in the func', datasets);
+    if (!evolutionChain[0].evolvesTo) return datasets;
+    return generateDatasets(evolutionChain[0].evolvesTo, datasets);
   };
 
+  let datasets;
   if (evolutionChain) {
-    // debugger;
-
-    generateDatasets(evolutionChain);
+    datasets = generateDatasets(evolutionChain);
+    console.log('datasets', datasets);
+  } else {
+    datasets = [];
   }
-
-  const blankData = {};
 
   const data = pokemon
     ? {
         labels: statNamesFormatted,
-        datasets: [
-          {
-            label: pokemon?.name,
-            data: stats?.map((stat) => stat.base_stat),
-            lineColor: '#eee',
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 0.9)',
-            borderWidth: 2,
-            pointColor: 'rgba(153, 102, 255)',
-            pointHoverBorderColor: '#FFF',
-            pointHoverBorderWidth: 3,
-            pointBorderWidth: 0,
-            pointHoverRadius: 5,
-            pointStyle: 'rect',
-            pointHitRadius: 10,
-            pointSize: 4,
-            tension: 0.15,
-          },
-        ],
+        datasets: [...datasets],
       }
-    : blankData;
+    : {};
 
   const options = {
     datasets: {},
