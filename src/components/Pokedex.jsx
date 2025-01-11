@@ -41,13 +41,11 @@ export default function Pokedex({
     };
 
     const fetchAndFormatData = async (data) => {
-      // console.log('async data', data);
+      // Fetch the pokemon data and the species data
       const pkmnSpeciesData = await fetchSinglePkmn(data.species.url);
-      // console.log('singlepkmn', singlePkmn);
-      // const pkmnUrl = getPokemonSpeciesURLs([pkmnSpeciesData]);
       const pkmnData = await fetchPokemonData(pkmnSpeciesData.id);
-      console.log(pkmnData);
 
+      // Combine the data
       const compositeData = {
         name: pkmnData.name,
         data: pkmnData,
@@ -57,47 +55,48 @@ export default function Pokedex({
       return compositeData;
     };
 
-    const getEvolutionPkmn = async (data) => {
-      // console.log(data);
+    const getOrFetchPkmn = async (data) => {
       // Find and return the cached pokemon if it's already loaded
       const cachedPkmn = allPokemon.find((pkmn) => pkmn.name === data.species.name);
-      // console.log('cachedPkmn', cachedPkmn);
 
       if (cachedPkmn) return cachedPkmn;
 
       // Otherwise, fetch it
       const fetchedPkmn = await fetchAndFormatData(data);
-      // return singlePkmnData;
       return fetchedPkmn;
     };
 
     const compositeEvolutionChainData = async (evoChainData) => {
-      // console.log('evoChainData', evoChainData);
-      if (evoChainData.evolves_to.length) {
-        return {
-          pkmn: await getEvolutionPkmn(evoChainData),
-          evolvesTo: await Promise.all(
-            evoChainData.evolves_to.map((next) => compositeEvolutionChainData(next)),
-          ),
-        };
-      } else {
-        return {
-          pkmn: allPokemon.find((pkmn) => pkmn.name === evoChainData.species.name),
-        };
+      // Get the first pokemon in the evolution chain
+      const pkmn = await getOrFetchPkmn(evoChainData);
+      const evolutions = evoChainData.evolves_to;
+
+      // If it evolves, recurse over its evolutions
+      if (evolutions.length) {
+        const evolvesTo = await Promise.all(
+          evolutions.map((next) => compositeEvolutionChainData(next)),
+        );
+        // Return the full pokemon data with the evolution chain data
+        return { pkmn, evolvesTo };
       }
+      // If the pokemon is the last in the chain, just return the pokemon data
+      return { pkmn };
     };
 
     async function fetchEvolutionChain(url) {
+      // Fetch the whole evolution chain
       const response = await fetch(url);
       const data = await response.json();
+
+      // Format the chain so the full pokemon data is included along with the evolution chain data
       const compositeData = await compositeEvolutionChainData(data.chain);
       return compositeData;
     }
 
-    // TODO: Recursively get the evolution chain
+    // Fetch the evolution chain and set it as state
     if (currentPokemon) {
       fetchEvolutionChain(currentPokemon.speciesData.evolution_chain.url)
-        .then((data) => setEvolutionChain([data]))
+        .then((data) => setEvolutionChain(data))
         .catch((err) => console.error(err));
     }
   }, [currentPokemon, allPokemon]);
