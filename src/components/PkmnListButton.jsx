@@ -17,14 +17,24 @@ export default function PkmnListButton({ pkmn, styles, selectPokemon }) {
       <span>{pkmn.name.charAt(0).toUpperCase() + pkmn.name.slice(1)}</span>
       <div className={styles.pkmnInfo}>
         <span className={styles.dexNum}>#{nationalDexNumber}</span>
-        <div className={styles.icons}>
+        {isHovered ? (
+          <img
+            className={styles.pokemonGif}
+            width="40px"
+            height="40px"
+            src={pkmnGif}
+            alt={`${pkmn.name} gif`}
+          />
+        ) : (
           <img
             className={styles.pokemonIcon}
-            width={'40px'}
-            height={'40px'}
-            src={isHovered ? pkmnGif : pkmnIcon}
-            alt={`${pkmn.name} icon`}
+            width="40px"
+            height="40px"
+            src={pkmnIcon}
+            alt={`${pkmn.name} gif`}
           />
+        )}
+        <div className={styles.icons}>
           <img
             className={styles.pokeballIcon}
             width={'20px'}
