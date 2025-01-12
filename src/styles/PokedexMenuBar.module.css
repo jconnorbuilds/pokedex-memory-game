@@ -8,6 +8,12 @@
   color: #eee;
   font-size: 0.8rem;
   padding-inline: 0.5rem;
+  /* overflow-y: auto; */
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
 }
 
 .menuBarSinglePkmn {

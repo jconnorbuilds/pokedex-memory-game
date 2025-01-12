@@ -69,7 +69,6 @@
 .screenBorder {
   padding: 0.5em;
   background-color: #1a1a1a;
-  overflow-y: scroll;
   height: 55%;
   position: relative;
   pointer-events: none;
@@ -92,14 +91,20 @@
   flex-direction: column;
   grid-template-rows: auto minmax(0, 1fr) auto;
   height: 100%;
-
-  /* Turning off to make debugging easier */
 }
 
 .screenWrapper {
   height: 100%;
   overflow-y: scroll;
+  /* pointer-events: none; */
+}
+
+.screenContent {
   pointer-events: none;
+}
+
+.screenContent:has(.singlePkmnMode) {
+  height: 100%;
 }
 
 .singlePkmnMode {

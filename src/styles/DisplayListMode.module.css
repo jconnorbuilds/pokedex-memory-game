@@ -1,5 +1,5 @@
 .displayList {
-  padding-inline: 0.5rem;
+  /* padding-inline: 0.5rem; */
   min-width: 100%;
   font-size: 1rem;
   display: grid;
@@ -9,10 +9,50 @@
 }
 
 .displayList > * {
-  display: block;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  text-align: start;
   border: none;
   border-radius: 0;
   background-color: inherit;
   color: inherit;
   border-bottom: 2px solid #555;
+
+  &:hover,
+  &:focus {
+    background-color: #333;
+  }
+}
+
+.icons {
+  /* display: grid;
+  grid-template-columns: 1fr 1fr; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pokeballIcon {
+  display: inline;
+  width: 15px;
+  height: 15px;
+  aspect-ratio: 1;
+}
+
+.pokemonIcon {
+  display: inline;
+  width: 85px;
+  height: 85px;
+  object-fit: contain;
+}
+
+.pkmnInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dexNum {
+  font-size: 0.8rem;
 }

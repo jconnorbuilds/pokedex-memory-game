@@ -21,14 +21,14 @@ export default function MainDisplay({
   const [pokedexMode, setPokedexMode] = useState('singlePkmn');
   const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
 
-  const selectPokemon = (pokemonName) => {
+  function selectPokemon(pokemonName) {
     const selected = allPokemon.find((pkmn) => pkmn.name === pokemonName);
 
     setCurrentPokemon(selected);
     setPokedexMode('singlePkmn');
-  };
+  }
 
-  const renderMainContent = (mode) => {
+  function renderMainContent(mode) {
     if (mode === 'singlePkmn') {
       return <DisplaySinglePkmnMode currentPokemon={currentPokemon} />;
     } else if (mode === 'list') {
@@ -39,7 +39,7 @@ export default function MainDisplay({
         />
       );
     }
-  };
+  }
 
   function filterPkmn(e) {
     const filterString = e.target.value?.toLowerCase();
@@ -80,19 +80,23 @@ export default function MainDisplay({
   return (
     <div className={styles.screenBorder}>
       <div className={styles.screenWrapper}>
-        <div
-          className={`${styles[`${pokedexMode}Mode`]} ${screenOn ? styles.screenOn : ''}`}
-        >
-          {renderMenuBar(pokedexMode)}
-          {!loadingFinished ? (
-            <LoadingBar
-              isLoading={isLoading}
-              hide={loadingFinished}
-              progress={progress}
-            />
-          ) : (
-            renderMainContent(pokedexMode)
-          )}
+        <div className={styles.screenContent}>
+          <div
+            className={`${styles[`${pokedexMode}Mode`]} ${
+              screenOn ? styles.screenOn : ''
+            }`}
+          >
+            {renderMenuBar(pokedexMode)}
+            {!loadingFinished ? (
+              <LoadingBar
+                isLoading={isLoading}
+                hide={loadingFinished}
+                progress={progress}
+              />
+            ) : (
+              renderMainContent(pokedexMode)
+            )}
+          </div>
         </div>
       </div>
     </div>
