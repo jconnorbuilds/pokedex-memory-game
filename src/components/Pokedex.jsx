@@ -62,7 +62,10 @@ export default function Pokedex({
           />
         </PokedexBody>
         <PokedexLid>
-          <PokedexLidDisplay pokemon={currentPokemon} evolutionChain={evolutionChain} />
+          <PokedexLidDisplay
+            currentPokemon={currentPokemon}
+            evolutionChain={evolutionChain}
+          />
           {children}
         </PokedexLid>
       </div>

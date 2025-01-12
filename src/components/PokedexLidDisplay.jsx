@@ -14,11 +14,11 @@ import { Radar } from 'react-chartjs-2';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
+export default function PokedexLidDisplay({ currentPokemon, evolutionChain }) {
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
 
-  const stats = pokemon?.data.stats;
+  const stats = currentPokemon?.data.stats;
   const statNamesFormatted = stats?.map((stat) => {
     const statNames = {
       hp: 'HP',
@@ -32,12 +32,19 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
   });
 
   const generateDataset = (pokemon) => {
+    const currentPkmnColor = 'rgba(75, 192, 192, 0.6)';
+    const currentPkmnBorderColor = 'rgba(75, 192, 192, 1)';
+    const otherPkmnColor = 'rgba(192, 75, 192, 0.5)';
+    const otherPkmnBorderColor = 'rgba(192, 75, 192, 1)';
+    const isCurrentPkmn = pokemon.name === currentPokemon.name;
+
     const stats = pokemon ? pokemon.data.stats : undefined;
     return {
       label: pokemon ? pokemon.name : '',
       data: stats?.map((stat) => stat.base_stat),
-      backgroundColor: 'rgba(75, 192, 192, 0.6)',
-      borderColor: 'rgba(75, 192, 192, 0.9)',
+      backgroundColor: isCurrentPkmn ? currentPkmnColor : otherPkmnColor,
+      borderColor: isCurrentPkmn ? currentPkmnBorderColor : otherPkmnBorderColor,
+      order: isCurrentPkmn ? 0 : 1,
       borderWidth: 2,
       pointColor: 'rgba(153, 102, 255)',
       pointHoverBorderColor: '#FFF',
@@ -49,21 +56,24 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
     };
   };
 
+  // Recursivley generate datasets for each pokemon in the evolution chain
   const generateDatasets = (evolutionChain, datasets = []) => {
+    // Push the dataset of the current pokemon to the array
     const dataset = generateDataset(evolutionChain.pkmn);
     datasets.push(dataset);
-    if (Array.isArray(evolutionChain.evolvesTo)) {
-      evolutionChain.evolvesTo.forEach((child) => {
-        return generateDatasets(child, datasets);
-      });
+
+    // Recursively check if pokemon evolve, and generate datasets for each evolution
+    const pokemonEvolves = Array.isArray(evolutionChain.evolvesTo);
+    if (pokemonEvolves) {
+      evolutionChain.evolvesTo.forEach((child) => generateDatasets(child, datasets));
     }
 
     return datasets;
   };
 
-  let datasets = evolutionChain ? generateDatasets(evolutionChain) : [];
+  let datasets = currentPokemon && evolutionChain ? generateDatasets(evolutionChain) : [];
 
-  const data = pokemon
+  const data = currentPokemon
     ? {
         labels: statNamesFormatted,
         datasets: [...datasets],
@@ -74,7 +84,7 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
     datasets: {},
     elements: {
       line: {
-        tension: 0.15,
+        tension: 0,
       },
       point: {
         pointBorderWidth: 0,
@@ -95,7 +105,6 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
           padding: 0,
           color: '#CCC',
         },
-        suggestedMax: 180,
         ticks: {
           backdropColor: '#0006',
           color: '#CCC',
@@ -120,7 +129,7 @@ export default function PokedexLidDisplay({ pokemon, evolutionChain }) {
           <button>Stats</button>
           <button>Compare</button>
         </div>
-        {pokemon ? <Radar data={data} options={options}></Radar> : null}
+        {currentPokemon ? <Radar data={data} options={options}></Radar> : null}
       </div>
     </>
   );
