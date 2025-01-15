@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  text-shadow: 1px 1px 1px #0006;
+  text-shadow: 1px 1px 1px #000;
   padding-inline: 0.5rem;
   box-shadow: #0002 2px 5px 3px 3px inset, #0002 1px -2px 4px 4px inset,
     #0006 1px -3px 4px 1px inset;
@@ -58,23 +58,183 @@
   );
 }
 
+.typePillNormal {
+  composes: typePill;
+  --normal-color: #fff;
+  background: linear-gradient(
+    to bottom right,
+    var(--normal-color) 50%,
+    hsl(from var(--normal-color) h s 80) 50%
+  );
+}
+
+.typePillFlying {
+  composes: typePill;
+  --normal-color: #bbbbff;
+  background: linear-gradient(
+    to bottom right,
+    var(--normal-color) 50%,
+    hsl(from var(--normal-color) h s 80) 50%
+  );
+}
+
+.typePillFire {
+  composes: typePill;
+  --flying-color: #ff0000;
+  background: linear-gradient(
+    to bottom right,
+    var(--flying-color) 50%,
+    hsl(from var(--flying-color) 15 s 60) 50%
+  );
+}
+
+.typePillPsychic {
+  composes: typePill;
+  --psychic-color: #b032ff;
+  background: linear-gradient(
+    to bottom right,
+    var(--psychic-color) 50%,
+    hsl(from var(--psychic-color) h s 40) 50%
+  );
+}
+
+.typePillWater {
+  composes: typePill;
+  --water-color: #0022fc;
+  background: linear-gradient(
+    to bottom right,
+    var(--water-color) 50%,
+    hsl(from var(--water-color) h 100 60) 50%
+  );
+}
+
+.typePillBug {
+  composes: typePill;
+  --bug-color: #4ea837;
+  background: linear-gradient(
+    to bottom right,
+    var(--bug-color) 50%,
+    hsl(from var(--bug-color) 60 s 60) 50%
+  );
+}
+
+.typePillRock {
+  composes: typePill;
+  --rock-color: #62491d;
+  background: linear-gradient(
+    to bottom right,
+    var(--rock-color) 50%,
+    hsl(from var(--rock-color) h 10 25) 50%
+  );
+}
+
 .typePillGrass {
   composes: typePill;
   --grass-color: #00ff00;
   background: linear-gradient(
     to bottom right,
     var(--grass-color) 50%,
-    hsl(from var(--grass-color) h s 45) 50%
+    hsl(from var(--grass-color) 100 100 40) 50%
+  );
+}
+
+.typePillGhost {
+  composes: typePill;
+  --ghost-color: hsl(261, 73%, 60%);
+  background: linear-gradient(
+    to bottom right,
+    var(--ghost-color) 50%,
+    hsl(from var(--ghost-color) h 0 25) 50%
+  );
+}
+
+.typePillIce {
+  composes: typePill;
+  --ice-color: #8af9ff;
+  background: linear-gradient(
+    to bottom right,
+    var(--ice-color) 50%,
+    hsl(from var(--ice-color) h 100 60) 50%
+  );
+}
+
+.typePillDragon {
+  composes: typePill;
+  --dragon-color: #1c009b;
+  background: linear-gradient(
+    to bottom right,
+    var(--dragon-color) 50%,
+    hsl(from var(--dragon-color) 0 70 30) 50%
+  );
+}
+
+.typePillFighting {
+  composes: typePill;
+  --fighting-color: hsl(0, 70%, 30%);
+  background: linear-gradient(
+    to bottom right,
+    var(--fighting-color) 50%,
+    hsl(from var(--fighting-color) 40 150 50) 50%
+  );
+}
+
+.typePillDark {
+  composes: typePill;
+  --dark-color: hsl(261, 0%, 25%);
+  background: linear-gradient(
+    to bottom right,
+    var(--dark-color) 50%,
+    hsl(from var(--dark-color) h s 20) 50%
   );
 }
 
 .typePillPoison {
   composes: typePill;
-  --poison-color: #6200a8;
+  --poison-color: #8450e4;
   background: linear-gradient(
     to bottom right,
     var(--poison-color) 50%,
-    hsl(from var(--poison-color) h s 50) 50%
+    hsl(from var(--poison-color) 100 100 40) 50%
+  );
+}
+
+.typePillSteel {
+  composes: typePill;
+  --steel-color: #aaa;
+  background: linear-gradient(
+    to bottom right,
+    var(--steel-color) 50%,
+    hsl(from var(--steel-color) h s 80) 50%
+  );
+}
+
+.typePillGround {
+  composes: typePill;
+  --rock-color: #62491d;
+  background: linear-gradient(
+    to bottom right,
+    var(--rock-color) 50%,
+    hsl(from var(--rock-color) h s 60) 50%
+  );
+}
+
+.typePillElectric {
+  composes: typePill;
+  --electric-color: #ffea00;
+  background: linear-gradient(
+    to bottom right,
+    var(--electric-color) 50%,
+    hsl(from var(--electric-color) h s 45) 50%
+  );
+}
+
+.typePillFairy {
+  composes: typePill;
+  --fairy-color: hsl(0, 70%, 80%);
+  background: linear-gradient(
+    to bottom right,
+    var(--fairy-color) 50%,
+    hsl(from var(--fairy-color) h 100 100) 50%
   );
 }
 
