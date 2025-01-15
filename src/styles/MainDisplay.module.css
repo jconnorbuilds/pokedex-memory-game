@@ -1,4 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Turret+Road:wght@200;300;400;500;700;800&display=swap');
+@property --pos1 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+
+@property --pos2 {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 50%;
+}
+
+@property --glare-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 60deg;
+}
 
 .mainContentLoading {
   display: none;
@@ -72,17 +89,24 @@
   height: 55%;
   position: relative;
   pointer-events: none;
+}
 
-  &::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(60deg, #9111 50%, #ccc2 50%);
-    pointer-events: none;
-  }
+.screenGlare {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(
+    var(--glare-angle),
+    #9111 var(--pos1),
+    #ccc1 var(--pos2)
+  );
+  pointer-events: none;
+  z-index: 1;
+
+  /* same as #pokedex element transition */
+  transition: --pos1 400ms linear, --pos2 400ms linear, --angle 400ms linear;
 }
 
 .screen {

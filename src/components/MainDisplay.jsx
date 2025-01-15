@@ -16,10 +16,13 @@ export default function MainDisplay({
   isLoading,
   loadingFinished,
   progress,
+  pokedexAngle,
   screenOn = true,
 }) {
   const [pokedexMode, setPokedexMode] = useState('singlePkmn');
   const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
+
+  // const glare = { angle: `${60 + pokedexAngle.y / 5}deg` };
 
   function selectPokemon(pokemonName) {
     const selected = allPokemon.find((pkmn) => pkmn.name === pokemonName);
@@ -79,6 +82,13 @@ export default function MainDisplay({
 
   return (
     <div className={styles.screenBorder}>
+      <div
+        className={styles.screenGlare}
+        style={{
+          '--pos1': `${50 - pokedexAngle.y / 2}%`,
+          '--pos2': `${50 - pokedexAngle.y / 2}%`,
+        }}
+      ></div>
       <div className={styles.screenWrapper}>
         <div className={styles.screenContent}>
           <div

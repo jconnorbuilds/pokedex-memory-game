@@ -59,6 +59,7 @@ export default function Pokedex({
             loadingFinished={loadingFinished}
             progress={progress}
             setCurrentPokemon={setCurrentPokemon}
+            pokedexAngle={pokedexAngle}
           />
         </PokedexBody>
         <PokedexLid>
