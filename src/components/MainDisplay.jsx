@@ -8,6 +8,9 @@ import PokemonListFilter from './PokemonListFilter.jsx';
 import DisplayListMode from './DisplayListMode.jsx';
 import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
 import styles from '../styles/MainDisplay.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 export default function MainDisplay({
   allPokemon,
@@ -53,16 +56,20 @@ export default function MainDisplay({
 
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
+      const nationalDexNumber =
+        currentPokemon?.speciesData.pokedex_numbers[0].entry_number || 0;
       return (
         <MenuBar mode={pokedexMode}>
-          <PokemonTypes
-            currentPokemon={currentPokemon}
-            loadingFinished={loadingFinished}
-          />
           {loadingFinished && (
-            <Button action={() => setPokedexMode('list')} styles={mbStyles}>
-              Choose pkmn
-            </Button>
+            <>
+              <div>
+                <span>{currentPokemon.name}</span>
+                <span>#{nationalDexNumber}</span>
+              </div>
+              <Button action={() => setPokedexMode('list')} styles={mbStyles}>
+                <FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>
+              </Button>
+            </>
           )}
         </MenuBar>
       );
@@ -72,7 +79,7 @@ export default function MainDisplay({
           <PokemonListFilter filterPkmn={filterPkmn}></PokemonListFilter>
           {loadingFinished && (
             <Button action={() => setPokedexMode('singlePkmn')} styles={mbStyles}>
-              Back
+              <FontAwesomeIcon icon={faClose}></FontAwesomeIcon>
             </Button>
           )}
         </MenuBar>
