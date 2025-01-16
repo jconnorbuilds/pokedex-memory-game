@@ -3,7 +3,6 @@ import mbStyles from '../styles/PokedexMenuBar.module.css';
 import LoadingBar from './LoadingBar.jsx';
 import MenuBar from './MenuBar.jsx';
 import Button from './Button.jsx';
-import PokemonTypes from './PokemonTypes.jsx';
 import PokemonListFilter from './PokemonListFilter.jsx';
 import DisplayListMode from './DisplayListMode.jsx';
 import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
@@ -21,6 +20,7 @@ export default function MainDisplay({
   progress,
   pokedexAngle,
   screenOn = true,
+  evolutionChain,
 }) {
   const [pokedexMode, setPokedexMode] = useState('singlePkmn');
   const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
@@ -36,7 +36,12 @@ export default function MainDisplay({
 
   function renderMainContent(mode) {
     if (mode === 'singlePkmn') {
-      return <DisplaySinglePkmnMode currentPokemon={currentPokemon} />;
+      return (
+        <DisplaySinglePkmnMode
+          currentPokemon={currentPokemon}
+          evolutionChain={evolutionChain}
+        />
+      );
     } else if (mode === 'list') {
       return (
         <DisplayListMode
@@ -63,7 +68,7 @@ export default function MainDisplay({
           {loadingFinished && (
             <>
               <div>
-                <span>{currentPokemon.name}</span>
+                <span>{currentPokemon?.name}</span>
                 <span>#{nationalDexNumber}</span>
               </div>
               <Button action={() => setPokedexMode('list')} styles={mbStyles}>

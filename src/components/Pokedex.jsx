@@ -60,6 +60,7 @@ export default function Pokedex({
             progress={progress}
             setCurrentPokemon={setCurrentPokemon}
             pokedexAngle={pokedexAngle}
+            evolutionChain={evolutionChain}
           />
         </PokedexBody>
         <PokedexLid>

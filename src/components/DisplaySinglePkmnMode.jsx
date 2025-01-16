@@ -1,11 +1,11 @@
+import PokemonTypes from './PokemonTypes.jsx';
 import styles from '../styles/DisplaySinglePkmnMode.module.css';
+import EvolutionChart from './EvolutionChart.jsx';
 
-export default function DisplaySinglePkmnMode({ currentPokemon }) {
+export default function DisplaySinglePkmnMode({ currentPokemon, evolutionChain }) {
+  console.log(currentPokemon);
   const sprite = currentPokemon?.data.sprites.other['home'].front_default;
-  const name = currentPokemon?.name || '---';
-  const nationalDexNumber =
-    currentPokemon?.speciesData.pokedex_numbers[0].entry_number || 0;
-
+  const ability = currentPokemon?.data.abilities[0].ability.name;
   return (
     <div className={styles.screen}>
       <div className={styles.imageArea}>
@@ -13,7 +13,18 @@ export default function DisplaySinglePkmnMode({ currentPokemon }) {
           <img src={sprite ? sprite : '#'} alt="a pokemon" />
         </div>
       </div>
-      <div className={styles.infoArea}>dummy content</div>
+      <div className={styles.infoArea}>
+        <div className={styles.infoLeft}>
+          <h3>Evolution Chain</h3>
+          <EvolutionChart evolutionChain={evolutionChain} />
+        </div>
+        <div className={styles.infoRight}>
+          <h3>Type</h3>
+          <PokemonTypes currentPokemon={currentPokemon}></PokemonTypes>
+          <h3>Ability</h3>
+          <p className={styles.abilityText}>{ability}</p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import styles from '../styles/MainDisplay.module.css';
 
-function TypePill({ typeInfo }) {
+export function TypePill({ typeInfo }) {
   {
     const typeName = typeInfo?.type?.name ?? '---';
     const isUnknownType = typeName === '---';
@@ -17,15 +17,15 @@ function TypePill({ typeInfo }) {
   }
 }
 
-export default function PokemonTypes({ currentPokemon, loadingFinished }) {
+export default function PokemonTypes({ currentPokemon, loadingFinished = true }) {
   // Set types to an empty array if still loading, but this implementation might be buggy...
-  const types = loadingFinished ? currentPokemon?.data.types : [];
   const renderTypePill = (data) => {
     return data.map((typeInfo) => (
       <TypePill key={typeInfo ? typeInfo.type.name : 0} typeInfo={typeInfo || null} />
     ));
   };
 
+  const types = loadingFinished ? currentPokemon?.data.types : [];
   return (
     <div className={styles.types}>
       {types?.length ? renderTypePill(types) : <TypePill typeInfo={null} />}

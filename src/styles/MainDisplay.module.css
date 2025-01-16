@@ -28,24 +28,26 @@
 .types {
   display: flex;
   align-items: center;
+  color: #ccc;
+  gap: 0.2rem;
 }
 
 .type {
-  /* display: flex; */
   align-items: center;
 }
 
 .type .typePill {
   border-radius: 10px;
   font-family: 'Turret Road', serif;
-  font-weight: 800;
+  font-weight: 700;
+  font-size: 0.7rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-shadow: 1px 1px 1px #000;
+  text-shadow: 1px 1px 1px #0009;
   padding-inline: 0.5rem;
   box-shadow: #0002 2px 5px 3px 3px inset, #0002 1px -2px 4px 4px inset,
-    #0006 1px -3px 4px 1px inset;
+    #0006 1px -3px 4px 1px inset, #0003 0px 0px 6px 2px;
 }
 
 .typePillLoading {
