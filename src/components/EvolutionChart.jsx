@@ -1,37 +1,49 @@
-import { useMemo, useRef, useState, useEffect } from 'react';
 import styles from '../styles/EvolutionChart.module.css';
 
 export default function EvolutionChart({ evolutionChain }) {
-  const segments = useMemo(() => {
-    return [
-      { id: 'scyther', row: 'base' },
-      { id: 'scizor', row: 'upper' },
-      { id: 'kleavor', row: 'lower' },
-      { id: 'scizorEvo', row: 'upper' },
-      { id: 'kleavorEvo', row: 'lower' },
-    ];
-  }, []);
+  console.log(evolutionChain);
 
-  // Suppose we want to connect 'base2' -> 'branchUp' and 'branchUp' -> 'lower1', etc.
-  // In a real scenario, you'd figure out exactly which nodes are connected and map over them.
-  const connections = [
-    { from: 'scyther', to: 'scizor' },
-    { from: 'scyther', to: 'kleavor' },
-    { from: 'scizor', to: 'scizorEvo' },
-    { from: 'kleavor', to: 'kleavorEvo' },
-  ];
+  function getChartData(
+    eChain = evolutionChain,
+    segments = [],
+    connections = [],
+    currentBranchName = 'base',
+  ) {
+    const doesEvolve = Array.isArray(eChain.evolvesTo);
+    const evolutionDiverges = eChain.evolvesTo?.length > 1;
+
+    segments.push({ id: eChain.pkmn.name, row: currentBranchName });
+
+    if (doesEvolve) {
+      eChain.evolvesTo.forEach((evo, idx) => {
+        const newBranchName = evolutionDiverges
+          ? idx === 0
+            ? 'upper'
+            : 'lower'
+          : currentBranchName;
+        connections.push({ from: eChain.pkmn.name, to: evo.pkmn.name });
+        getChartData(evo, segments, connections, newBranchName);
+      });
+    }
+
+    console.log(segments, connections);
+
+    return { segments, connections };
+  }
+
+  const chartData = getChartData();
 
   const CHART_VB_W = 100;
   const CHART_VB_H = 30;
 
-  function getNodePosition(idx, segs = segments) {
+  function getNodePosition(idx, segs = chartData.segments) {
     if (idx < 0) return null;
     const x = getXPos(segs[idx]);
     const y = getYPos(segs[idx].row);
     return { x, y };
   }
 
-  function getXPos(node, segs = segments, chartW = CHART_VB_W) {
+  function getXPos(node, segs = chartData.segments, chartW = CHART_VB_W) {
     // Group segments by row
     const branches = segs.reduce(
       (acc, cur) => ({ ...acc, [cur.row]: [...acc[cur.row], cur] }),
@@ -58,9 +70,9 @@ export default function EvolutionChart({ evolutionChain }) {
     return rowHeights[row];
   }
 
-  function getLineCoords(idx, segs = segments) {
-    const fromNode = segments.find(
-      (seg) => seg.id === connections.find((c) => c.to === segs[idx].id).from,
+  function getLineCoords(idx, segs = chartData.segments) {
+    const fromNode = segs.find(
+      (seg) => seg.id === chartData.connections.find((c) => c.to === segs[idx].id).from,
     );
 
     const x1 = getXPos(fromNode);
@@ -78,7 +90,7 @@ export default function EvolutionChart({ evolutionChain }) {
           viewBox={`0 0 ${CHART_VB_W} ${CHART_VB_H}`}
           xmlns="http://www.w3.org/2000/svg"
         >
-          {segments.map((seg, idx) => {
+          {chartData.segments.map((seg, idx) => {
             const { x, y } = getNodePosition(idx);
             const lineCoords = idx > 0 ? getLineCoords(idx) : null;
             return (
@@ -102,43 +114,5 @@ export default function EvolutionChart({ evolutionChain }) {
         </svg>
       </div>
     </>
-  );
-}
-
-function SvgConnections({ coords, connections }) {
-  // We need the bounding rect of the parent to properly align lines
-  // If `evoChart` is our bounding container, we can measure it
-  // Or you can just rely on absolute positioning at the page level.
-  // For simplicity, let's assume we place an absolutely positioned SVG
-  // at (0,0) of the entire window, so our line coords can be used directly.
-  // If you want to *offset* them so the SVG only covers the chart,
-  // measure the chart container's top/left and subtract that from x/y.
-
-  return (
-    <svg
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        pointerEvents: 'none', // allows clicking through to the nodes
-        width: '100%',
-        height: '100%',
-      }}
-    >
-      {connections.map(({ from, to }, idx) => {
-        if (!coords[from] || !coords[to]) return null;
-        return (
-          <line
-            key={idx}
-            x1={coords[from].x}
-            y1={coords[from].y}
-            x2={coords[to].x}
-            y2={coords[to].y}
-            stroke="#555"
-            strokeWidth="1"
-          />
-        );
-      })}
-    </svg>
   );
 }

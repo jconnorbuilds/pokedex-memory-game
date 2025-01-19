@@ -3,7 +3,6 @@ import styles from '../styles/DisplaySinglePkmnMode.module.css';
 import EvolutionChart from './EvolutionChart.jsx';
 
 export default function DisplaySinglePkmnMode({ currentPokemon, evolutionChain }) {
-  console.log(currentPokemon);
   const sprite = currentPokemon?.data.sprites.other['home'].front_default;
   const ability = currentPokemon?.data.abilities[0].ability.name;
   return (
@@ -16,7 +15,7 @@ export default function DisplaySinglePkmnMode({ currentPokemon, evolutionChain }
       <div className={styles.infoArea}>
         <div className={styles.infoLeft}>
           <h3>Evolution Chain</h3>
-          <EvolutionChart evolutionChain={evolutionChain} />
+          {evolutionChain && <EvolutionChart evolutionChain={evolutionChain} />}
         </div>
         <div className={styles.infoRight}>
           <h3>Type</h3>
