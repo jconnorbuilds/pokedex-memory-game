@@ -26,15 +26,30 @@ export default function EvolutionChart({ evolutionChain }) {
 
   function getNodePosition(idx, segs = segments) {
     if (idx < 0) return null;
-    const x = getXPos(idx);
+    const x = getXPos(segs[idx]);
     const y = getYPos(segs[idx].row);
     return { x, y };
   }
 
-  function getXPos(idx, segs = segments, chartW = CHART_VB_W) {
-    const segmentCount = segs.length;
+  function getXPos(node, segs = segments, chartW = CHART_VB_W) {
+    // Group segments by row
+    const branches = segs.reduce(
+      (acc, cur) => ({ ...acc, [cur.row]: [...acc[cur.row], cur] }),
+      { base: [], upper: [], lower: [] },
+    );
+
+    // Find the position of the node in its branch
+    const branch = branches[node.row];
+    const indexInBranch = branch.findIndex((seg) => seg.id === node.id);
+    // Calculate the position of the node in the entire chart
+    const pos = indexInBranch + (node.row !== 'base' ? branches.base.length : 0);
+
+    // Calculate the x position based on the segment count
+    const segmentCount =
+      branches.base.length + Math.max(branches.upper.length, branches.lower.length);
     const segmentWidth = chartW / segmentCount;
-    const x = idx * segmentWidth + segmentWidth / 2;
+    const x = pos * segmentWidth + segmentWidth / 2;
+
     return x;
   }
 
@@ -44,9 +59,13 @@ export default function EvolutionChart({ evolutionChain }) {
   }
 
   function getLineCoords(idx, segs = segments) {
-    const x1 = getXPos(idx - 1);
-    const y1 = getYPos(segs[idx - 1].row);
-    const x2 = getXPos(idx);
+    const fromNode = segments.find(
+      (seg) => seg.id === connections.find((c) => c.to === segs[idx].id).from,
+    );
+
+    const x1 = getXPos(fromNode);
+    const y1 = getYPos(fromNode.row);
+    const x2 = getXPos(segs[idx]);
     const y2 = getYPos(segs[idx].row);
 
     return { x1, y1, x2, y2 };
