@@ -98,6 +98,7 @@ export default function MainDisplay({
       <div
         className={styles.screenGlare}
         style={{
+          '--glare-angle': `${70 - pokedexAngle.x / 2}deg`,
           '--pos1': `${50 - pokedexAngle.y / 2}%`,
           '--pos2': `${50 - pokedexAngle.y / 2}%`,
         }}

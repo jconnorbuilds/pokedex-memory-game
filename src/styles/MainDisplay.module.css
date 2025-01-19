@@ -268,7 +268,7 @@
   z-index: 1;
 
   /* same as #pokedex element transition */
-  transition: --pos1 400ms linear, --pos2 400ms linear, --angle 400ms linear;
+  transition: --pos1 400ms linear, --pos2 400ms linear, --glare-angle 400ms linear;
 }
 
 .screen {

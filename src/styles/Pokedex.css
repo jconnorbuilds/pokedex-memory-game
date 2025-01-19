@@ -32,7 +32,6 @@
   position: relative;
   right: 0;
   transition: 1s ease-in-out;
-  /* transform: translateZ(80px); */
 
   &:has(.pokedex--open) {
     /* right: 25%; */
@@ -59,7 +58,6 @@
   width: calc(var(--dex-width) * 2);
   aspect-ratio: 1/1;
   position: relative;
-  /* transform: translateZ(40px); */
   right: 0;
   transform-origin: center;
   transition: transform 400ms linear, right 1s ease-in-out;
