@@ -39,6 +39,7 @@ export default function MainDisplay({
       return (
         <DisplaySinglePkmnMode
           currentPokemon={currentPokemon}
+          selectPokemon={selectPokemon}
           evolutionChain={evolutionChain}
         />
       );
