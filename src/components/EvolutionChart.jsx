@@ -1,5 +1,5 @@
 import styles from '../styles/EvolutionChart.module.css';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 const CHART_VB_W = 100;
 const CHART_VB_H = 30;
 
