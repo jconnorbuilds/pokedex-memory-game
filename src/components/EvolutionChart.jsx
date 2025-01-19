@@ -7,22 +7,18 @@ export default function EvolutionChart({ evolutionChain }) {
     eChain = evolutionChain,
     segments = [],
     connections = [],
-    currentBranchName = 'base',
+    currentBranch = 0,
   ) {
     const doesEvolve = Array.isArray(eChain.evolvesTo);
     const evolutionDiverges = eChain.evolvesTo?.length > 1;
 
-    segments.push({ id: eChain.pkmn.name, row: currentBranchName });
+    segments.push({ id: eChain.pkmn.name, row: currentBranch });
 
     if (doesEvolve) {
       eChain.evolvesTo.forEach((evo, idx) => {
-        const newBranchName = evolutionDiverges
-          ? idx === 0
-            ? 'upper'
-            : 'lower'
-          : currentBranchName;
+        const nextBranch = evolutionDiverges ? idx + 1 : currentBranch;
         connections.push({ from: eChain.pkmn.name, to: evo.pkmn.name });
-        getChartData(evo, segments, connections, newBranchName);
+        getChartData(evo, segments, connections, nextBranch);
       });
     }
 
@@ -45,31 +41,48 @@ export default function EvolutionChart({ evolutionChain }) {
 
   function getXPos(node, segs = chartData.segments, chartW = CHART_VB_W) {
     // Group segments by row
-    const branches = segs.reduce(
-      (acc, cur) => ({ ...acc, [cur.row]: [...acc[cur.row], cur] }),
-      { base: [], upper: [], lower: [] },
-    );
-
+    const branches = segs.reduce((acc, cur) => {
+      if (acc[cur.row]) {
+        return { ...acc, [cur.row]: [...acc[cur.row], cur] };
+      } else {
+        return { ...acc, [cur.row]: [cur] };
+      }
+    }, {});
     // Find the position of the node in its branch
     const branch = branches[node.row];
     const indexInBranch = branch.findIndex((seg) => seg.id === node.id);
     // Calculate the position of the node in the entire chart
-    const pos = indexInBranch + (node.row !== 'base' ? branches.base.length : 0);
+    const pos = indexInBranch + (node.row === 0 ? 0 : branches[0].length);
 
     // Calculate the x position based on the segment count
-    const segmentCount =
-      branches.base.length + Math.max(branches.upper.length, branches.lower.length);
+    const baseBranchLength = branches[0].length;
+    const maxOtherBranchLength = Math.max(
+      0,
+      ...Object.keys(branches)
+        .filter((key) => key !== '0')
+        .map((key) => branches[key].length),
+    );
+    const segmentCount = baseBranchLength + maxOtherBranchLength;
     const segmentWidth = chartW / segmentCount;
     const x = pos * segmentWidth + segmentWidth / 2;
 
     return x;
   }
 
-  function getYPos(row, chartH = CHART_VB_H) {
-    const rowHeights = { base: chartH / 2, lower: chartH * 0.75, upper: chartH * 0.25 };
-    return rowHeights[row];
-  }
+  function getYPos(row, segs = chartData.segments, chartH = CHART_VB_H) {
+    // Get the unique rows
+    const uniqueRows = [...new Set(segs.map((seg) => seg.row))].sort((a, b) => a - b);
+    const rowCount = uniqueRows.length;
 
+    // Calculate the y position dynamically
+    if (row === 0) {
+      return chartH / 2;
+    } else {
+      const nonBaseRowCount = rowCount - 1;
+      const rowIndex = uniqueRows.indexOf(row) - 1; // Adjust index for non-base rows
+      return (chartH / (nonBaseRowCount + 1)) * (rowIndex + 1);
+    }
+  }
   function getLineCoords(idx, segs = chartData.segments) {
     const fromNode = segs.find(
       (seg) => seg.id === chartData.connections.find((c) => c.to === segs[idx].id).from,
