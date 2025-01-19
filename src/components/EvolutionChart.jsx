@@ -1,60 +1,100 @@
 import styles from '../styles/EvolutionChart.module.css';
+import { useMemo } from 'react';
+const CHART_VB_W = 100;
+const CHART_VB_H = 30;
 
 export default function EvolutionChart({ evolutionChain }) {
-  console.log(evolutionChain);
+  const chartData = createChartData(evolutionChain);
+  const chartBranches = useMemo(
+    () => groupByBranch(chartData.segments),
+    [chartData.segments],
+  );
 
-  function getChartData(
-    eChain = evolutionChain,
-    segments = [],
-    connections = [],
-    currentBranch = 0,
-  ) {
+  return (
+    <div className={styles.evoChart}>
+      <svg viewBox={`0 0 ${CHART_VB_W} ${CHART_VB_H}`} xmlns="http://www.w3.org/2000/svg">
+        {renderNodes(chartData)}
+        {renderConnections(chartData)}
+      </svg>
+    </div>
+  );
+
+  // Create chart data from the evolution chain by parsing out the segments and connections
+  function createChartData(eChain, segments = [], connections = [], currentBranch = 0) {
     const doesEvolve = Array.isArray(eChain.evolvesTo);
     const evolutionDiverges = eChain.evolvesTo?.length > 1;
 
-    segments.push({ id: eChain.pkmn.name, row: currentBranch });
+    // Add the current pokemon to the segments array
+    segments.push({ id: eChain.pkmn.name, branch: currentBranch });
 
+    // Recursively assign branches to the evolution chain.
+    // Branch 0 is the base branch, and all other branches are children of the base branch.
     if (doesEvolve) {
       eChain.evolvesTo.forEach((evo, idx) => {
         const nextBranch = evolutionDiverges ? idx + 1 : currentBranch;
         connections.push({ from: eChain.pkmn.name, to: evo.pkmn.name });
-        getChartData(evo, segments, connections, nextBranch);
+        createChartData(evo, segments, connections, nextBranch);
       });
     }
-
-    console.log(segments, connections);
 
     return { segments, connections };
   }
 
-  const chartData = getChartData();
+  function renderNodes({ segments }) {
+    return segments.map((seg) => {
+      const { x, y } = getNodePosition(seg);
+      return <circle key={seg.id} r="2.5" cx={x} cy={y} fill="#555"></circle>;
+    });
+  }
 
-  const CHART_VB_W = 100;
-  const CHART_VB_H = 30;
+  function renderConnections({ segments, connections }) {
+    return connections.map((conn) => {
+      const fromNode = segments.find((seg) => seg.id === conn.from);
+      const toNode = segments.find((seg) => seg.id === conn.to);
+      const fromPos = getNodePosition(fromNode);
+      const toPos = getNodePosition(toNode);
+      return (
+        <line
+          key={`${conn.from}-${conn.to}`}
+          x1={fromPos.x}
+          y1={fromPos.y}
+          x2={toPos.x}
+          y2={toPos.y}
+          stroke="#555"
+          strokeWidth="1"
+        ></line>
+      );
+    });
+  }
 
-  function getNodePosition(idx, segs = chartData.segments) {
-    if (idx < 0) return null;
-    const x = getXPos(segs[idx]);
-    const y = getYPos(segs[idx].row);
+  // Calculate the position of a node in the chart
+  function getNodePosition(node) {
+    const x = getXPos(node);
+    const y = getYPos(node.branch);
     return { x, y };
   }
 
-  function getXPos(node, segs = chartData.segments, chartW = CHART_VB_W) {
-    // Group segments by row
-    const branches = segs.reduce((acc, cur) => {
-      if (acc[cur.row]) {
-        return { ...acc, [cur.row]: [...acc[cur.row], cur] };
-      } else {
-        return { ...acc, [cur.row]: [cur] };
-      }
-    }, {});
-    // Find the position of the node in its branch
-    const branch = branches[node.row];
-    const indexInBranch = branch.findIndex((seg) => seg.id === node.id);
-    // Calculate the position of the node in the entire chart
-    const pos = indexInBranch + (node.row === 0 ? 0 : branches[0].length);
+  function getXPos(node, branches = chartBranches, chartW = CHART_VB_W) {
+    // Calculate which branch the node is in, and its position in that branch
+    const nodeBranch = branches[node.branch];
+    const indexInBranch = nodeBranch.findIndex((seg) => seg.id === node.id);
+    const pos = indexInBranch + (node.branch === 0 ? 0 : branches[0].length);
 
-    // Calculate the x position based on the segment count
+    // Calculate the x coordinate based on the number of columns in the chart
+    const columnCount = calculateColCount(branches);
+    const columnWidth = chartW / columnCount;
+    const x = pos * columnWidth + columnWidth / 2;
+
+    return x;
+  }
+
+  function getYPos(row, branches = chartBranches, chartH = CHART_VB_H) {
+    // Calculate the y position dynamically based on the number of branches
+    const branchCount = Object.keys(branches).length;
+    return row === 0 ? chartH / 2 : (chartH / branchCount) * row;
+  }
+
+  function calculateColCount(branches) {
     const baseBranchLength = branches[0].length;
     const maxOtherBranchLength = Math.max(
       0,
@@ -62,70 +102,14 @@ export default function EvolutionChart({ evolutionChain }) {
         .filter((key) => key !== '0')
         .map((key) => branches[key].length),
     );
-    const segmentCount = baseBranchLength + maxOtherBranchLength;
-    const segmentWidth = chartW / segmentCount;
-    const x = pos * segmentWidth + segmentWidth / 2;
-
-    return x;
+    return baseBranchLength + maxOtherBranchLength;
   }
 
-  function getYPos(row, segs = chartData.segments, chartH = CHART_VB_H) {
-    // Get the unique rows
-    const uniqueRows = [...new Set(segs.map((seg) => seg.row))].sort((a, b) => a - b);
-    const rowCount = uniqueRows.length;
-
-    // Calculate the y position dynamically
-    if (row === 0) {
-      return chartH / 2;
-    } else {
-      const nonBaseRowCount = rowCount - 1;
-      const rowIndex = uniqueRows.indexOf(row) - 1; // Adjust index for non-base rows
-      return (chartH / (nonBaseRowCount + 1)) * (rowIndex + 1);
-    }
+  function groupByBranch(segs) {
+    return segs.reduce((acc, cur) => {
+      acc[cur.branch] = acc[cur.branch] || [];
+      acc[cur.branch].push(cur);
+      return acc;
+    }, {});
   }
-  function getLineCoords(idx, segs = chartData.segments) {
-    const fromNode = segs.find(
-      (seg) => seg.id === chartData.connections.find((c) => c.to === segs[idx].id).from,
-    );
-
-    const x1 = getXPos(fromNode);
-    const y1 = getYPos(fromNode.row);
-    const x2 = getXPos(segs[idx]);
-    const y2 = getYPos(segs[idx].row);
-
-    return { x1, y1, x2, y2 };
-  }
-
-  return (
-    <>
-      <div className={styles.evoChart}>
-        <svg
-          viewBox={`0 0 ${CHART_VB_W} ${CHART_VB_H}`}
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {chartData.segments.map((seg, idx) => {
-            const { x, y } = getNodePosition(idx);
-            const lineCoords = idx > 0 ? getLineCoords(idx) : null;
-            return (
-              <>
-                <g>
-                  {idx > 0 && (
-                    <line
-                      x1={lineCoords.x1}
-                      y1={lineCoords.y1}
-                      x2={lineCoords.x2}
-                      y2={lineCoords.y2}
-                      stroke="#555"
-                      strokeWidth="2"
-                    ></line>
-                  )}
-                  <circle key={seg.id} r="3" cx={x} cy={y} fill="#555"></circle>
-                </g>
-              </>
-            );
-          })}
-        </svg>
-      </div>
-    </>
-  );
 }
