@@ -1,7 +1,7 @@
 .screen {
   display: grid;
   grid-template-rows: minmax(0, 5fr) 3fr;
-  background-color: #ccc;
+  background-color: #161616;
 }
 
 .imageArea {
@@ -27,6 +27,7 @@
 .infoArea {
   box-shadow: 4px 4px #000;
   color: #1a1a1a;
+  color: #ccc;
   display: grid;
   grid-template-columns: 1fr 1fr;
   font-size: 0.8rem;

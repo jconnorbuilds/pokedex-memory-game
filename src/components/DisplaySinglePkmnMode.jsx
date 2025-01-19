@@ -15,7 +15,12 @@ export default function DisplaySinglePkmnMode({ currentPokemon, evolutionChain }
       <div className={styles.infoArea}>
         <div className={styles.infoLeft}>
           <h3>Evolution Chain</h3>
-          {evolutionChain && <EvolutionChart evolutionChain={evolutionChain} />}
+          {evolutionChain && (
+            <EvolutionChart
+              evolutionChain={evolutionChain}
+              currentPokemon={currentPokemon}
+            />
+          )}
         </div>
         <div className={styles.infoRight}>
           <h3>Type</h3>

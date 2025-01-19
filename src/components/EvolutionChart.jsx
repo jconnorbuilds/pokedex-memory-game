@@ -1,9 +1,11 @@
 import styles from '../styles/EvolutionChart.module.css';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 const CHART_VB_W = 100;
 const CHART_VB_H = 30;
 
-export default function EvolutionChart({ evolutionChain }) {
+export default function EvolutionChart({ evolutionChain, currentPokemon }) {
+  // const [activeNodeId, setActiveNodeId] = useState(null);
+
   const chartData = createChartData(evolutionChain);
   const chartBranches = useMemo(
     () => groupByBranch(chartData.segments),
@@ -43,7 +45,19 @@ export default function EvolutionChart({ evolutionChain }) {
   function renderNodes({ segments }) {
     return segments.map((seg) => {
       const { x, y } = getNodePosition(seg);
-      return <circle key={seg.id} r="2.5" cx={x} cy={y} fill="#555"></circle>;
+      const isActive = seg.id === currentPokemon?.name;
+      return (
+        <g
+          key={seg.id}
+          className={styles.node + (isActive ? ` ${styles.nodeActive}` : '')}
+        >
+          <circle className={styles.nodeHoverRadius} r="8" cx={x} cy={y}></circle>
+          {isActive && (
+            <circle className={styles.activeHighlight} r="5" cx={x} cy={y}></circle>
+          )}
+          <circle className={styles.nodeInner} r="3" cx={x} cy={y}></circle>
+        </g>
+      );
     });
   }
 
@@ -56,12 +70,10 @@ export default function EvolutionChart({ evolutionChain }) {
       return (
         <line
           key={`${conn.from}-${conn.to}`}
-          x1={fromPos.x}
+          x1={fromPos.x + 7}
           y1={fromPos.y}
-          x2={toPos.x}
+          x2={toPos.x - 7}
           y2={toPos.y}
-          stroke="#555"
-          strokeWidth="1"
         ></line>
       );
     });

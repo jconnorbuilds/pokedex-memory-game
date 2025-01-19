@@ -1,57 +1,44 @@
 .evoChart {
-  /* height: 3rem; */
-  border: 1px dotted grey;
+  /* border: 1px dotted grey; */
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4) inset, 2px 2px 3px rgba(0, 0, 0, 0.7) inset;
+  border-radius: 4px;
   position: relative;
-  /* display: grid; */
-  /* padding-inline: 0.5rem; */
-  /* place-items: center; */
   grid-template-rows: 1fr 1fr;
   grid-auto-flow: column;
 }
 
-.segment {
-  width: 100%;
+.node {
+  pointer-events: all;
+  cursor: pointer;
+  z-index: 1;
+}
 
-  & .node {
-    width: 6px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background-color: #445;
-    cursor: pointer;
+.nodeActive .nodeInner {
+  fill: rgb(131, 55, 255);
+}
+
+.nodeHoverRadius {
+  fill: none;
+
+  &:hover + .nodeInner {
+    fill: white;
   }
 }
 
-.base {
-  grid-row: 1/3;
+circle.nodeInner {
+  pointer-events: none;
+  fill: #777;
 }
 
-.upper {
-  grid-row: 1;
-
-  & .node {
-    background-color: blue;
-  }
+line {
+  pointer-events: none;
+  stroke: #ccc;
+  stroke-width: 1;
 }
 
-.lower {
-  grid-row: 2;
-
-  & .node {
-    background-color: red;
-  }
-}
-
-.branchUp {
-  composes: upper;
-
-  /* &::before {
-    content: '';
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    width: 100%;
-    background-color: #555;
-    transform: rotate(-30deg) translate(-0.5rem);
-  } */
+.activeHighlight {
+  fill: none;
+  stroke: rgb(161, 212, 251);
+  stroke-width: 0.5;
+  filter: drop-shadow(0 0 1px rgb(255, 255, 255));
 }
