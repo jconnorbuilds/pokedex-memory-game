@@ -25,7 +25,8 @@ export default function App() {
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
-  const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
+  // const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
+  const allPokemonInGen = [];
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
@@ -90,10 +91,9 @@ export default function App() {
             reportGameStatus={reportGameStatus}
           ></GameArea>
           <Pokedex
-            allPokemon={allPokemonInGen}
             isOpen={pokedexIsOpen}
-            isLoading={isLoading}
-            progress={progress}
+            // progress={progress}
+            progress={0}
             toggleOpen={toggleDexOpenClosed}
           >
             <GameOptionsMenu>
