@@ -10,18 +10,26 @@ import useDelay from '../hooks/useDelay.js';
 import useEvolutionChain from '../hooks/useEvolutionChain.js';
 
 export default function Pokedex({
-  allPokemon,
+  // allPokemon,
   isOpen,
-  isLoading,
+  // isLoading,
   progress,
   toggleOpen,
   children,
 }) {
   const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
+
+  const [pokemonList, setPokemonList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
   const [currentPokemon, setCurrentPokemon] = useState(null);
+
   const loadingFinished = useDelay(isLoading, 1000);
-  const { evolutionChain } = useEvolutionChain({ currentPokemon, allPokemon });
+  const { evolutionChain } = useEvolutionChain({
+    currentPokemon,
+    allPokemon: pokemonList,
+  });
 
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
@@ -29,12 +37,12 @@ export default function Pokedex({
   }
 
   // Set the pokemon on initial load
-  if (allPokemon && !currentPokemon) {
-    setCurrentPokemon(allPokemon[0]);
-  }
+  // if (pokemonList && !currentPokemon) {
+  //   setCurrentPokemon(pokemonList[0]);
+  // }
 
   // Invalidate the current pokemon when new pokemon are loaded
-  if (isLoading && currentPokemon) setCurrentPokemon(null);
+  // if (isLoading && currentPokemon) setCurrentPokemon(null);
 
   const pokedexTransform = {
     transform: `
@@ -53,7 +61,7 @@ export default function Pokedex({
       >
         <PokedexBody>
           <MainDisplay
-            allPokemon={allPokemon}
+            pokemonList={pokemonList}
             currentPokemon={currentPokemon}
             isLoading={isLoading}
             loadingFinished={loadingFinished}
