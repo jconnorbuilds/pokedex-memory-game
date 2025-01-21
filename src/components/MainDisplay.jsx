@@ -12,7 +12,7 @@ import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 export default function MainDisplay({
-  allPokemon,
+  pokemonList,
   currentPokemon,
   setCurrentPokemon,
   isLoading,
@@ -22,13 +22,14 @@ export default function MainDisplay({
   screenOn = true,
   evolutionChain,
 }) {
-  const [pokedexMode, setPokedexMode] = useState('singlePkmn');
-  const [filteredPkmn, setFilteredPkmn] = useState(allPokemon);
+  const [pokedexMode, setPokedexMode] = useState('list');
+  const [filteredPkmn, setFilteredPkmn] = useState([]);
+  console.log(pokemonList);
 
   // const glare = { angle: `${60 + pokedexAngle.y / 5}deg` };
 
   function selectPokemon(pokemonName) {
-    const selected = allPokemon.find((pkmn) => pkmn.name === pokemonName);
+    const selected = pokemonList.find((pkmn) => pkmn.name === pokemonName);
 
     setCurrentPokemon(selected);
     setPokedexMode('singlePkmn');
@@ -44,20 +45,15 @@ export default function MainDisplay({
         />
       );
     } else if (mode === 'list') {
-      return (
-        <DisplayListMode
-          filteredPkmn={filteredPkmn ?? allPokemon}
-          selectPokemon={selectPokemon}
-        />
-      );
+      return <DisplayListMode filteredPkmn={pokemonList} selectPokemon={selectPokemon} />;
     }
   }
 
   function filterPkmn(e) {
     const filterString = e.target.value?.toLowerCase();
     !filterString
-      ? setFilteredPkmn(allPokemon)
-      : setFilteredPkmn(allPokemon.filter((pkmn) => pkmn.name.includes(filterString)));
+      ? setFilteredPkmn(pokemonList)
+      : setFilteredPkmn(pokemonList.filter((pkmn) => pkmn.name.includes(filterString)));
   }
 
   function renderMenuBar(pokedexMode) {

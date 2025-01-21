@@ -3,7 +3,7 @@ import PkmnListButton from './PkmnListButton.jsx';
 
 export default function DisplayListMode({ filteredPkmn, selectPokemon }) {
   return (
-    <div className={styles.displayList} tabIndex={0}>
+    <div className={styles.displayList}>
       {filteredPkmn?.map((pkmn) => (
         <PkmnListButton
           key={pkmn.name}

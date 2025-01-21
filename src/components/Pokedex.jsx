@@ -8,28 +8,19 @@ import MainDisplay from './MainDisplay.jsx';
 
 import useDelay from '../hooks/useDelay.js';
 import useEvolutionChain from '../hooks/useEvolutionChain.js';
+import useLazyLoadPkmn from '../hooks/useLazyLoadPkmn.js';
 
-export default function Pokedex({
-  // allPokemon,
-  isOpen,
-  // isLoading,
-  progress,
-  toggleOpen,
-  children,
-}) {
+export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
   const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
-
-  const [pokemonList, setPokemonList] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [offset, setOffset] = useState(0);
   const [currentPokemon, setCurrentPokemon] = useState(null);
 
-  const loadingFinished = useDelay(isLoading, 1000);
+  const { pokemonList, getMorePokemon, isLoading, offset } = useLazyLoadPkmn({ isOpen });
   const { evolutionChain } = useEvolutionChain({
     currentPokemon,
     allPokemon: pokemonList,
   });
+  const loadingFinished = useDelay(isLoading, 1000);
 
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
