@@ -8,8 +8,9 @@
   align-items: start;
 }
 
-.displayList > button {
+.displayList button {
   display: grid;
+  width: 100%;
   grid-template-columns: 1fr 1fr;
   padding-inline: 0.5rem;
   align-items: center;

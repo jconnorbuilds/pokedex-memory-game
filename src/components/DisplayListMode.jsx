@@ -1,6 +1,8 @@
 import styles from '../styles/DisplayListMode.module.css';
 import PkmnListButton from './PkmnListButton.jsx';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteLoader from 'react-window-infinite-loader';
+import { FixedSizeList as List } from 'react-window';
+
 import { memo } from 'react';
 
 const DisplayListMode = memo(function DisplayListMode({
@@ -8,25 +10,36 @@ const DisplayListMode = memo(function DisplayListMode({
   selectPokemon,
   getMorePokemon,
 }) {
+  const Row = ({ index, style }) => (
+    <PkmnListButton
+      // key={pkmn.name}
+      pkmn={filteredPkmn[index]}
+      styles={styles}
+      style={style}
+      selectPokemon={selectPokemon}
+    />
+  );
+
   return (
-    <InfiniteScroll
+    // <InfiniteLoader
+    //   className={styles.displayList}
+    //   dataLength={filteredPkmn.length}
+    //   next={getMorePokemon}
+    //   hasMore={true}
+    //   loader={<h4>Loading...</h4>}
+    //   endMessage={<p>End of List</p>}
+    //   scrollableTarget="screen-wrapper"
+    // >
+    <List
       className={styles.displayList}
-      dataLength={filteredPkmn.length}
-      next={getMorePokemon}
-      hasMore={true}
-      loader={<h4>Loading...</h4>}
-      endMessage={<p>End of List</p>}
-      scrollableTarget="screen-wrapper"
+      height={350}
+      itemCount={filteredPkmn.length}
+      itemSize={90}
+      width="100%"
     >
-      {filteredPkmn?.map((pkmn) => (
-        <PkmnListButton
-          key={pkmn.name}
-          pkmn={pkmn}
-          styles={styles}
-          selectPokemon={selectPokemon}
-        />
-      ))}
-    </InfiniteScroll>
+      {Row}
+    </List>
+    // </InfiniteLoader>
   );
 });
 
