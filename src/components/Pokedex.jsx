@@ -20,7 +20,8 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
     currentPokemon,
     allPokemon: pokemonList,
   });
-  const loadingFinished = useDelay(isLoading, 1000);
+  // const loadingFinished = useDelay(isLoading, 1000);
+  const loadingFinished = true;
 
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
@@ -54,6 +55,7 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
           <MainDisplay
             pokemonList={pokemonList}
             currentPokemon={currentPokemon}
+            getMorePokemon={getMorePokemon}
             isLoading={isLoading}
             loadingFinished={loadingFinished}
             progress={progress}

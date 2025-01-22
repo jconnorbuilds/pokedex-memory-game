@@ -1,4 +1,4 @@
-import { useState } from 'react'; // pokedex screen styles
+import { useState, useCallback } from 'react'; // pokedex screen styles
 import mbStyles from '../styles/PokedexMenuBar.module.css';
 import LoadingBar from './LoadingBar.jsx';
 import MenuBar from './MenuBar.jsx';
@@ -15,6 +15,7 @@ export default function MainDisplay({
   pokemonList,
   currentPokemon,
   setCurrentPokemon,
+  getMorePokemon,
   isLoading,
   loadingFinished,
   progress,
@@ -24,16 +25,17 @@ export default function MainDisplay({
 }) {
   const [pokedexMode, setPokedexMode] = useState('list');
   const [filteredPkmn, setFilteredPkmn] = useState([]);
-  console.log(pokemonList);
 
   // const glare = { angle: `${60 + pokedexAngle.y / 5}deg` };
 
-  function selectPokemon(pokemonName) {
-    const selected = pokemonList.find((pkmn) => pkmn.name === pokemonName);
-
-    setCurrentPokemon(selected);
-    setPokedexMode('singlePkmn');
-  }
+  const selectPokemon = useCallback(
+    (pokemonName) => {
+      const selected = pokemonList.find((pkmn) => pkmn.name === pokemonName);
+      setCurrentPokemon(selected);
+      setPokedexMode('singlePkmn');
+    },
+    [pokemonList, setCurrentPokemon],
+  );
 
   function renderMainContent(mode) {
     if (mode === 'singlePkmn') {
@@ -45,7 +47,13 @@ export default function MainDisplay({
         />
       );
     } else if (mode === 'list') {
-      return <DisplayListMode filteredPkmn={pokemonList} selectPokemon={selectPokemon} />;
+      return (
+        <DisplayListMode
+          filteredPkmn={pokemonList}
+          selectPokemon={selectPokemon}
+          getMorePokemon={getMorePokemon}
+        />
+      );
     }
   }
 
@@ -99,7 +107,7 @@ export default function MainDisplay({
           '--pos2': `${50 - pokedexAngle.y / 2}%`,
         }}
       ></div>
-      <div className={styles.screenWrapper}>
+      <div id="screen-wrapper" className={styles.screenWrapper}>
         <div className={styles.screenContent}>
           <div
             className={`${styles[`${pokedexMode}Mode`]} ${
