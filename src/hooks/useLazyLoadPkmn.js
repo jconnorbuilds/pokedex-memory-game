@@ -22,11 +22,12 @@ export default function useLazyLoadPkmn({ isOpen }) {
   const [offset, setOffset] = useState(0);
   const isFetching = useRef(false);
 
-  const getMorePokemon = useCallback(
+  const fetchMorePokemon = useCallback(
     async (o = offset) => {
       if (isFetching.current) return;
       isFetching.current = true;
       setIsLoading(true);
+      console.log(`Fetching pokemon with offset: ${o}`);
       try {
         const limit = 20;
         const res = await fetch(
@@ -61,9 +62,9 @@ export default function useLazyLoadPkmn({ isOpen }) {
 
   useEffect(() => {
     if (isOpen && !offset) {
-      getMorePokemon();
+      fetchMorePokemon();
     }
-  }, [isOpen, getMorePokemon, offset]);
+  }, [isOpen, fetchMorePokemon, offset]);
 
-  return { pokemonList, getMorePokemon, isLoading, offset };
+  return { pokemonList, fetchMorePokemon, isLoading };
 }

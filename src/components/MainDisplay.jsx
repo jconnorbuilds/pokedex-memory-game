@@ -15,7 +15,7 @@ export default function MainDisplay({
   pokemonList,
   currentPokemon,
   setCurrentPokemon,
-  getMorePokemon,
+  fetchMorePokemon,
   isLoading,
   loadingFinished,
   progress,
@@ -27,6 +27,8 @@ export default function MainDisplay({
   const [filteredPkmn, setFilteredPkmn] = useState([]);
 
   // const glare = { angle: `${60 + pokedexAngle.y / 5}deg` };
+
+  const pkmnToDisplay = filteredPkmn.length ? filteredPkmn : pokemonList;
 
   const selectPokemon = useCallback(
     (pokemonName) => {
@@ -49,9 +51,10 @@ export default function MainDisplay({
     } else if (mode === 'list') {
       return (
         <DisplayListMode
-          filteredPkmn={pokemonList}
+          pkmnToDisplay={pkmnToDisplay}
           selectPokemon={selectPokemon}
-          getMorePokemon={getMorePokemon}
+          fetchMorePokemon={fetchMorePokemon}
+          isLoading={isLoading}
         />
       );
     }

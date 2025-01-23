@@ -1,9 +1,6 @@
-import { style } from 'framer-motion/m';
 import pokeballIcon from '../assets/images/pokeball.webp';
-import { useState } from 'react';
 
 export default function PkmnListButton({ pkmn, style, styles, selectPokemon }) {
-  const [isHovered, setIsHovered] = useState(false);
   // console.log(pkmn);
   const nationalDexNumber = pkmn?.speciesData.pokedex_numbers[0].entry_number || 0;
   const pkmnIcon = pkmn?.data.sprites.front_default;
@@ -14,8 +11,6 @@ export default function PkmnListButton({ pkmn, style, styles, selectPokemon }) {
       style={style}
       onClick={(e) => selectPokemon(e.target.closest('button').value)}
       value={pkmn.name}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <span>{pkmn.name}</span>
       <div className={styles.pkmnInfo}>

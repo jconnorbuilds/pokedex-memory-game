@@ -6,40 +6,48 @@ import { FixedSizeList as List } from 'react-window';
 import { memo } from 'react';
 
 const DisplayListMode = memo(function DisplayListMode({
-  filteredPkmn,
+  pkmnToDisplay,
   selectPokemon,
-  getMorePokemon,
+  fetchMorePokemon,
+  isLoading,
 }) {
-  const Row = ({ index, style }) => (
-    <PkmnListButton
-      // key={pkmn.name}
-      pkmn={filteredPkmn[index]}
-      styles={styles}
-      style={style}
-      selectPokemon={selectPokemon}
-    />
-  );
+  const isItemLoaded = (index) => index < pkmnToDisplay.length;
+  const hasNextPage = pkmnToDisplay.length < 1200;
+  const itemCount = hasNextPage ? pkmnToDisplay.length + 1 : pkmnToDisplay.length;
+
+  const Row = ({ index, style }) => {
+    return !isItemLoaded(index) ? (
+      <div style={style}>Loading...</div>
+    ) : (
+      <PkmnListButton
+        pkmn={pkmnToDisplay[index]}
+        styles={styles}
+        style={style}
+        selectPokemon={selectPokemon}
+      />
+    );
+  };
 
   return (
-    // <InfiniteLoader
-    //   className={styles.displayList}
-    //   dataLength={filteredPkmn.length}
-    //   next={getMorePokemon}
-    //   hasMore={true}
-    //   loader={<h4>Loading...</h4>}
-    //   endMessage={<p>End of List</p>}
-    //   scrollableTarget="screen-wrapper"
-    // >
-    <List
-      className={styles.displayList}
-      height={350}
-      itemCount={filteredPkmn.length}
-      itemSize={90}
-      width="100%"
+    <InfiniteLoader
+      isItemLoaded={isItemLoaded}
+      itemCount={itemCount}
+      loadMoreItems={isLoading ? () => {} : fetchMorePokemon}
     >
-      {Row}
-    </List>
-    // </InfiniteLoader>
+      {({ onItemsRendered, ref }) => (
+        <List
+          itemCount={itemCount}
+          onItemsRendered={onItemsRendered}
+          ref={ref}
+          className={styles.displayList}
+          height={325}
+          itemSize={90}
+          width="100%"
+        >
+          {Row}
+        </List>
+      )}
+    </InfiniteLoader>
   );
 });
 

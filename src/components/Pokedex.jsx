@@ -15,7 +15,7 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
   const [prevOpen, setPrevOpen] = useState(false);
   const [currentPokemon, setCurrentPokemon] = useState(null);
 
-  const { pokemonList, getMorePokemon, isLoading, offset } = useLazyLoadPkmn({ isOpen });
+  const { pokemonList, fetchMorePokemon, isLoading } = useLazyLoadPkmn({ isOpen });
   const { evolutionChain } = useEvolutionChain({
     currentPokemon,
     allPokemon: pokemonList,
@@ -27,14 +27,6 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
     setPrevOpen(isOpen);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
   }
-
-  // Set the pokemon on initial load
-  // if (pokemonList && !currentPokemon) {
-  //   setCurrentPokemon(pokemonList[0]);
-  // }
-
-  // Invalidate the current pokemon when new pokemon are loaded
-  // if (isLoading && currentPokemon) setCurrentPokemon(null);
 
   const pokedexTransform = {
     transform: `
@@ -55,7 +47,7 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
           <MainDisplay
             pokemonList={pokemonList}
             currentPokemon={currentPokemon}
-            getMorePokemon={getMorePokemon}
+            fetchMorePokemon={fetchMorePokemon}
             isLoading={isLoading}
             loadingFinished={loadingFinished}
             progress={progress}
