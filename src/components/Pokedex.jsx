@@ -15,7 +15,8 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
   const [prevOpen, setPrevOpen] = useState(false);
   const [currentPokemon, setCurrentPokemon] = useState(null);
 
-  const { pokemonList, fetchMorePokemon, isLoading } = useLazyLoadPkmn({ isOpen });
+  const { pokemonList, fetchPokemonDetails, fetchAllPokemonBasicInfo, isLoading } =
+    useLazyLoadPkmn({ isOpen });
   const { evolutionChain } = useEvolutionChain({
     currentPokemon,
     allPokemon: pokemonList,
@@ -26,6 +27,11 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
+  }
+
+  if (!pokemonList.length) {
+    fetchAllPokemonBasicInfo();
+    // fetchPokemonDetails();
   }
 
   const pokedexTransform = {
@@ -47,7 +53,9 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
           <MainDisplay
             pokemonList={pokemonList}
             currentPokemon={currentPokemon}
-            fetchMorePokemon={fetchMorePokemon}
+            // fetchMorePokemon={fetchMorePokemon}
+            fetchPokemonDetails={fetchPokemonDetails}
+            fetchAllPokemonBasicInfo={fetchAllPokemonBasicInfo}
             isLoading={isLoading}
             loadingFinished={loadingFinished}
             progress={progress}

@@ -15,7 +15,9 @@ export default function MainDisplay({
   pokemonList,
   currentPokemon,
   setCurrentPokemon,
-  fetchMorePokemon,
+  // fetchMorePokemon,
+  fetchPokemonDetails,
+  fetchAllPokemonBasicInfo,
   isLoading,
   loadingFinished,
   progress,
@@ -53,7 +55,8 @@ export default function MainDisplay({
         <DisplayListMode
           pkmnToDisplay={pkmnToDisplay}
           selectPokemon={selectPokemon}
-          fetchMorePokemon={fetchMorePokemon}
+          // fetchMorePokemon={fetchMorePokemon}
+          fetchPokemonDetails={fetchPokemonDetails}
           isLoading={isLoading}
         />
       );

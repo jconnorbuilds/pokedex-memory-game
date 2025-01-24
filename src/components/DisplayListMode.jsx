@@ -3,17 +3,21 @@ import PkmnListButton from './PkmnListButton.jsx';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { FixedSizeList as List } from 'react-window';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 
 const DisplayListMode = memo(function DisplayListMode({
   pkmnToDisplay,
   selectPokemon,
-  fetchMorePokemon,
+  // fetchMorePokemon,
+  fetchPokemonDetails,
   isLoading,
 }) {
-  const isItemLoaded = (index) => index < pkmnToDisplay.length;
+  const isItemLoaded = (index) => index < pkmnToDisplay.length; // FIX THIS FUNCTION to check if all of the data is loaded, not just length
   const hasNextPage = pkmnToDisplay.length < 1200;
   const itemCount = hasNextPage ? pkmnToDisplay.length + 1 : pkmnToDisplay.length;
+
+  const [offset, setOffset] = useState(0);
+  const pageSize = 20;
 
   const Row = ({ index, style }) => {
     return !isItemLoaded(index) ? (
@@ -24,6 +28,7 @@ const DisplayListMode = memo(function DisplayListMode({
         styles={styles}
         style={style}
         selectPokemon={selectPokemon}
+        // fetchPokemonDetails={fetchPokemonDetails}
       />
     );
   };
@@ -32,7 +37,14 @@ const DisplayListMode = memo(function DisplayListMode({
     <InfiniteLoader
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
-      loadMoreItems={isLoading ? () => {} : fetchMorePokemon}
+      loadMoreItems={
+        isLoading
+          ? () => {}
+          : () => {
+              fetchPokemonDetails(offset, pageSize);
+              setOffset((prev) => prev + pageSize);
+            }
+      }
     >
       {({ onItemsRendered, ref }) => (
         <List
