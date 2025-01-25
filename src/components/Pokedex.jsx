@@ -29,11 +29,6 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
     setPokedexAngle({ x: 0, y: 0, z: 0 });
   }
 
-  if (!pokemonList.length) {
-    fetchAllPokemonBasicInfo();
-    // fetchPokemonDetails();
-  }
-
   const pokedexTransform = {
     transform: `
   rotateX(${pokedexAngle.x}deg)
@@ -53,7 +48,6 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
           <MainDisplay
             pokemonList={pokemonList}
             currentPokemon={currentPokemon}
-            // fetchMorePokemon={fetchMorePokemon}
             fetchPokemonDetails={fetchPokemonDetails}
             fetchAllPokemonBasicInfo={fetchAllPokemonBasicInfo}
             isLoading={isLoading}

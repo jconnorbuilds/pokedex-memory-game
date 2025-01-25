@@ -23,60 +23,58 @@ export default function useLazyLoadPkmn({ isOpen }) {
   const isFetching = useRef(false);
 
   const fetchAllPokemonBasicInfo = useCallback(async () => {
+    console.log('Getting basic info');
     try {
       const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=-1&offset=0`);
       const data = await res.json();
 
       setPokemonList(data.results);
-      console.log('called setPokemonList');
+      return data.results;
     } catch (err) {
       console.error(`Error fetching pokemon: ${err}`);
     }
   }, []);
 
   // Fetch comprehensive pokemon data and create the pokemon object
-  const fetchPokemonDetails = useCallback(
-    async (offset = 0, pageSize = 20) => {
-      // console.log('trying');
-      isFetching.current = true;
-      setIsLoading(true);
-      // if (!pokemonList.length) return;
-      // console.log('pokemonlist', pokemonList);
-      const data = pokemonList.slice(offset, offset + pageSize);
+  const fetchPokemonDetails = useCallback(async (data) => {
+    isFetching.current = true;
+    setIsLoading(true);
 
-      try {
-        const pkmnUrls = getPkmnURLs(data);
-        const pkmnData = await fetchMultipleUrls(pkmnUrls);
-        const pkmnSpeciesData = await fetchMultipleUrls(
-          pkmnData.map((pkmn) => pkmn.species.url),
-        );
-        const fullPokemonData = data.map((pkmn, idx) => {
-          pkmn.data = pkmnData[idx];
-          pkmn.speciesData = pkmnSpeciesData[idx];
-        });
+    try {
+      const pkmnUrls = getPkmnURLs(data);
+      const pkmnData = await fetchMultipleUrls(pkmnUrls);
+      const pkmnSpeciesData = await fetchMultipleUrls(
+        pkmnData.map((pkmn) => pkmn.species.url),
+      );
 
-        console.log('FULL POKEMON DATA', fullPokemonData);
-        setPokemonList([...pokemonList, ...fullPokemonData]);
-      } catch (err) {
-        console.error(`Error fetching pokemon details: ${err} data:${data}`);
-      } finally {
-        setIsLoading(false);
-        isFetching.current = false;
-      }
-    },
-    [pokemonList],
-  );
+      const fullPokemonData = data.map((pkmn, idx) => {
+        pkmn.data = pkmnData[idx];
+        pkmn.speciesData = pkmnSpeciesData[idx];
+        return pkmn;
+      });
 
-  // useEffect(() => {
-  //   if (isOpen && !pokemonList.length) {
-  //     fetchAllPokemonBasicInfo();
-  //     fetchPokemonDetails();
-  //   }
-  // }, [isOpen, fetchAllPokemonBasicInfo, fetchPokemonDetails, pokemonList.length]);
+      setPokemonList((prev) => [...prev, ...fullPokemonData]);
+    } catch (err) {
+      console.error(`Error fetching pokemon details: ${err} data:${data}`);
+    } finally {
+      setIsLoading(false);
+      isFetching.current = false;
+    }
+  }, []);
+
+  useEffect(() => {
+    const doFetch = async () => {
+      if (pokemonList.length > 0) return;
+      const pkmnBasicInfo = await fetchAllPokemonBasicInfo().then((data) => data);
+      const firstPage = pkmnBasicInfo.slice(0, 20);
+      fetchPokemonDetails(firstPage);
+    };
+
+    doFetch();
+  }, [fetchPokemonDetails, fetchAllPokemonBasicInfo, isOpen, pokemonList.length]);
 
   return {
     pokemonList,
-    // fetchMorePokemon,
     fetchPokemonDetails,
     fetchAllPokemonBasicInfo,
     isLoading,
