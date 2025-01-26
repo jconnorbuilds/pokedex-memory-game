@@ -8,43 +8,43 @@ import { memo, useState } from 'react';
 const DisplayListMode = memo(function DisplayListMode({
   pkmnToDisplay,
   selectPokemon,
-  // fetchMorePokemon,
   fetchPokemonDetails,
   isLoading,
 }) {
-  const isItemLoaded = (index) => index < pkmnToDisplay.length; // FIX THIS FUNCTION to check if all of the data is loaded, not just length
-  const hasNextPage = pkmnToDisplay.length < 1200;
-  const itemCount = hasNextPage ? pkmnToDisplay.length + 1 : pkmnToDisplay.length;
-
   const [offset, setOffset] = useState(0);
-  const pageSize = 20;
+  const [loadedIdxs, setLoadedIdxs] = useState({});
+  const PAGE_SIZE = 10;
 
+  // Check if there are more pokemon to load (necessary for InfiniteLoader)
+  const hasNextPage = Object.keys(pkmnToDisplay).length < 1200; // Hardcoded placeholder for now
+  const itemCount = Object.keys(pkmnToDisplay).length + (hasNextPage ? 1 : 0);
+  const isItemLoaded = (index) => pkmnToDisplay[index]?.fullyLoaded;
+
+  // The render function for each row in the list
   const Row = ({ index, style }) => {
-    return !isItemLoaded(index) ? (
-      <div style={style}>Loading...</div>
-    ) : (
+    return (
       <PkmnListButton
+        isLoading={!isItemLoaded(index) || !Object.keys(pkmnToDisplay).length}
         pkmn={pkmnToDisplay[index]}
         styles={styles}
         style={style}
         selectPokemon={selectPokemon}
-        // fetchPokemonDetails={fetchPokemonDetails}
-      />
+      ></PkmnListButton>
     );
+  };
+
+  // Load more pokemon when the user scrolls to the bottom of the list
+  const loadMoreItems = async (startIdx, stopIdx) => {
+    console.log(startIdx, stopIdx);
+    fetchPokemonDetails(startIdx, stopIdx);
+    setOffset(stopIdx);
   };
 
   return (
     <InfiniteLoader
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
-      loadMoreItems={
-        isLoading
-          ? () => {}
-          : () => {
-              fetchPokemonDetails(offset, pageSize);
-              setOffset((prev) => prev + pageSize);
-            }
-      }
+      loadMoreItems={isLoading ? () => {} : loadMoreItems}
     >
       {({ onItemsRendered, ref }) => (
         <List

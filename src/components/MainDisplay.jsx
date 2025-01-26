@@ -15,9 +15,7 @@ export default function MainDisplay({
   pokemonList,
   currentPokemon,
   setCurrentPokemon,
-  // fetchMorePokemon,
   fetchPokemonDetails,
-  fetchAllPokemonBasicInfo,
   isLoading,
   loadingFinished,
   progress,
@@ -26,9 +24,7 @@ export default function MainDisplay({
   evolutionChain,
 }) {
   const [pokedexMode, setPokedexMode] = useState('list');
-  const [filteredPkmn, setFilteredPkmn] = useState([]);
-
-  // const glare = { angle: `${60 + pokedexAngle.y / 5}deg` };
+  const [filteredPkmn, setFilteredPkmn] = useState([]); // Update to use dict instead of array
 
   const pkmnToDisplay = filteredPkmn.length ? filteredPkmn : pokemonList;
 
@@ -55,7 +51,6 @@ export default function MainDisplay({
         <DisplayListMode
           pkmnToDisplay={pkmnToDisplay}
           selectPokemon={selectPokemon}
-          // fetchMorePokemon={fetchMorePokemon}
           fetchPokemonDetails={fetchPokemonDetails}
           isLoading={isLoading}
         />
