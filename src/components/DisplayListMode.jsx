@@ -3,7 +3,7 @@ import PkmnListButton from './PkmnListButton.jsx';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { FixedSizeList as List } from 'react-window';
 
-import { memo, useState } from 'react';
+import { memo } from 'react';
 
 const DisplayListMode = memo(function DisplayListMode({
   pkmnToDisplay,
@@ -11,10 +11,6 @@ const DisplayListMode = memo(function DisplayListMode({
   fetchPokemonDetails,
   isLoading,
 }) {
-  const [offset, setOffset] = useState(0);
-  const [loadedIdxs, setLoadedIdxs] = useState({});
-  const PAGE_SIZE = 10;
-
   // Check if there are more pokemon to load (necessary for InfiniteLoader)
   const hasNextPage = Object.keys(pkmnToDisplay).length < 1200; // Hardcoded placeholder for now
   const itemCount = Object.keys(pkmnToDisplay).length + (hasNextPage ? 1 : 0);
@@ -35,9 +31,7 @@ const DisplayListMode = memo(function DisplayListMode({
 
   // Load more pokemon when the user scrolls to the bottom of the list
   const loadMoreItems = async (startIdx, stopIdx) => {
-    console.log(startIdx, stopIdx);
-    fetchPokemonDetails(startIdx, stopIdx);
-    setOffset(stopIdx);
+    fetchPokemonDetails(startIdx, stopIdx - startIdx);
   };
 
   return (
