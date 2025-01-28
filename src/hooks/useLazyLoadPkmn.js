@@ -31,8 +31,6 @@ export default function useLazyLoadPkmn({ isOpen }) {
   );
 
   const fetchFullPokemonData = async (partialData) => {
-    console.log('NEW pkmn', partialData);
-
     const pkmnUrls = getPkmnURLs(partialData);
     const pkmnData = await fetchMultipleUrls(pkmnUrls);
     const pkmnSpeciesData = await fetchMultipleUrls(
@@ -98,12 +96,12 @@ export default function useLazyLoadPkmn({ isOpen }) {
     const doFetch = async () => {
       if (!pokemonDictIsLoaded) {
         console.log('getting all pkmn');
-        await fetchAllPokemonBasicInfo().then(() => fetchPokemonDetails(0, 10));
+        await fetchAllPokemonBasicInfo();
       }
     };
 
     if (isOpen) doFetch();
-  }, [fetchPokemonDetails, isOpen, pokemonDictIsLoaded]);
+  }, [isOpen, pokemonDictIsLoaded]);
 
   return {
     pokemonList: pokemonDict,

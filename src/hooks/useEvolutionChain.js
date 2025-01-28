@@ -41,9 +41,14 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
 
     const getOrFetchPkmn = async (data) => {
       // Find and return the cached pokemon if it's already loaded
-      const cachedPkmn = allPokemon.find((pkmn) => pkmn.name === data.species.name);
+      // const cachedPkmn = allPokemon.find((pkmn) => pkmn.name === data.species.name);
 
-      if (cachedPkmn) return cachedPkmn;
+      // Linear search, could be more optimal
+      const cachedPkmn = Object.entries(allPokemon).find(
+        ([idx, pkmn]) => pkmn.name === data.species.name,
+      );
+
+      if (cachedPkmn?.fullyLoaded) return cachedPkmn;
 
       // Otherwise, fetch it
       const fetchedPkmn = await fetchAndFormatData(data);
@@ -78,13 +83,16 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
 
       // Format the chain so the full pokemon data is included along with the evolution chain data
       const compositeData = await compositeEvolutionChainData(data.chain);
+      console.log(compositeData);
       evolutionChainCache.set(url, compositeData);
       return compositeData;
     }
 
     // Fetch the evolution chain and set it as state
     if (currentPokemon) {
-      fetchEvolutionChain(currentPokemon.speciesData.evolution_chain.url)
+      fetchEvolutionChain(
+        Object.values(currentPokemon)[0]?.speciesData.evolution_chain.url,
+      )
         .then((data) => setEvolutionChain(data))
         .catch((err) => console.error(err));
     }

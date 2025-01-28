@@ -29,11 +29,26 @@ export default function MainDisplay({
   const pkmnToDisplay = filteredPkmn.length ? filteredPkmn : pokemonList;
 
   const selectPokemon = useCallback(
-    (pokemonName) => {
-      const selected = pokemonList.find((pkmn) => pkmn.name === pokemonName);
-      setCurrentPokemon(selected);
-      setPokedexMode('singlePkmn');
+    (id) => {
+      let selected;
+      if (typeof id === 'number') {
+        selected = { [id]: pokemonList[id] };
+        // console.log(selected);
+
+        setCurrentPokemon(selected);
+        setPokedexMode('singlePkmn');
+      } else if (typeof id === 'string') {
+        const key = +Object.entries(pokemonList).find(([idx, pkmn]) => {
+          return pkmn.name === id;
+        })[0];
+
+        selected = selected = { [key]: pokemonList[key] };
+        console.log(selected);
+        setCurrentPokemon(selected);
+        setPokedexMode('singlePkmn');
+      }
     },
+
     [pokemonList, setCurrentPokemon],
   );
 
@@ -68,7 +83,8 @@ export default function MainDisplay({
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
       const nationalDexNumber =
-        currentPokemon?.speciesData.pokedex_numbers[0].entry_number || 0;
+        Object.values(currentPokemon)[0]?.speciesData.pokedex_numbers[0].entry_number ||
+        0;
       return (
         <MenuBar mode={pokedexMode}>
           {loadingFinished && (

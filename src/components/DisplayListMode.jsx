@@ -21,16 +21,16 @@ const DisplayListMode = memo(function DisplayListMode({
     return (
       <PkmnListButton
         isLoading={!isItemLoaded(index) || !Object.keys(pkmnToDisplay).length}
+        onClick={() => selectPokemon(index)}
         pkmn={pkmnToDisplay[index]}
-        styles={styles}
-        style={style}
-        selectPokemon={selectPokemon}
+        styles={{ ...styles, reactWindow: style }}
       ></PkmnListButton>
     );
   };
 
   // Load more pokemon when the user scrolls to the bottom of the list
   const loadMoreItems = async (startIdx, stopIdx) => {
+    // console.log(startIdx, stopIdx);
     fetchPokemonDetails(startIdx, stopIdx - startIdx);
   };
 

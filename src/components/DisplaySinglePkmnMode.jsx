@@ -7,8 +7,9 @@ export default function DisplaySinglePkmnMode({
   evolutionChain,
   selectPokemon,
 }) {
-  const sprite = currentPokemon?.data.sprites.other['home'].front_default;
-  const ability = currentPokemon?.data.abilities[0].ability.name;
+  const sprite =
+    Object.values(currentPokemon)[0]?.data.sprites.other['home'].front_default;
+  const ability = Object.values(currentPokemon)[0]?.data.abilities[0].ability.name;
   return (
     <div className={styles.screen}>
       <div className={styles.imageArea}>

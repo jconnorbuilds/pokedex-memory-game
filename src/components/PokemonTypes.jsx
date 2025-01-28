@@ -25,7 +25,7 @@ export default function PokemonTypes({ currentPokemon, loadingFinished = true })
     ));
   };
 
-  const types = loadingFinished ? currentPokemon?.data.types : [];
+  const types = loadingFinished ? Object.values(currentPokemon)[0].data.types : [];
   return (
     <div className={styles.types}>
       {types?.length ? renderTypePill(types) : <TypePill typeInfo={null} />}

@@ -1,24 +1,12 @@
-import { useCallback, useEffect } from 'react';
 import pokeballIcon from '../assets/images/pokeball.webp';
 
-export default function PkmnListButton({
-  pkmn,
-  style,
-  styles,
-  selectPokemon,
-  isLoading,
-}) {
-  // console.log(pkmn);
+export default function PkmnListButton({ pkmn, styles, onClick, isLoading }) {
   const nationalDexNumber = pkmn?.speciesData?.pokedex_numbers[0].entry_number || 0;
   const pkmnIcon = pkmn?.data?.sprites.front_default;
 
   if (!pkmn) return <div>Loading...</div>;
   return (
-    <button
-      style={style}
-      onClick={(e) => selectPokemon(e.target.closest('button').value)}
-      value={pkmn.name}
-    >
+    <button style={styles.reactWindow} onClick={onClick} value={pkmn.name}>
       <span>{pkmn.name}</span>
       <div className={styles.pkmnInfo}>
         <span className={styles.dexNum}>#{nationalDexNumber}</span>
