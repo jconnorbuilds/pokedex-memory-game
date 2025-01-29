@@ -31,7 +31,7 @@ const DisplayListMode = memo(function DisplayListMode({
   // Load more pokemon when the user scrolls to the bottom of the list
   const loadMoreItems = async (startIdx, stopIdx) => {
     // console.log(startIdx, stopIdx);
-    fetchPokemonDetails(startIdx, stopIdx - startIdx);
+    fetchPokemonDetails({ offset: startIdx, size: stopIdx - startIdx });
   };
 
   return (

@@ -1,5 +1,5 @@
 import '../styles/Pokedex.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import usePokedexParallax from '../hooks/usePokedexParallax.js';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
@@ -27,6 +27,21 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
     setPrevOpen(isOpen);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
   }
+
+  useEffect(() => {
+    const fetchCurrentPkmnData = async (singlePkmn) => {
+      const pkmnIdx = Object.entries(pokemonList).find(([idx, pkmn]) => {
+        return pkmn.name === singlePkmn.name;
+      })[0];
+      // console.log('IDX', pkmnIdx);
+      const pkmnDictEntry = { [pkmnIdx]: pokemonList[pkmnIdx] };
+      await fetchPokemonDetails({ singlePkmn: pkmnDictEntry });
+      setCurrentPokemon(Object.values(pkmnDictEntry)[0]);
+    };
+
+    if (!currentPokemon || currentPokemon?.fullyLoaded) return;
+    fetchCurrentPkmnData(currentPokemon);
+  }, [currentPokemon, pokemonList, fetchPokemonDetails]);
 
   const pokedexTransform = {
     transform: `

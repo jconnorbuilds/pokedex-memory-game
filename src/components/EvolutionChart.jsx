@@ -47,6 +47,7 @@ export default function EvolutionChart({
   }
 
   function renderNodes({ segments }) {
+    // console.log(segments);
     return segments.map((seg) => {
       const { x, y } = getNodePosition(seg);
       const isActive = seg.id === currentPokemon?.name;

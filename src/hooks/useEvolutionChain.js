@@ -28,6 +28,10 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
       // Fetch the pokemon data and the species data
       const pkmnSpeciesData = await fetchSinglePkmn(data.species.url);
       const pkmnData = await fetchPokemonData(pkmnSpeciesData.id);
+      // const pkmnIdx = Object.entries(allPokemon).find(([idx, pkmn]) => {
+      //   // console.log('PKMN', pkmn);
+      //   return pkmn.name === data.species.name;
+      // })[0];
 
       // Combine the data
       const compositeData = {
@@ -46,7 +50,7 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
       // Linear search, could be more optimal
       const cachedPkmn = Object.entries(allPokemon).find(
         ([idx, pkmn]) => pkmn.name === data.species.name,
-      );
+      )[1];
 
       if (cachedPkmn?.fullyLoaded) return cachedPkmn;
 
@@ -59,6 +63,7 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
       // Get the first pokemon in the evolution chain
       const pkmn = await getOrFetchPkmn(evoChainData);
       const evolutions = evoChainData.evolves_to;
+      console.log('RECURSIVE PKMN', pkmn);
 
       // If it evolves, recurse over its evolutions
       if (evolutions.length) {
@@ -81,18 +86,17 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
       const response = await fetch(url);
       const data = await response.json();
 
-      // Format the chain so the full pokemon data is included along with the evolution chain data
+      // Format the chain so the full pokemon data is included
+      // along with the evolution chain data
       const compositeData = await compositeEvolutionChainData(data.chain);
-      console.log(compositeData);
+      console.log('COMPOSITE CHAIN DATA', compositeData);
       evolutionChainCache.set(url, compositeData);
       return compositeData;
     }
 
     // Fetch the evolution chain and set it as state
-    if (currentPokemon) {
-      fetchEvolutionChain(
-        Object.values(currentPokemon)[0]?.speciesData.evolution_chain.url,
-      )
+    if (currentPokemon?.fullyLoaded) {
+      fetchEvolutionChain(currentPokemon.speciesData.evolution_chain.url)
         .then((data) => setEvolutionChain(data))
         .catch((err) => console.error(err));
     }

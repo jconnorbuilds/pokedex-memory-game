@@ -18,7 +18,7 @@ export default function PokedexLidDisplay({ currentPokemon, evolutionChain }) {
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
 
-  const stats = currentPokemon ? Object.values(currentPokemon)[0]?.data.stats : undefined;
+  const stats = currentPokemon ? currentPokemon?.data?.stats : undefined;
   const statNamesFormatted = stats?.map((stat) => {
     const statNames = {
       hp: 'HP',

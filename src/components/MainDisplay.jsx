@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'; // pokedex screen styles
+import { useState, useCallback, useEffect } from 'react'; // pokedex screen styles
 import mbStyles from '../styles/PokedexMenuBar.module.css';
 import LoadingBar from './LoadingBar.jsx';
 import MenuBar from './MenuBar.jsx';
@@ -32,7 +32,7 @@ export default function MainDisplay({
     (id) => {
       let selected;
       if (typeof id === 'number') {
-        selected = { [id]: pokemonList[id] };
+        selected = pokemonList[id];
         // console.log(selected);
 
         setCurrentPokemon(selected);
@@ -42,7 +42,7 @@ export default function MainDisplay({
           return pkmn.name === id;
         })[0];
 
-        selected = selected = { [key]: pokemonList[key] };
+        selected = pokemonList[key];
         console.log(selected);
         setCurrentPokemon(selected);
         setPokedexMode('singlePkmn');
@@ -82,9 +82,12 @@ export default function MainDisplay({
 
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
-      const nationalDexNumber =
-        Object.values(currentPokemon)[0]?.speciesData.pokedex_numbers[0].entry_number ||
-        0;
+      // console.log('A pkmn', currentPokemon);
+      const loading = !currentPokemon || !currentPokemon?.fullyLoaded;
+
+      const nationalDexNumber = loading
+        ? '...'
+        : currentPokemon?.speciesData.pokedex_numbers[0].entry_number || 0;
       return (
         <MenuBar mode={pokedexMode}>
           {loadingFinished && (
