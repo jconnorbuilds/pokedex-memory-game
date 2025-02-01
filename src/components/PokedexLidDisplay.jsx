@@ -35,16 +35,17 @@ export default function PokedexLidDisplay({
     return statNames[stat.stat.name];
   });
 
-  const generateDataset = (pokemon) => {
+  const generateDataset = (pkmnId) => {
+    const pkmn = pokemonList[pkmnId];
     const currentPkmnColor = 'rgba(75, 192, 192, 0.6)';
     const currentPkmnBorderColor = 'rgba(75, 192, 192, 1)';
     const otherPkmnColor = 'rgba(192, 75, 192, 0.5)';
     const otherPkmnBorderColor = 'rgba(192, 75, 192, 1)';
-    const isCurrentPkmn = pokemon.name === currPkmn.name;
+    const isCurrentPkmn = pkmn.name === currPkmn.name;
 
-    const stats = pokemon ? pokemon.data.stats : undefined;
+    const stats = pkmn?.data?.stats || undefined;
     return {
-      label: pokemon ? pokemon.name : '',
+      label: pkmn.name,
       data: stats?.map((stat) => stat.base_stat),
       backgroundColor: isCurrentPkmn ? currentPkmnColor : otherPkmnColor,
       borderColor: isCurrentPkmn ? currentPkmnBorderColor : otherPkmnBorderColor,
@@ -64,8 +65,8 @@ export default function PokedexLidDisplay({
   const generateDatasets = (evolutionChain, datasets = []) => {
     // console.log('EVO CHAIN', evolutionChain);
     // Push the dataset of the current pokemon to the array
-    const pkmn = pokemonList[evolutionChain.pkmn];
-    const dataset = generateDataset(pkmn);
+
+    const dataset = generateDataset(evolutionChain.pkmn);
     datasets.push(dataset);
 
     // Recursively check if pokemon evolve, and generate datasets for each evolution
