@@ -69,9 +69,11 @@ export default function useLazyLoadPkmn({ isOpen }) {
         const fullPokemonData = await fetchFullPokemonData({
           [singlePkmnId]: pokemonDict[singlePkmnId],
         });
+        // console.log('FULL PKMN DATA', fullPokemonData);
         setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
         setIsLoading(false);
         isFetching.current = false;
+        // return pokemonDict[singlePkmnId];
       } else {
         try {
           const { newPkmn } = getPkmnSubset(offset, size);
@@ -118,7 +120,7 @@ export default function useLazyLoadPkmn({ isOpen }) {
   }, [isOpen, pokemonDictIsLoaded]);
 
   return {
-    pokemonList: pokemonDict,
+    pokemonDict,
     fetchPokemonDetails,
     isLoading,
   };

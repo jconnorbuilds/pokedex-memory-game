@@ -1,5 +1,6 @@
 import '../styles/Pokedex.css';
 import { useEffect, useState, useCallback } from 'react';
+import { getPkmnIdxByName } from '../utils/utils.js';
 import usePokedexParallax from '../hooks/usePokedexParallax.js';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
@@ -16,10 +17,11 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
   const [pokedexMode, setPokedexMode] = useState('list');
   const [currentPokemonId, setCurrentPokemonId] = useState(null);
 
-  const { pokemonList, fetchPokemonDetails, isLoading } = useLazyLoadPkmn({ isOpen });
+  const { pokemonDict, fetchPokemonDetails, isLoading } = useLazyLoadPkmn({ isOpen });
   const { evolutionChain } = useEvolutionChain({
     currentPokemonId,
-    allPokemon: pokemonList,
+    allPokemon: pokemonDict,
+    fetchPokemonDetails,
   });
   // const loadingFinished = useDelay(isLoading, 1000);
   const loadingFinished = true;
@@ -29,23 +31,18 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
     setPokedexAngle({ x: 0, y: 0, z: 0 });
   }
 
-  const getPkmnIdxByName = useCallback(
-    (name) => +Object.entries(pokemonList).find(([_, pkmn]) => pkmn.name === name)[0],
-    [pokemonList],
-  );
-
   // Sets the current pokemon ID, fetching the full data if it hasn't been loaded yet
   const handlePkmnSelection = useCallback(
     async ({ id, name }) => {
-      const key = name ? getPkmnIdxByName(name) : id;
-      const pokemonIsLoaded = pokemonList[key].fullyLoaded === true;
+      const key = name ? getPkmnIdxByName(name, pokemonDict) : id;
+      const pokemonIsLoaded = pokemonDict[key].fullyLoaded === true;
       if (!pokemonIsLoaded) fetchPokemonDetails({ singlePkmnId: key });
 
       setCurrentPokemonId(key);
       setPokedexMode('singlePkmn');
     },
 
-    [pokemonList, fetchPokemonDetails, setCurrentPokemonId, getPkmnIdxByName],
+    [pokemonDict, fetchPokemonDetails, setCurrentPokemonId],
   );
 
   const pokedexTransform = {
@@ -65,7 +62,7 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
       >
         <PokedexBody>
           <MainDisplay
-            pokemonList={pokemonList}
+            pokemonList={pokemonDict}
             pokedexMode={pokedexMode}
             setPokedexMode={setPokedexMode}
             currentPokemonId={currentPokemonId}
@@ -80,7 +77,7 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
         </PokedexBody>
         <PokedexLid>
           <PokedexLidDisplay
-            pokemonList={pokemonList}
+            pokemonList={pokemonDict}
             currentPokemonId={currentPokemonId}
             evolutionChain={evolutionChain}
           />

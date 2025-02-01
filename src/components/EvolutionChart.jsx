@@ -10,7 +10,6 @@ export default function EvolutionChart({
   currentPokemonId,
 }) {
   // const [activeNodeId, setActiveNodeId] = useState(null);
-  const currPkmn = pokemonList[currentPokemonId];
 
   const chartData = createChartData(evolutionChain);
   const chartBranches = useMemo(
@@ -29,35 +28,36 @@ export default function EvolutionChart({
 
   // Create chart data from the evolution chain by parsing out the segments and connections
   function createChartData(eChain, segments = [], connections = [], currentBranch = 0) {
+    console.log('ECHAIN', eChain);
     const doesEvolve = Array.isArray(eChain.evolvesTo);
     const evolutionDiverges = eChain.evolvesTo?.length > 1;
 
     // Add the current pokemon to the segments array
-    segments.push({ id: eChain.pkmn.name, branch: currentBranch });
+    segments.push({ id: eChain.pkmn, branch: currentBranch });
 
     // Recursively assign branches to the evolution chain.
     // Branch 0 is the base branch, and all other branches are children of the base branch.
     if (doesEvolve) {
       eChain.evolvesTo.forEach((evo, idx) => {
         const nextBranch = evolutionDiverges ? idx + 1 : currentBranch;
-        connections.push({ from: eChain.pkmn.name, to: evo.pkmn.name });
+        connections.push({ from: eChain.pkmn, to: evo.pkmn });
         createChartData(evo, segments, connections, nextBranch);
       });
     }
-
+    console.log('SEGMENTS', segments);
+    console.log('CONNECTIONS', connections);
     return { segments, connections };
   }
 
   function renderNodes({ segments }) {
-    // console.log(segments);
     return segments.map((seg) => {
       const { x, y } = getNodePosition(seg);
-      const isActive = seg.id === currPkmn?.name;
+      const isActive = seg.id === currentPokemonId;
       return (
         <g
           key={seg.id}
           className={styles.node + (isActive ? ` ${styles.nodeActive}` : '')}
-          onClick={() => handlePkmnSelection({ name: seg.id })}
+          onClick={() => handlePkmnSelection({ id: seg.id })}
         >
           <circle className={styles.nodeHoverRadius} r="8" cx={x} cy={y}></circle>
           {isActive && (

@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
+import { getPkmnIdxByName } from '../utils/utils.js';
 
 const evolutionChainCache = new Map();
 
-export default function useEvolutionChain({ currentPokemonId, allPokemon }) {
+export default function useEvolutionChain({
+  currentPokemonId,
+  allPokemon,
+  fetchPokemonDetails,
+}) {
   const [evolutionChain, setEvolutionChain] = useState(null);
 
   useEffect(() => {
@@ -44,20 +49,36 @@ export default function useEvolutionChain({ currentPokemonId, allPokemon }) {
       // Find and return the cached pokemon if it's already loaded
 
       // Linear search, could be more optimal
-      const cachedPkmn = Object.entries(allPokemon).find(
-        ([idx, pkmn]) => pkmn.name === data.species.name,
-      )[1];
+      // const cachedPkmn = Object.entries(allPokemon).find(
+      //   ([idx, pkmn]) => pkmn.name === data.species.name,
+      // )[1];
 
-      if (cachedPkmn?.fullyLoaded) return cachedPkmn;
+      // if (cachedPkmn?.fullyLoaded) return cachedPkmn;
 
-      // Otherwise, fetch it
-      const fetchedPkmn = await fetchAndFormatData(data);
-      return fetchedPkmn;
+      // // Otherwise, fetch it
+      // // console.log('DATA', data);
+      // const pkmnIdx = getPkmnIdxByName(data.species.name, allPokemon);
+      // console.log('PKMN IDX', pkmnIdx);
+      // const fetchedPkmn = await fetchPokemonDetails({ singlePkmnId: pkmnIdx });
+      // console.log('FETCHED PKMN', fetchedPkmn);
+      // return fetchedPkmn;
+      const pkmnIdx = getPkmnIdxByName(data.species.name, allPokemon);
+      if (!allPokemon[pkmnIdx]?.fullyLoaded) {
+        await fetchPokemonDetails({ singlePkmnId: pkmnIdx });
+        // console.log('FETCHED PKMN', allPokemon[pkmnIdx]);
+      }
+      return allPokemon[pkmnIdx];
     };
 
     const compositeEvolutionChainData = async (evoChainData) => {
       // Get the first pokemon in the evolution chain
-      const pkmn = await getOrFetchPkmn(evoChainData);
+      // const pkmn = await getOrFetchPkmn(evoChainData);
+      const pkmnIdx = getPkmnIdxByName(evoChainData.species.name, allPokemon);
+      if (!allPokemon[pkmnIdx]?.fullyLoaded) {
+        await fetchPokemonDetails({ singlePkmnId: pkmnIdx });
+        // console.log('FETCHED PKMN', allPokemon[pkmnIdx]);
+      }
+      const pkmn = pkmnIdx;
       const evolutions = evoChainData.evolves_to;
 
       // If it evolves, recurse over its evolutions
@@ -95,7 +116,7 @@ export default function useEvolutionChain({ currentPokemonId, allPokemon }) {
         .then((data) => setEvolutionChain(data))
         .catch((err) => console.error(err));
     }
-  }, [currentPokemonId, allPokemon]);
+  }, [currentPokemonId, allPokemon, fetchPokemonDetails]);
 
   return { evolutionChain };
 }
