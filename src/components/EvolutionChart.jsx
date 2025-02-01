@@ -4,11 +4,13 @@ const CHART_VB_W = 100;
 const CHART_VB_H = 30;
 
 export default function EvolutionChart({
+  pokemonList,
   evolutionChain,
-  currentPokemon,
-  selectPokemon,
+  handlePkmnSelection,
+  currentPokemonId,
 }) {
   // const [activeNodeId, setActiveNodeId] = useState(null);
+  const currPkmn = pokemonList[currentPokemonId];
 
   const chartData = createChartData(evolutionChain);
   const chartBranches = useMemo(
@@ -50,12 +52,12 @@ export default function EvolutionChart({
     // console.log(segments);
     return segments.map((seg) => {
       const { x, y } = getNodePosition(seg);
-      const isActive = seg.id === currentPokemon?.name;
+      const isActive = seg.id === currPkmn?.name;
       return (
         <g
           key={seg.id}
           className={styles.node + (isActive ? ` ${styles.nodeActive}` : '')}
-          onClick={() => selectPokemon(seg.id)}
+          onClick={() => handlePkmnSelection(seg.id)}
         >
           <circle className={styles.nodeHoverRadius} r="8" cx={x} cy={y}></circle>
           {isActive && (

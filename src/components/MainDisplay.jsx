@@ -13,8 +13,11 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 export default function MainDisplay({
   pokemonList,
-  currentPokemon,
+  currentPokemonId,
   setCurrentPokemon,
+  pokedexMode,
+  setPokedexMode,
+  handlePkmnSelection,
   fetchPokemonDetails,
   isLoading,
   loadingFinished,
@@ -23,41 +26,19 @@ export default function MainDisplay({
   screenOn = true,
   evolutionChain,
 }) {
-  const [pokedexMode, setPokedexMode] = useState('list');
   const [filteredPkmn, setFilteredPkmn] = useState([]); // Update to use dict instead of array
 
   const pkmnToDisplay = filteredPkmn.length ? filteredPkmn : pokemonList;
-
-  const selectPokemon = useCallback(
-    (id) => {
-      let selected;
-      if (typeof id === 'number') {
-        selected = pokemonList[id];
-        // console.log(selected);
-
-        setCurrentPokemon(selected);
-        setPokedexMode('singlePkmn');
-      } else if (typeof id === 'string') {
-        const key = +Object.entries(pokemonList).find(([idx, pkmn]) => {
-          return pkmn.name === id;
-        })[0];
-
-        selected = pokemonList[key];
-        console.log(selected);
-        setCurrentPokemon(selected);
-        setPokedexMode('singlePkmn');
-      }
-    },
-
-    [pokemonList, setCurrentPokemon],
-  );
+  const currPkmn = pokemonList[currentPokemonId];
 
   function renderMainContent(mode) {
     if (mode === 'singlePkmn') {
       return (
         <DisplaySinglePkmnMode
-          currentPokemon={currentPokemon}
-          selectPokemon={selectPokemon}
+          pokemonList={pokemonList}
+          // currentPokemon={currPkmn}
+          currentPokemonId={currentPokemonId}
+          handlePkmnSelection={handlePkmnSelection}
           evolutionChain={evolutionChain}
         />
       );
@@ -65,7 +46,7 @@ export default function MainDisplay({
       return (
         <DisplayListMode
           pkmnToDisplay={pkmnToDisplay}
-          selectPokemon={selectPokemon}
+          selectPokemon={handlePkmnSelection}
           fetchPokemonDetails={fetchPokemonDetails}
           isLoading={isLoading}
         />
@@ -83,17 +64,17 @@ export default function MainDisplay({
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
       // console.log('A pkmn', currentPokemon);
-      const loading = !currentPokemon || !currentPokemon?.fullyLoaded;
+      const loading = !currentPokemonId || !currPkmn?.fullyLoaded;
 
       const nationalDexNumber = loading
         ? '...'
-        : currentPokemon?.speciesData.pokedex_numbers[0].entry_number || 0;
+        : currPkmn?.speciesData.pokedex_numbers[0].entry_number || 0;
       return (
         <MenuBar mode={pokedexMode}>
           {loadingFinished && (
             <>
               <div>
-                <span>{currentPokemon?.name}</span>
+                <span>{currPkmn?.name}</span>
                 <span>#{nationalDexNumber}</span>
               </div>
               <Button action={() => setPokedexMode('list')} styles={mbStyles}>

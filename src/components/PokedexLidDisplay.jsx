@@ -14,11 +14,15 @@ import { Radar } from 'react-chartjs-2';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-export default function PokedexLidDisplay({ currentPokemon, evolutionChain }) {
+export default function PokedexLidDisplay({
+  pokemonList,
+  currentPokemonId,
+  evolutionChain,
+}) {
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
-
-  const stats = currentPokemon ? currentPokemon?.data?.stats : undefined;
+  const currPkmn = pokemonList[currentPokemonId];
+  const stats = currPkmn?.fullyLoaded ? currPkmn.data?.stats : undefined;
   const statNamesFormatted = stats?.map((stat) => {
     const statNames = {
       hp: 'HP',
@@ -36,7 +40,7 @@ export default function PokedexLidDisplay({ currentPokemon, evolutionChain }) {
     const currentPkmnBorderColor = 'rgba(75, 192, 192, 1)';
     const otherPkmnColor = 'rgba(192, 75, 192, 0.5)';
     const otherPkmnBorderColor = 'rgba(192, 75, 192, 1)';
-    const isCurrentPkmn = pokemon.name === currentPokemon.name;
+    const isCurrentPkmn = pokemon.name === currPkmn.name;
 
     const stats = pokemon ? pokemon.data.stats : undefined;
     return {
@@ -71,9 +75,9 @@ export default function PokedexLidDisplay({ currentPokemon, evolutionChain }) {
     return datasets;
   };
 
-  let datasets = currentPokemon && evolutionChain ? generateDatasets(evolutionChain) : [];
+  let datasets = currPkmn && evolutionChain ? generateDatasets(evolutionChain) : [];
 
-  const data = currentPokemon
+  const data = currPkmn
     ? {
         labels: statNamesFormatted,
         datasets: [...datasets],
@@ -129,7 +133,7 @@ export default function PokedexLidDisplay({ currentPokemon, evolutionChain }) {
           <button>Stats</button>
           <button>Compare</button>
         </div>
-        {currentPokemon ? <Radar data={data} options={options}></Radar> : null}
+        {currPkmn ? <Radar data={data} options={options}></Radar> : null}
       </div>
     </>
   );

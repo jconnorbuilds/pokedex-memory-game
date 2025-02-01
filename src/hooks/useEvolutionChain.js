@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react';
 
 const evolutionChainCache = new Map();
 
-export default function useEvolutionChain({ currentPokemon, allPokemon }) {
+export default function useEvolutionChain({ currentPokemonId, allPokemon }) {
   const [evolutionChain, setEvolutionChain] = useState(null);
 
   useEffect(() => {
-    if (!currentPokemon) return;
+    const currPkmn = allPokemon[currentPokemonId];
+    if (!currPkmn) return;
     async function fetchSinglePkmn(url) {
       const response = await fetch(url);
       const data = await response.json();
@@ -63,7 +64,7 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
       // Get the first pokemon in the evolution chain
       const pkmn = await getOrFetchPkmn(evoChainData);
       const evolutions = evoChainData.evolves_to;
-      console.log('RECURSIVE PKMN', pkmn);
+      // console.log('RECURSIVE PKMN', pkmn);
 
       // If it evolves, recurse over its evolutions
       if (evolutions.length) {
@@ -89,18 +90,18 @@ export default function useEvolutionChain({ currentPokemon, allPokemon }) {
       // Format the chain so the full pokemon data is included
       // along with the evolution chain data
       const compositeData = await compositeEvolutionChainData(data.chain);
-      console.log('COMPOSITE CHAIN DATA', compositeData);
+      // console.log('COMPOSITE CHAIN DATA', compositeData);
       evolutionChainCache.set(url, compositeData);
       return compositeData;
     }
 
     // Fetch the evolution chain and set it as state
-    if (currentPokemon?.fullyLoaded) {
-      fetchEvolutionChain(currentPokemon.speciesData.evolution_chain.url)
+    if (currPkmn?.fullyLoaded) {
+      fetchEvolutionChain(currPkmn.speciesData.evolution_chain.url)
         .then((data) => setEvolutionChain(data))
         .catch((err) => console.error(err));
     }
-  }, [currentPokemon, allPokemon]);
+  }, [currentPokemonId, allPokemon]);
 
   return { evolutionChain };
 }

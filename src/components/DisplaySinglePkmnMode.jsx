@@ -3,19 +3,22 @@ import styles from '../styles/DisplaySinglePkmnMode.module.css';
 import EvolutionChart from './EvolutionChart.jsx';
 
 export default function DisplaySinglePkmnMode({
+  pokemonList,
   currentPokemon,
+  currentPokemonId,
   evolutionChain,
-  selectPokemon,
+  handlePkmnSelection,
 }) {
-  const loading = !currentPokemon || !currentPokemon?.fullyLoaded;
+  const currPkmn = pokemonList[currentPokemonId];
+  const loading = !currentPokemonId || !currPkmn?.fullyLoaded;
   // console.log('DSPM currpok', currentPokemon);
-  const sprite = loading ? '#' : currentPokemon?.data.sprites.other['home'].front_default;
-  const ability = loading ? '...' : currentPokemon?.data.abilities[0].ability.name;
+  const sprite = loading ? '#' : currPkmn?.data.sprites.other['home'].front_default;
+  const ability = loading ? '...' : currPkmn?.data.abilities[0].ability.name;
   return (
     <div className={styles.screen}>
       <div className={styles.imageArea}>
         <div className={styles.pokemonImg}>
-          <img src={sprite ? sprite : '#'} alt="a pokemon" />
+          <img src={sprite} alt="pkmn icon" />
         </div>
       </div>
       <div className={styles.infoArea}>
@@ -23,9 +26,10 @@ export default function DisplaySinglePkmnMode({
           <h3>Evolution Chain</h3>
           {evolutionChain && (
             <EvolutionChart
+              pokemonList={pokemonList}
               evolutionChain={evolutionChain}
-              selectPokemon={selectPokemon}
-              currentPokemon={currentPokemon}
+              handlePkmnSelection={handlePkmnSelection}
+              currentPokemonId={currentPokemonId}
             />
           )}
         </div>

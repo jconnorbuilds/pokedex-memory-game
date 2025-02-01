@@ -55,15 +55,26 @@ export default function useLazyLoadPkmn({ isOpen }) {
 
   // Fetch comprehensive pokemon data and create the pokemon object for the subset of pokemon that will be loaded
   const fetchPokemonDetails = useCallback(
-    async ({ offset = undefined, size = undefined, singlePkmn = undefined }) => {
+    async ({ offset = undefined, size = undefined, singlePkmnId = undefined }) => {
+      console.log('isFetching', isFetching.current);
       if (isFetching.current) return;
       isFetching.current = true;
       setIsLoading(true);
-      console.log('SINGLE PKMN', singlePkmn);
-      if (offset === undefined && size === undefined && !singlePkmn) return;
-      if (offset === undefined && size === undefined) {
-        const fullPokemonData = await fetchFullPokemonData(singlePkmn);
+      console.log('SINGLE PKMN ID', singlePkmnId);
+
+      if (offset === undefined && size === undefined && singlePkmnId === undefined) {
+        setIsLoading(false);
+        isFetching.current = false;
+        return;
+      }
+
+      if (singlePkmnId >= 0) {
+        const fullPokemonData = await fetchFullPokemonData({
+          [singlePkmnId]: pokemonDict[singlePkmnId],
+        });
         setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
+        setIsLoading(false);
+        isFetching.current = false;
       } else {
         try {
           const { newPkmn } = getPkmnSubset(offset, size);
@@ -80,7 +91,7 @@ export default function useLazyLoadPkmn({ isOpen }) {
         }
       }
     },
-    [getPkmnSubset],
+    [getPkmnSubset, pokemonDict],
   );
 
   useEffect(() => {
