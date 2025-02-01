@@ -4,13 +4,12 @@ import EvolutionChart from './EvolutionChart.jsx';
 
 export default function DisplaySinglePkmnMode({
   pokemonList,
-  currentPokemon,
   currentPokemonId,
   evolutionChain,
   handlePkmnSelection,
 }) {
   const currPkmn = pokemonList[currentPokemonId];
-  const loading = !currentPokemonId || !currPkmn?.fullyLoaded;
+  const loading = !currPkmn?.fullyLoaded;
   // console.log('DSPM currpok', currentPokemon);
   const sprite = loading ? '#' : currPkmn?.data.sprites.other['home'].front_default;
   const ability = loading ? '...' : currPkmn?.data.abilities[0].ability.name;
@@ -35,7 +34,7 @@ export default function DisplaySinglePkmnMode({
         </div>
         <div className={styles.infoRight}>
           <h3>Type</h3>
-          <PokemonTypes currentPokemon={currentPokemon}></PokemonTypes>
+          <PokemonTypes currentPokemon={currPkmn}></PokemonTypes>
           <h3>Ability</h3>
           <p className={styles.abilityText}>{ability}</p>
         </div>

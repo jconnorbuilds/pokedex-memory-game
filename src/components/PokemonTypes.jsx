@@ -18,7 +18,6 @@ export function TypePill({ typeInfo }) {
 }
 
 export default function PokemonTypes({ currentPokemon, loadingFinished = true }) {
-  // Set types to an empty array if still loading, but this implementation might be buggy...
   const renderTypePill = (data) => {
     return data.map((typeInfo) => (
       <TypePill key={typeInfo ? typeInfo.type.name : 0} typeInfo={typeInfo || null} />

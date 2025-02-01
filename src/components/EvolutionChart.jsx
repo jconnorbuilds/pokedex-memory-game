@@ -57,7 +57,7 @@ export default function EvolutionChart({
         <g
           key={seg.id}
           className={styles.node + (isActive ? ` ${styles.nodeActive}` : '')}
-          onClick={() => handlePkmnSelection(seg.id)}
+          onClick={() => handlePkmnSelection({ name: seg.id })}
         >
           <circle className={styles.nodeHoverRadius} r="8" cx={x} cy={y}></circle>
           {isActive && (

@@ -13,18 +13,17 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 export default function MainDisplay({
   pokemonList,
-  currentPokemonId,
-  setCurrentPokemon,
   pokedexMode,
   setPokedexMode,
+  currentPokemonId,
   handlePkmnSelection,
   fetchPokemonDetails,
   isLoading,
   loadingFinished,
   progress,
   pokedexAngle,
-  screenOn = true,
   evolutionChain,
+  screenOn = true,
 }) {
   const [filteredPkmn, setFilteredPkmn] = useState([]); // Update to use dict instead of array
 
@@ -36,7 +35,6 @@ export default function MainDisplay({
       return (
         <DisplaySinglePkmnMode
           pokemonList={pokemonList}
-          // currentPokemon={currPkmn}
           currentPokemonId={currentPokemonId}
           handlePkmnSelection={handlePkmnSelection}
           evolutionChain={evolutionChain}
@@ -64,7 +62,7 @@ export default function MainDisplay({
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
       // console.log('A pkmn', currentPokemon);
-      const loading = !currentPokemonId || !currPkmn?.fullyLoaded;
+      const loading = currentPokemonId === undefined || !currPkmn?.fullyLoaded;
 
       const nationalDexNumber = loading
         ? '...'

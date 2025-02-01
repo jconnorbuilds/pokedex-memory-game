@@ -29,10 +29,6 @@ export default function useEvolutionChain({ currentPokemonId, allPokemon }) {
       // Fetch the pokemon data and the species data
       const pkmnSpeciesData = await fetchSinglePkmn(data.species.url);
       const pkmnData = await fetchPokemonData(pkmnSpeciesData.id);
-      // const pkmnIdx = Object.entries(allPokemon).find(([idx, pkmn]) => {
-      //   // console.log('PKMN', pkmn);
-      //   return pkmn.name === data.species.name;
-      // })[0];
 
       // Combine the data
       const compositeData = {
@@ -46,7 +42,6 @@ export default function useEvolutionChain({ currentPokemonId, allPokemon }) {
 
     const getOrFetchPkmn = async (data) => {
       // Find and return the cached pokemon if it's already loaded
-      // const cachedPkmn = allPokemon.find((pkmn) => pkmn.name === data.species.name);
 
       // Linear search, could be more optimal
       const cachedPkmn = Object.entries(allPokemon).find(
@@ -64,7 +59,6 @@ export default function useEvolutionChain({ currentPokemonId, allPokemon }) {
       // Get the first pokemon in the evolution chain
       const pkmn = await getOrFetchPkmn(evoChainData);
       const evolutions = evoChainData.evolves_to;
-      // console.log('RECURSIVE PKMN', pkmn);
 
       // If it evolves, recurse over its evolutions
       if (evolutions.length) {

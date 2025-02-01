@@ -29,31 +29,23 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
     setPokedexAngle({ x: 0, y: 0, z: 0 });
   }
 
-  // Selects the current pokemon, fetching the full data if necessary
+  const getPkmnIdxByName = useCallback(
+    (name) => +Object.entries(pokemonList).find(([_, pkmn]) => pkmn.name === name)[0],
+    [pokemonList],
+  );
+
+  // Sets the current pokemon ID, fetching the full data if it hasn't been loaded yet
   const handlePkmnSelection = useCallback(
-    async (id) => {
-      let key;
-      if (typeof id === 'number') {
-        key = id;
-        setCurrentPokemonId(id);
-        // console.log(selected);
-      } else if (typeof id === 'string') {
-        key = +Object.entries(pokemonList).find(([idx, pkmn]) => {
-          return pkmn.name === id;
-        })[0];
-        setCurrentPokemonId(key);
-      }
-
+    async ({ id, name }) => {
+      const key = name ? getPkmnIdxByName(name) : id;
       const pokemonIsLoaded = pokemonList[key].fullyLoaded === true;
-      if (!pokemonIsLoaded) {
-        fetchPokemonDetails({ singlePkmnId: key });
-      }
-      console.log('PKMN IS LOADED?', pokemonIsLoaded);
+      if (!pokemonIsLoaded) fetchPokemonDetails({ singlePkmnId: key });
 
+      setCurrentPokemonId(key);
       setPokedexMode('singlePkmn');
     },
 
-    [pokemonList, fetchPokemonDetails, setCurrentPokemonId],
+    [pokemonList, fetchPokemonDetails, setCurrentPokemonId, getPkmnIdxByName],
   );
 
   const pokedexTransform = {
@@ -82,7 +74,6 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
             isLoading={isLoading}
             loadingFinished={loadingFinished}
             progress={progress}
-            setCurrentPokemon={setCurrentPokemonId}
             pokedexAngle={pokedexAngle}
             evolutionChain={evolutionChain}
           />
