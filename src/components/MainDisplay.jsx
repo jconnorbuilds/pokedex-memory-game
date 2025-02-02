@@ -79,6 +79,7 @@ export default function MainDisplay({
 
       if (hasMountedRef.current) {
         if (infiniteLoaderRef.current) {
+          console.log('RESET');
           infiniteLoaderRef.current.resetloadMoreItemsCache();
         }
       }

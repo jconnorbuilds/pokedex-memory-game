@@ -58,21 +58,21 @@ export default function useLazyLoadPkmn({ isOpen }) {
     async ({ offset = undefined, size = undefined, singlePkmnId = undefined }) => {
       // if (isFetching.current) return;
       // isFetching.current = true;
-      setIsLoading(true);
+      // setIsLoading(true);
 
       if (offset === undefined && size === undefined && singlePkmnId === undefined) {
-        setIsLoading(false);
+        // setIsLoading(false);
         // isFetching.current = false;
         return;
       }
-      console.log('FETCHING PKMN DETAILS', offset, size, singlePkmnId);
+      // console.log('FETCHING PKMN DETAILS', offset, size, singlePkmnId);
       if (singlePkmnId >= 0) {
         const fullPokemonData = await fetchFullPokemonData({
           [singlePkmnId]: pokemonDict[singlePkmnId],
         });
         // console.log('FULL PKMN DATA', fullPokemonData);
         setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
-        setIsLoading(false);
+        // setIsLoading(false);
         // isFetching.current = false;
         // return pokemonDict[singlePkmnId];
       } else {
@@ -86,7 +86,7 @@ export default function useLazyLoadPkmn({ isOpen }) {
         } catch (err) {
           console.error(`Error fetching pokemon details: ${err}`);
         } finally {
-          setIsLoading(false);
+          // setIsLoading(false);
           // isFetching.current = false;
         }
       }

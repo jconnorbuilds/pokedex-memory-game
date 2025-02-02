@@ -39,15 +39,18 @@ const DisplayListMode = memo(function DisplayListMode({
         allPkmn={allPokemon}
         onClick={() => selectPokemon({ id: globalIdx })}
         styles={{ ...styles, reactWindow: style }}
-        isLoading={!isItemLoaded(index) || !Object.keys(pkmnToDisplay).length}
       ></PkmnListButton>
     );
   };
 
   // Load more pokemon when the user scrolls to the bottom of the list
   const loadMoreItems = async (startIdx, stopIdx) => {
-    // console.log(startIdx, stopIdx);
-    fetchPokemonDetails({ offset: startIdx, size: stopIdx - startIdx });
+    console.log(startIdx, stopIdx);
+    for (let i = startIdx; i < stopIdx; i++) {
+      // console.log(pkmnToDisplay[i].idx);
+      fetchPokemonDetails({ singlePkmnId: pkmnToDisplay[i].idx });
+    }
+    // fetchPokemonDetails({ offset: startIdx, size: stopIdx - startIdx });
   };
 
   return (
