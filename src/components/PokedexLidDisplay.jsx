@@ -66,7 +66,7 @@ export default function PokedexLidDisplay({
     // console.log('EVO CHAIN', evolutionChain);
     // Push the dataset of the current pokemon to the array
 
-    const dataset = generateDataset(evolutionChain.pkmn);
+    const dataset = generateDataset(evolutionChain.pkmnIdx);
     datasets.push(dataset);
 
     // Recursively check if pokemon evolve, and generate datasets for each evolution
