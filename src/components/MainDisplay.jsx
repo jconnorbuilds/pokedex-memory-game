@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'; // pokedex screen styles
+import { useState, useCallback, useRef } from 'react'; // pokedex screen styles
 import mbStyles from '../styles/PokedexMenuBar.module.css';
 import LoadingBar from './LoadingBar.jsx';
 import MenuBar from './MenuBar.jsx';
@@ -27,8 +27,12 @@ export default function MainDisplay({
 }) {
   const [filteredPkmn, setFilteredPkmn] = useState([]); // Update to use dict instead of array
 
-  const pkmnToDisplay = filteredPkmn.length ? filteredPkmn : pokemonList;
+  const pkmnToDisplay = Object.keys(filteredPkmn).length ? filteredPkmn : pokemonList;
   const currPkmn = pokemonList[currentPokemonId];
+
+  // We create a reference for the InfiniteLoader
+  const infiniteLoaderRef = useRef(null);
+  const hasMountedRef = useRef(false);
 
   function renderMainContent(mode) {
     if (mode === 'singlePkmn') {
@@ -43,6 +47,8 @@ export default function MainDisplay({
     } else if (mode === 'list') {
       return (
         <DisplayListMode
+          allPokemon={pokemonList}
+          infiniteLoaderRef={infiniteLoaderRef}
           pkmnToDisplay={pkmnToDisplay}
           selectPokemon={handlePkmnSelection}
           fetchPokemonDetails={fetchPokemonDetails}
@@ -52,16 +58,45 @@ export default function MainDisplay({
     }
   }
 
-  function filterPkmn(e) {
-    const filterString = e.target.value?.toLowerCase();
+  const doFilterPkmn = useCallback(
+    (filterString) => {
+      const entries = Object.entries(pokemonList);
+      const filteredEntries = entries.filter(([, pkmn]) =>
+        pkmn.name.includes(filterString),
+      );
+      // const filteredPkmn = filteredValues.reduce((acc, cur, idx) => {
+      //   return { ...acc, [idx]: cur };
+      // }, {});
+      // const filteredPkmn = Object.fromEntries(filteredEntries);
+
+      // Re-index the filtered pokemon, and save the original index as a property
+      const filteredPkmn = filteredEntries.reduce((acc, cur, idx) => {
+        const pkmn = { ...cur[1], idx: cur[0] };
+        return { ...acc, [idx]: pkmn };
+      }, {});
+
+      console.log(filteredPkmn);
+
+      if (hasMountedRef.current) {
+        if (infiniteLoaderRef.current) {
+          infiniteLoaderRef.current.resetloadMoreItemsCache();
+        }
+      }
+      hasMountedRef.current = true;
+
+      return filteredPkmn;
+    },
+    [pokemonList],
+  );
+
+  function filterPkmn(filterString) {
     !filterString
       ? setFilteredPkmn(pokemonList)
-      : setFilteredPkmn(pokemonList.filter((pkmn) => pkmn.name.includes(filterString)));
+      : setFilteredPkmn(doFilterPkmn(filterString, pokemonList));
   }
 
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
-      // console.log('A pkmn', currentPokemon);
       const loading = currentPokemonId === undefined || !currPkmn?.fullyLoaded;
 
       const nationalDexNumber = loading

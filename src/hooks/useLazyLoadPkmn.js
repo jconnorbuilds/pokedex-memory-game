@@ -56,15 +56,16 @@ export default function useLazyLoadPkmn({ isOpen }) {
   // Fetch comprehensive pokemon data and create the pokemon object for the subset of pokemon that will be loaded
   const fetchPokemonDetails = useCallback(
     async ({ offset = undefined, size = undefined, singlePkmnId = undefined }) => {
-      if (isFetching.current) return;
-      isFetching.current = true;
+      // if (isFetching.current) return;
+      // isFetching.current = true;
       setIsLoading(true);
 
       if (offset === undefined && size === undefined && singlePkmnId === undefined) {
         setIsLoading(false);
-        isFetching.current = false;
+        // isFetching.current = false;
         return;
       }
+      console.log('FETCHING PKMN DETAILS', offset, size, singlePkmnId);
       if (singlePkmnId >= 0) {
         const fullPokemonData = await fetchFullPokemonData({
           [singlePkmnId]: pokemonDict[singlePkmnId],
@@ -72,7 +73,7 @@ export default function useLazyLoadPkmn({ isOpen }) {
         // console.log('FULL PKMN DATA', fullPokemonData);
         setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
         setIsLoading(false);
-        isFetching.current = false;
+        // isFetching.current = false;
         // return pokemonDict[singlePkmnId];
       } else {
         try {
@@ -86,7 +87,7 @@ export default function useLazyLoadPkmn({ isOpen }) {
           console.error(`Error fetching pokemon details: ${err}`);
         } finally {
           setIsLoading(false);
-          isFetching.current = false;
+          // isFetching.current = false;
         }
       }
     },
@@ -99,7 +100,8 @@ export default function useLazyLoadPkmn({ isOpen }) {
         const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=-1&offset=0`);
         const data = await res.json();
         const pkmnDict = data.results.reduce((acc, cur, idx) => {
-          return { ...acc, [idx]: cur };
+          const pkmnDataWithIdx = { ...cur, idx: +idx };
+          return { ...acc, [idx]: pkmnDataWithIdx };
         }, {});
 
         setPokemonDict(pkmnDict);
