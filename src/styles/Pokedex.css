@@ -329,11 +329,10 @@
       calc((var(--dex-body-thickness) * 0.5 + var(--dex-lid-thickness) * 0.5))
     )
     rotateY(0);
-  /* transition: transform 0.5s linear; */
 }
 
 .pokedex--open .pokedex__lid {
-  animation: open-dex 0.75s ease-out forwards;
+  animation: open-dex 1s ease-out forwards;
 }
 
 @keyframes open-dex {
@@ -473,14 +472,14 @@
 
 .lid__menu-area button {
   transition: color 0.25s;
-  color: #1a1a1a;
+  color: #ccc;
   border-radius: 0;
   border: none;
   border-bottom: 1px solid #222233;
   text-align: center;
   font-weight: 500;
-  background-color: #1a1a1a;
-  background-color: #ccc;
+  background-color: #222;
+  /* background-color: #ccc; */
 
   font-size: 1rem;
   padding-inline: 0.3rem;
@@ -496,8 +495,9 @@
 }
 
 .lid__menu-area button.lid__button--selected {
-  background-color: #2a2a2a;
-  background-color: #eaeaea;
+  background-color: #444;
+  color: #00bb5a;
+  /* background-color: #eaeaea; */
 }
 
 .lid__gen-buttons {

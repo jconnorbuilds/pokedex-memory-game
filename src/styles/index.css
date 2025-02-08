@@ -45,12 +45,17 @@ button {
   border-radius: 8px;
   background-color: #1a1a1a;
   cursor: pointer;
+  border: none;
   transition: border-color 0.25s;
-}
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  &:focus,
+  &:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+
+  &:hover {
+    outline: 4px auto #535bf2;
+  }
 }
 
 .container {

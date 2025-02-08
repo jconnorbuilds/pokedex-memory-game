@@ -77,15 +77,7 @@ export default function App() {
       <main className="container">
         <Scene rotation={sceneRotation}>
           {pokedexIsOpen ? (
-            <Pokedex isOpen={pokedexIsOpen} progress={0} toggleOpen={() => {}}>
-              <GameOptionsMenu>
-                <GenerationSelect
-                  handleSelect={handleGenerationSelect}
-                  generation={generation}
-                ></GenerationSelect>
-                <DifficultySelect handleSelect={handleLevelSelect} />
-              </GameOptionsMenu>
-            </Pokedex>
+            <Pokedex isOpen={pokedexIsOpen} progress={0} toggleOpen={() => {}}></Pokedex>
           ) : (
             <GameArea
               style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
@@ -104,6 +96,14 @@ export default function App() {
       </main>
       <Sidebar>
         <Scoreboard scores={{ score, best }} />
+        <Button action={toggleDexOpenClosed}>Open/close</Button>
+        <GameOptionsMenu>
+          <GenerationSelect
+            handleSelect={handleGenerationSelect}
+            generation={generation}
+          ></GenerationSelect>
+          <DifficultySelect handleSelect={handleLevelSelect} />
+        </GameOptionsMenu>
         <div className="dev-toolbar">
           <div className="toolbar__widget">
             <h2>Scene</h2>
@@ -117,7 +117,6 @@ export default function App() {
             <h2>Pokedex</h2>
             {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
           </div>
-          <Button action={toggleDexOpenClosed}>Open/close</Button>
         </div>
         <p>
           ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>

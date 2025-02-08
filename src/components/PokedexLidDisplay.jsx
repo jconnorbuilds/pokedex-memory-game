@@ -1,5 +1,5 @@
 import styles from '../styles/PokedexLidDisplay.module.css';
-
+import Button from './Button.jsx';
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -133,8 +133,8 @@ export default function PokedexLidDisplay({
     <>
       <div className={styles.lidDisplay}>
         <div className={styles.statsMenu}>
-          <button>Stats</button>
-          <button>Compare</button>
+          <Button>Stats</Button>
+          <Button>Compare</Button>
         </div>
         {currPkmn ? <Radar data={data} options={options}></Radar> : null}
       </div>
