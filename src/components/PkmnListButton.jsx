@@ -27,8 +27,8 @@ export default function PkmnListButton({ pkmnIdx, allPkmn, styles, onClick }) {
         <div className={styles.icons}>
           <img
             className={styles.pokeballIcon}
-            width={'20px'}
-            height={'20px'}
+            width={'1.5rem'}
+            height={'1.5rem'}
             src={pokeballIcon}
             alt="pokeball icon"
           />
