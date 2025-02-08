@@ -1,5 +1,6 @@
 import useStarters from '../hooks/useStarters.js';
 import usePokemonInPlay from '../hooks/usePokemonInPlay.js';
+import styles from '../styles/GameResult.module.css';
 
 import CardTable from './CardTable.jsx';
 import GameResult from './GameResult.jsx';
@@ -56,7 +57,7 @@ export default function GameArea({
         pokemonInPlay={pokemonInPlay}
       />
       <GameResult gameOn={gameOn} gameStatus={gameStatus}>
-        <Button action={startNextGame} styles="game-result">
+        <Button action={startNextGame} styles={styles.gameResult}>
           Play Again
         </Button>
       </GameResult>

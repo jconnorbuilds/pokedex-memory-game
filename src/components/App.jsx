@@ -27,8 +27,8 @@ export default function App() {
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
-  // const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
-  const allPokemonInGen = [];
+  const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
+  // const allPokemonInGen = [];
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {

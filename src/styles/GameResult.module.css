@@ -1,0 +1,23 @@
+.gameResult {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.gameResult button {
+  padding: 0.25rem 1rem;
+  border-radius: 8px;
+  border: 6px solid transparent;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  transition: color 0.25s;
+
+  button:hover {
+    border: 6px solid #c8c800a0;
+  }
+  button:focus,
+  button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+  }
+}

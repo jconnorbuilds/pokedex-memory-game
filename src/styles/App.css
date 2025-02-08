@@ -26,14 +26,14 @@
 #scene {
   perspective: var(--dex-perspective);
   transform-origin: center;
-  /* display: grid;
-  grid-template-columns: 1fr 33%; */
+  display: flex;
   align-items: center;
-  transition: transform 1s linear;
+  justify-content: center;
+
+  transition: transform 500ms ease-in-out;
   width: 100%;
   height: 85%;
-  /* position: relative; */
-  background-color: rebeccapurple;
+  /* background-color: #131313; */
 
   &:has(.pokedex--open) {
     /* Allows pokedex to appear perfectly rectangular with no skewing */
@@ -228,18 +228,10 @@ main.container {
   position: relative;
   max-width: 100%;
   width: 100%;
-
-  /* &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    backdrop-filter: blur(1px);
-  } */
 }
 
 .card__picture {
   border-radius: 5px;
-  /* background-color: #4453; */
   display: flex;
   align-items: center;
 }
@@ -253,8 +245,6 @@ main.container {
   align-items: center;
   gap: 1ch;
   margin-left: -2ch;
-  /* color: #ccc; */
-  /* text-shadow: 1px 1px 3px #eee; */
 }
 
 hr {
@@ -284,30 +274,6 @@ hr {
   &:has(+ .pokedex-wrapper .pokedex--open) {
     opacity: 0;
     display: hidden;
-  }
-}
-
-.game-result {
-  text-align: center;
-  font-size: 1.2rem;
-}
-
-.game-result button {
-  padding: 0.25rem 1rem;
-  border-radius: 8px;
-  border: 6px solid transparent;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  transition: color 0.25s;
-
-  button:hover {
-    border: 6px solid #c8c800a0;
-  }
-  button:focus,
-  button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
   }
 }
 
