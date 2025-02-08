@@ -19,35 +19,47 @@ export default function MainDisplay({
   evolutionChain,
   screenOn = true,
 }) {
-  const [filteredPkmn, setFilteredPkmn] = useState([]); // Update to use dict instead of array
-
+  const [filteredPkmn, setFilteredPkmn] = useState({});
   const pkmnToDisplay = Object.keys(filteredPkmn).length ? filteredPkmn : pokemonList;
   const currPkmn = pokemonList[currentPokemonId];
 
-  // We create a reference for the InfiniteLoader
   const infiniteLoaderRef = useRef(null);
-  const hasMountedRef = useRef(false);
 
   function renderMainContent(mode) {
     if (mode === 'singlePkmn') {
       return (
-        <DisplaySinglePkmnMode
-          pokemonList={pokemonList}
-          currentPokemonId={currentPokemonId}
-          handlePkmnSelection={handlePkmnSelection}
-          evolutionChain={evolutionChain}
-        />
+        <>
+          <PkmnInfoBar
+            pokedexMode={pokedexMode}
+            natlDexNum={currPkmn?.speciesData.pokedex_numbers[0].entry_number}
+            pkmnName={currPkmn?.name}
+            buttonAction={() => setPokedexMode('list')}
+          />
+          <DisplaySinglePkmnMode
+            pokemonList={pokemonList}
+            currentPokemonId={currentPokemonId}
+            handlePkmnSelection={handlePkmnSelection}
+            evolutionChain={evolutionChain}
+          />
+        </>
       );
     } else if (mode === 'list') {
       return (
-        <DisplayListMode
-          allPokemon={pokemonList}
-          infiniteLoaderRef={infiniteLoaderRef}
-          pkmnToDisplay={pkmnToDisplay}
-          selectPokemon={handlePkmnSelection}
-          fetchPokemonDetails={fetchPokemonDetails}
-          isLoading={isLoading}
-        />
+        <>
+          <SearchBar
+            pokedexMode={pokedexMode}
+            buttonAction={() => setPokedexMode('singlePkmn')}
+            filterPkmn={filterPkmn}
+          />
+          <DisplayListMode
+            allPokemon={pokemonList}
+            infiniteLoaderRef={infiniteLoaderRef}
+            pkmnToDisplay={pkmnToDisplay}
+            selectPokemon={handlePkmnSelection}
+            fetchPokemonDetails={fetchPokemonDetails}
+            isLoading={isLoading}
+          />
+        </>
       );
     }
   }
@@ -59,18 +71,10 @@ export default function MainDisplay({
         pkmn.name.includes(filterString),
       );
 
-      // Re-index the filtered pokemon, and save the original index as a property
+      // Re-index the filtered pokemon
       const filteredPkmn = filteredEntries.reduce((acc, cur, idx) => {
         return { ...acc, [idx]: cur[1] };
       }, {});
-
-      // if (hasMountedRef.current) {
-      //   if (infiniteLoaderRef.current) {
-      //     console.log('RESET');
-      //     infiniteLoaderRef.current.resetloadMoreItemsCache();
-      //   }
-      // }
-      // hasMountedRef.current = true;
 
       return filteredPkmn;
     },
@@ -78,30 +82,7 @@ export default function MainDisplay({
   );
 
   function filterPkmn(filterString) {
-    !filterString
-      ? setFilteredPkmn(pokemonList)
-      : setFilteredPkmn(doFilterPkmn(filterString, pokemonList));
-  }
-
-  function renderMenuBar(pokedexMode) {
-    if (pokedexMode === 'singlePkmn') {
-      return (
-        <PkmnInfoBar
-          pokedexMode={pokedexMode}
-          natlDexNum={currPkmn?.speciesData.pokedex_numbers[0].entry_number}
-          pkmnName={currPkmn?.name}
-          buttonAction={() => setPokedexMode('list')}
-        ></PkmnInfoBar>
-      );
-    } else if (pokedexMode === 'list') {
-      return (
-        <SearchBar
-          pokedexMode={pokedexMode}
-          filterPkmn={filterPkmn}
-          buttonAction={() => setPokedexMode('singlePkmn')}
-        ></SearchBar>
-      );
-    }
+    !filterString ? setFilteredPkmn([]) : setFilteredPkmn(doFilterPkmn(filterString));
   }
 
   return (
@@ -121,7 +102,6 @@ export default function MainDisplay({
               screenOn ? styles.screenOn : ''
             }`}
           >
-            {renderMenuBar(pokedexMode)}
             {renderMainContent(pokedexMode)}
           </div>
         </div>
