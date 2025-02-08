@@ -6,8 +6,8 @@
   width: 100%;
   height: 100vh;
   margin: 0 auto;
-  padding: 2rem;
-  --dex-perspective: 10000px;
+  /* padding: 2rem; */
+  --dex-perspective: 5000px;
   interpolate-size: allow-keywords;
   font-family: 'Prompt', sans-serif;
 }
@@ -17,20 +17,23 @@
 }
 
 .app {
-  grid-template-rows: 100px 1fr 100px;
-  grid-template-columns: 1fr;
+  display: grid;
+  /* grid-template-rows: 1fr auto; */
+  grid-template-columns: minmax(0, 1fr) 250px;
+  height: 100%;
 }
 
 #scene {
   perspective: var(--dex-perspective);
   transform-origin: center;
-  display: grid;
-  grid-template-columns: 1fr 33%;
+  /* display: grid;
+  grid-template-columns: 1fr 33%; */
   align-items: center;
   transition: transform 1s linear;
-  width: 100vw;
-  position: relative;
-  /* background-color: rebeccapurple; */
+  width: 100%;
+  height: 85%;
+  /* position: relative; */
+  background-color: rebeccapurple;
 
   &:has(.pokedex--open) {
     /* Allows pokedex to appear perfectly rectangular with no skewing */
@@ -38,23 +41,16 @@
   }
 }
 
+main.container {
+  display: flex;
+  align-items: center;
+  /* background-color: grey; */
+  /* overflow: hidden; */
+}
+
 #scene,
 #scene * {
   transform-style: preserve-3d;
-}
-
-header {
-  display: flex;
-  justify-content: end;
-}
-
-header h2 {
-  font-size: 1em;
-}
-
-header .input-group {
-  display: grid;
-  gap: 0.1em;
 }
 
 .dev-toolbar {

@@ -13,6 +13,8 @@ import UseScore from '../hooks/useScore.js';
 import Scene from './Scene.jsx';
 import useSceneRotation from '../hooks/useSceneRotation.js';
 import GameArea from './GameArea.jsx';
+import Sidebar from './Sidebar.jsx';
+import Button from './Button.jsx';
 
 import * as Game from './constants.js';
 import useGameStatus from '../hooks/useGameStatus.js';
@@ -44,10 +46,10 @@ export default function App() {
 
   const toggleDexOpenClosed = useCallback(
     (e) => {
-      if (e.target.closest('.body__upper-overhang')) {
-        const willOpen = pokedexIsOpen !== true;
-        setPokedexIsOpen(willOpen);
-      }
+      // if (e.target.closest('.body__upper-overhang')) {
+      const willOpen = pokedexIsOpen !== true;
+      setPokedexIsOpen(willOpen);
+      // }
     },
     [pokedexIsOpen],
   );
@@ -73,54 +75,59 @@ export default function App() {
   return (
     <div className="app">
       <main className="container">
-        <header className="header container">
-          <Scoreboard scores={{ score, best }} />
-        </header>
         <Scene rotation={sceneRotation}>
-          <GameArea
-            style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
-            level={level}
-            allPokemonInGen={allPokemonInGen}
-            generation={generation}
-            incrementScore={incrementScore}
-            resetScore={resetScore}
-            gameOn={gameOn}
-            gameStatus={gameStatus}
-            nextGame={nextGame}
-            reportGameStatus={reportGameStatus}
-          ></GameArea>
-          <Pokedex isOpen={pokedexIsOpen} progress={0} toggleOpen={toggleDexOpenClosed}>
-            <GameOptionsMenu>
-              <GenerationSelect
-                handleSelect={handleGenerationSelect}
-                generation={generation}
-              ></GenerationSelect>
-              <DifficultySelect handleSelect={handleLevelSelect} />
-            </GameOptionsMenu>
-          </Pokedex>
+          {pokedexIsOpen ? (
+            <Pokedex isOpen={pokedexIsOpen} progress={0} toggleOpen={() => {}}>
+              <GameOptionsMenu>
+                <GenerationSelect
+                  handleSelect={handleGenerationSelect}
+                  generation={generation}
+                ></GenerationSelect>
+                <DifficultySelect handleSelect={handleLevelSelect} />
+              </GameOptionsMenu>
+            </Pokedex>
+          ) : (
+            <GameArea
+              style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
+              level={level}
+              allPokemonInGen={allPokemonInGen}
+              generation={generation}
+              incrementScore={incrementScore}
+              resetScore={resetScore}
+              gameOn={gameOn}
+              gameStatus={gameStatus}
+              nextGame={nextGame}
+              reportGameStatus={reportGameStatus}
+            />
+          )}
         </Scene>
-        <footer className="footer container">
-          <div className="placeholder">
-            <p>
-              ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>
-            </p>
-          </div>
-          <div className="dev-toolbar">
-            <div className="toolbar__widget">
-              <h2>Scene</h2>
-              <AngleInputs
-                labelPrefix={'scene'}
-                target={sceneRotation}
-                onChange={setSceneRotationAxis}
-              ></AngleInputs>
-            </div>
-            <div className="toolbar__widget">
-              <h2>Pokedex</h2>
-              {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
-            </div>
-          </div>
-        </footer>
       </main>
+      <Sidebar>
+        <Scoreboard scores={{ score, best }} />
+        <div className="dev-toolbar">
+          <div className="toolbar__widget">
+            <h2>Scene</h2>
+            <AngleInputs
+              labelPrefix={'scene'}
+              target={sceneRotation}
+              onChange={setSceneRotationAxis}
+            ></AngleInputs>
+          </div>
+          <div className="toolbar__widget">
+            <h2>Pokedex</h2>
+            {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
+          </div>
+          <Button action={toggleDexOpenClosed}>Open/close</Button>
+        </div>
+        <p>
+          ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>
+        </p>
+      </Sidebar>
+      {/* <footer className="footer container">
+        <div className="placeholder">
+         
+        </div>
+      </footer> */}
     </div>
   );
 }

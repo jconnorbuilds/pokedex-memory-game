@@ -3,7 +3,8 @@
 @property --dex-scale {
   syntax: '<number>';
   inherits: true;
-  initial-value: 0.8;
+  /* initial-value: 0.8; */
+  initial-value: 1.4;
 }
 
 :root {
@@ -19,6 +20,7 @@
   transition: --dex-scale 0.5s ease-in-out;
   &:has(.pokedex--open) {
     --dex-scale: 1.4;
+    /* --dex-scale: 1; */
   }
 }
 
@@ -34,7 +36,6 @@
   transition: 1s ease-in-out;
 
   &:has(.pokedex--open) {
-    /* right: 25%; */
     transform: translateZ(80px);
   }
 }
@@ -64,7 +65,7 @@
 
   &:is(.pokedex--open) {
     /* Not sure why this the magic value to center the pokedex */
-    right: 500px;
+    /* right: 500px; */
   }
 }
 

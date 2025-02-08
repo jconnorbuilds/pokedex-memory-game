@@ -1,0 +1,5 @@
+.sidebar {
+  background-color: #161616;
+  grid-column: 2;
+  z-index: 1;
+}
