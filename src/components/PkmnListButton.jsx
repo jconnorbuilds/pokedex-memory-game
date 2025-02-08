@@ -4,12 +4,9 @@ export default function PkmnListButton({ pkmnIdx, allPkmn, styles, onClick }) {
   const pkmn = allPkmn[pkmnIdx];
   const nationalDexNumber = +pkmn?.speciesData?.pokedex_numbers[0].entry_number || 0;
   const pkmnIcon = pkmn?.data?.sprites.front_default;
-  // if (nationalDexNumber === 151) console.log('PKMN ICON:', pkmnIcon);
   const isLoading = !pkmn?.fullyLoaded;
-  // console.log('LOADING?', isLoading);
 
   if (!pkmn) return <div>Loading...</div>;
-  // console.log('PKMN:', pkmn);
   return (
     <button style={styles.reactWindow} onClick={onClick} value={pkmn.name}>
       <span>{pkmn.name}</span>

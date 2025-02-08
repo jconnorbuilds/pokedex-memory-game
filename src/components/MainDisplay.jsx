@@ -64,26 +64,19 @@ export default function MainDisplay({
       const filteredEntries = entries.filter(([, pkmn]) =>
         pkmn.name.includes(filterString),
       );
-      // const filteredPkmn = filteredValues.reduce((acc, cur, idx) => {
-      //   return { ...acc, [idx]: cur };
-      // }, {});
-      // const filteredPkmn = Object.fromEntries(filteredEntries);
 
       // Re-index the filtered pokemon, and save the original index as a property
       const filteredPkmn = filteredEntries.reduce((acc, cur, idx) => {
-        const pkmn = { ...cur[1], idx: cur[0] };
-        return { ...acc, [idx]: pkmn };
+        return { ...acc, [idx]: cur[1] };
       }, {});
 
-      console.log(filteredPkmn);
-
-      if (hasMountedRef.current) {
-        if (infiniteLoaderRef.current) {
-          console.log('RESET');
-          infiniteLoaderRef.current.resetloadMoreItemsCache();
-        }
-      }
-      hasMountedRef.current = true;
+      // if (hasMountedRef.current) {
+      //   if (infiniteLoaderRef.current) {
+      //     console.log('RESET');
+      //     infiniteLoaderRef.current.resetloadMoreItemsCache();
+      //   }
+      // }
+      // hasMountedRef.current = true;
 
       return filteredPkmn;
     },

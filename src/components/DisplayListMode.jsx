@@ -22,17 +22,7 @@ const DisplayListMode = memo(function DisplayListMode({
 
   // The render function for each row in the list
   const Row = ({ index, style }) => {
-    // console.log('INDEX:', index);
-    // const hasIdxProp = Object.values(pkmnToDisplay)[index]?.idx;
-
-    // console.log(Object.values(pkmnToDisplay)[index]);
     const globalIdx = getPkmnGlobalIdx(index) || 0;
-    // console.log('GLOBAL IDX:', globalIdx);
-
-    // const pkmn = Object.entries(pkmnToDisplay)[index];
-    // console.log(pkmn);
-
-    // console.log('ID?', id);
     return (
       <PkmnListButton
         pkmnIdx={globalIdx}
@@ -43,14 +33,11 @@ const DisplayListMode = memo(function DisplayListMode({
     );
   };
 
-  // Load more pokemon when the user scrolls to the bottom of the list
+  // Load more pokemon as the user scrolls through the list
   const loadMoreItems = async (startIdx, stopIdx) => {
-    console.log(startIdx, stopIdx);
     for (let i = startIdx; i < stopIdx; i++) {
-      // console.log(pkmnToDisplay[i].idx);
       fetchPokemonDetails({ singlePkmnId: pkmnToDisplay[i].idx });
     }
-    // fetchPokemonDetails({ offset: startIdx, size: stopIdx - startIdx });
   };
 
   return (
