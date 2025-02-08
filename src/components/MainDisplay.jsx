@@ -1,15 +1,11 @@
-import { useState, useCallback, useRef } from 'react'; // pokedex screen styles
+import { useState, useCallback, useRef } from 'react';
+// pokedex screen styles
 import mbStyles from '../styles/PokedexMenuBar.module.css';
 import LoadingBar from './LoadingBar.jsx';
-import MenuBar from './MenuBar.jsx';
-import Button from './Button.jsx';
-import PokemonListFilter from './PokemonListFilter.jsx';
+import { SearchBar, PkmnInfoBar } from './MenuBar.jsx';
 import DisplayListMode from './DisplayListMode.jsx';
 import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
 import styles from '../styles/MainDisplay.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
 
 export default function MainDisplay({
   pokemonList,
@@ -19,8 +15,6 @@ export default function MainDisplay({
   handlePkmnSelection,
   fetchPokemonDetails,
   isLoading,
-  loadingFinished,
-  progress,
   pokedexAngle,
   evolutionChain,
   screenOn = true,
@@ -91,36 +85,21 @@ export default function MainDisplay({
 
   function renderMenuBar(pokedexMode) {
     if (pokedexMode === 'singlePkmn') {
-      const loading = currentPokemonId === undefined || !currPkmn?.fullyLoaded;
-
-      const nationalDexNumber = loading
-        ? '...'
-        : currPkmn?.speciesData.pokedex_numbers[0].entry_number || 0;
       return (
-        <MenuBar mode={pokedexMode}>
-          {loadingFinished && (
-            <>
-              <div>
-                <span>{currPkmn?.name}</span>
-                <span>#{nationalDexNumber}</span>
-              </div>
-              <Button action={() => setPokedexMode('list')} styles={mbStyles}>
-                <FontAwesomeIcon icon={faArrowLeftLong}></FontAwesomeIcon>
-              </Button>
-            </>
-          )}
-        </MenuBar>
+        <PkmnInfoBar
+          pokedexMode={pokedexMode}
+          natlDexNum={currPkmn?.speciesData.pokedex_numbers[0].entry_number}
+          pkmnName={currPkmn?.name}
+          buttonAction={() => setPokedexMode('list')}
+        ></PkmnInfoBar>
       );
     } else if (pokedexMode === 'list') {
       return (
-        <MenuBar mode={pokedexMode}>
-          <PokemonListFilter filterPkmn={filterPkmn}></PokemonListFilter>
-          {loadingFinished && (
-            <Button action={() => setPokedexMode('singlePkmn')} styles={mbStyles}>
-              <FontAwesomeIcon icon={faClose}></FontAwesomeIcon>
-            </Button>
-          )}
-        </MenuBar>
+        <SearchBar
+          pokedexMode={pokedexMode}
+          filterPkmn={filterPkmn}
+          buttonAction={() => setPokedexMode('singlePkmn')}
+        ></SearchBar>
       );
     }
   }
@@ -143,15 +122,7 @@ export default function MainDisplay({
             }`}
           >
             {renderMenuBar(pokedexMode)}
-            {!loadingFinished ? (
-              <LoadingBar
-                isLoading={isLoading}
-                hide={loadingFinished}
-                progress={progress}
-              />
-            ) : (
-              renderMainContent(pokedexMode)
-            )}
+            {renderMainContent(pokedexMode)}
           </div>
         </div>
       </div>

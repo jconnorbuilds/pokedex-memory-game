@@ -70,7 +70,6 @@ export default function App() {
     );
   }
 
-  // return <div>under construction </div>;
   return (
     <div className="app">
       <main className="container">
@@ -90,12 +89,7 @@ export default function App() {
             nextGame={nextGame}
             reportGameStatus={reportGameStatus}
           ></GameArea>
-          <Pokedex
-            isOpen={pokedexIsOpen}
-            // progress={progress}
-            progress={0}
-            toggleOpen={toggleDexOpenClosed}
-          >
+          <Pokedex isOpen={pokedexIsOpen} progress={0} toggleOpen={toggleDexOpenClosed}>
             <GameOptionsMenu>
               <GenerationSelect
                 handleSelect={handleGenerationSelect}
