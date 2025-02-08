@@ -30,7 +30,7 @@ export function PkmnInfoBar({ pokedexMode, natlDexNum, pkmnName, buttonAction })
 
 export function SearchBar({ pokedexMode, filterPkmn, buttonAction }) {
   return (
-    <MenuBar mode={pokedexMode} buttonAction={buttonAction} buttonIcon={faClose}>
+    <MenuBar mode={pokedexMode} buttonAction={buttonAction} icon={faClose}>
       <PokemonListFilter filterPkmn={filterPkmn}></PokemonListFilter>
     </MenuBar>
   );
