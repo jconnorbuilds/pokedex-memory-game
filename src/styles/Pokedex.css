@@ -329,12 +329,18 @@
       calc((var(--dex-body-thickness) * 0.5 + var(--dex-lid-thickness) * 0.5))
     )
     rotateY(0);
-  transition: transform 0.5s linear;
+  /* transition: transform 0.5s linear; */
 }
 
 .pokedex--open .pokedex__lid {
-  transform: translateZ(calc(var(--dex-body-thickness) - var(--dex-lid-thickness)))
-    rotateY(180deg);
+  animation: open-dex 0.75s ease-out forwards;
+}
+
+@keyframes open-dex {
+  100% {
+    transform: translateZ(calc(var(--dex-body-thickness) - var(--dex-lid-thickness)))
+      rotateY(180deg);
+  }
 }
 
 .lid__main {
