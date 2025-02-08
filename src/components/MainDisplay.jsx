@@ -25,6 +25,27 @@ export default function MainDisplay({
 
   const infiniteLoaderRef = useRef(null);
 
+  const doFilterPkmn = useCallback(
+    (filterString) => {
+      const entries = Object.entries(pokemonList);
+      const filteredEntries = entries.filter(([, pkmn]) =>
+        pkmn.name.includes(filterString),
+      );
+
+      // Re-index the filtered pokemon
+      const filteredPkmn = filteredEntries.reduce((acc, cur, idx) => {
+        return { ...acc, [idx]: cur[1] };
+      }, {});
+
+      return filteredPkmn;
+    },
+    [pokemonList],
+  );
+
+  function filterPkmn(filterString) {
+    !filterString ? setFilteredPkmn([]) : setFilteredPkmn(doFilterPkmn(filterString));
+  }
+
   function renderMainContent(mode) {
     if (mode === 'singlePkmn') {
       return (
@@ -62,27 +83,6 @@ export default function MainDisplay({
         </>
       );
     }
-  }
-
-  const doFilterPkmn = useCallback(
-    (filterString) => {
-      const entries = Object.entries(pokemonList);
-      const filteredEntries = entries.filter(([, pkmn]) =>
-        pkmn.name.includes(filterString),
-      );
-
-      // Re-index the filtered pokemon
-      const filteredPkmn = filteredEntries.reduce((acc, cur, idx) => {
-        return { ...acc, [idx]: cur[1] };
-      }, {});
-
-      return filteredPkmn;
-    },
-    [pokemonList],
-  );
-
-  function filterPkmn(filterString) {
-    !filterString ? setFilteredPkmn([]) : setFilteredPkmn(doFilterPkmn(filterString));
   }
 
   return (
