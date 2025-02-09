@@ -26,6 +26,7 @@ export default function GameArea({
     includeStarters,
     level.size,
   );
+  console.log('PKMN IN PLAY', pokemonInPlay);
 
   const startNextGame = () => {
     if (includeStarters) dontIncludeStarters();
