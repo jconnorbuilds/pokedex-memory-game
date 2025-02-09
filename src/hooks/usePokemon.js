@@ -85,9 +85,7 @@ export default function usePokemon() {
       try {
         const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1025&offset=0`);
         const data = await res.json();
-        console.log('DATA', data);
         const pkmnDict = data.results.reduce((acc, cur, idx) => {
-          console.log('CUR', cur);
           const pkmnId = cur.url.split('/')[6];
           // const pkmnDataWithIdx = { ...cur, idx: +idx };
           const pkmnDataWithIdx = { ...cur, idx: +pkmnId };

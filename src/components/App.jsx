@@ -17,6 +17,7 @@ import GameArea from './GameArea.jsx';
 import Sidebar from './Sidebar.jsx';
 import Button from './Button.jsx';
 import styles from '../styles/App.module.css';
+import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
 
 import * as Game from './constants.js';
 import useGameStatus from '../hooks/useGameStatus.js';
@@ -33,8 +34,9 @@ export default function App() {
 
   // const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
   // const allPokemonInGen = [];
-  const getPokemonIdsForCurrentGen = useCallback(() => {}, []);
-  const allPokemonInGen = getPokemonIdsForCurrentGen();
+  const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
+
+  const allPokemonInGen = currentGenPkmnIds;
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
