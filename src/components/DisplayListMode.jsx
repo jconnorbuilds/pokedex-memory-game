@@ -14,7 +14,7 @@ const DisplayListMode = memo(function DisplayListMode({
   isLoading,
 }) {
   // Check if there are more pokemon to load (necessary for InfiniteLoader)
-  const hasNextPage = Object.keys(pkmnToDisplay).length < 1200; // Hardcoded placeholder for now
+  const hasNextPage = Object.keys(pkmnToDisplay).length < 1025; // Hardcoded placeholder for now
   const itemCount = Object.keys(pkmnToDisplay).length + (hasNextPage ? 1 : 0);
   const isItemLoaded = (index) => pkmnToDisplay[index]?.fullyLoaded;
   const getPkmnGlobalIdx = (index) => +Object.values(pkmnToDisplay)[index]?.idx;

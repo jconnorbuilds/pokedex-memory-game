@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 
-export default function usePokemon({ isOpen }) {
+export default function usePokemon() {
   const [pokemonDict, setPokemonDict] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -83,10 +83,14 @@ export default function usePokemon({ isOpen }) {
   useEffect(() => {
     const fetchAllPokemonBasicInfo = async () => {
       try {
-        const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=-1&offset=0`);
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1025&offset=0`);
         const data = await res.json();
+        console.log('DATA', data);
         const pkmnDict = data.results.reduce((acc, cur, idx) => {
-          const pkmnDataWithIdx = { ...cur, idx: +idx };
+          console.log('CUR', cur);
+          const pkmnId = cur.url.split('/')[6];
+          // const pkmnDataWithIdx = { ...cur, idx: +idx };
+          const pkmnDataWithIdx = { ...cur, idx: +pkmnId };
           return { ...acc, [idx]: pkmnDataWithIdx };
         }, {});
 
@@ -104,8 +108,8 @@ export default function usePokemon({ isOpen }) {
       }
     };
 
-    if (isOpen) doFetch();
-  }, [isOpen, pokemonDictIsLoaded]);
+    doFetch();
+  }, [pokemonDictIsLoaded]);
 
   return {
     pokemonDict,
