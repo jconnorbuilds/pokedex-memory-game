@@ -1,5 +1,3 @@
-import styles from '../styles/Sidebar.module.css';
-
-export default function Sidebar({ children }) {
+export default function Sidebar({ styles, children }) {
   return <aside className={styles.sidebar}>{children}</aside>;
 }

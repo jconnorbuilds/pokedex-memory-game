@@ -2,11 +2,11 @@
 import Button from './Button.jsx';
 import * as Game from './constants.js';
 
-export default function GenerationSelect({ generation, handleSelect }) {
+export default function GenerationSelect({ generation, styles, handleSelect }) {
   return (
     <>
       <h2>Generation</h2>
-      <div onClick={handleSelect} className="lid__gen-buttons">
+      <div onClick={handleSelect} className={styles.genSelectBtns}>
         {Array(10)
           .fill('')
           .map((_, idx) => {
@@ -15,7 +15,7 @@ export default function GenerationSelect({ generation, handleSelect }) {
             return (
               <Button
                 key={genNumber}
-                className={+generation === genNumber ? 'lid__button--selected' : ''}
+                className={+generation === genNumber ? 'selected' : ''}
                 value={needsLabel ? genNumber : 0}
               >
                 {needsLabel ? genNumber : ''}

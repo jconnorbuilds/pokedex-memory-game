@@ -15,6 +15,7 @@ import useSceneRotation from '../hooks/useSceneRotation.js';
 import GameArea from './GameArea.jsx';
 import Sidebar from './Sidebar.jsx';
 import Button from './Button.jsx';
+import styles from '../styles/App.module.css';
 
 import * as Game from './constants.js';
 import useGameStatus from '../hooks/useGameStatus.js';
@@ -94,15 +95,18 @@ export default function App() {
           )}
         </Scene>
       </main>
-      <Sidebar>
-        <Scoreboard scores={{ score, best }} />
-        <Button action={toggleDexOpenClosed}>Open/close</Button>
-        <GameOptionsMenu>
+      <Sidebar styles={styles}>
+        <Scoreboard styles={styles} scores={{ score, best }} />
+        <Button className={styles.pokedexToggleBtn} action={toggleDexOpenClosed}>
+          Open/close
+        </Button>
+        <GameOptionsMenu styles={styles.gameOptionsMenu}>
           <GenerationSelect
             handleSelect={handleGenerationSelect}
+            styles={styles}
             generation={generation}
           ></GenerationSelect>
-          <DifficultySelect handleSelect={handleLevelSelect} />
+          <DifficultySelect styles={styles} handleSelect={handleLevelSelect} />
         </GameOptionsMenu>
         <div className="dev-toolbar">
           <div className="toolbar__widget">
@@ -118,7 +122,7 @@ export default function App() {
             {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
           </div>
         </div>
-        <p>
+        <p className={styles.githubLink}>
           ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>
         </p>
       </Sidebar>

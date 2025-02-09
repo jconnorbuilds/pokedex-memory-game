@@ -448,58 +448,6 @@
   padding: 0.75rem;
 }
 
-.lid__menu-area {
-  height: auto;
-  display: grid;
-  column-gap: 1em;
-  grid-auto-flow: column;
-  grid-template-columns: 60% 1fr;
-  grid-template-rows: auto 1fr;
-}
-
-.lid__menu-area > div {
-  display: grid;
-  border-radius: 3px;
-  overflow: hidden;
-  border: 1px solid 222233;
-  border-bottom: none;
-}
-
-.lid__menu-area h2 {
-  font-size: 1em;
-  color: #1a1a1a;
-}
-
-.lid__menu-area button {
-  transition: color 0.25s;
-  color: #ccc;
-  border-radius: 0;
-  border: none;
-  border-bottom: 1px solid #222233;
-  text-align: center;
-  font-weight: 500;
-  background-color: #222;
-  /* background-color: #ccc; */
-
-  font-size: 1rem;
-  padding-inline: 0.3rem;
-  transition: color 0.2s ease-in-out, text-shadow 0.2s ease-in-out;
-
-  &:hover,
-  &:focus,
-  &:focus-visible {
-    color: #009a5a;
-    text-shadow: 1px 1px 8px #77d5;
-    outline: none;
-  }
-}
-
-.lid__menu-area button.lid__button--selected {
-  background-color: #444;
-  color: #00bb5a;
-  /* background-color: #eaeaea; */
-}
-
 .lid__gen-buttons {
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(2, 1fr);

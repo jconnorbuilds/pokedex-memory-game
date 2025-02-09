@@ -1,0 +1,80 @@
+.sidebar {
+  background-color: #161616;
+  padding: 1rem;
+  grid-column: 2;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.gameOptionsMenu {
+  height: auto;
+  display: grid;
+  column-gap: 1rem;
+  grid-auto-flow: column;
+  grid-template-columns: 60% 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.gameOptionsMenu > div {
+  display: grid;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 3px solid #444;
+  /* border-bottom: none; */
+}
+
+.gameOptionsMenu h2 {
+  font-size: 1em;
+  color: #1a1a1a;
+}
+
+.gameOptionsMenu button {
+  transition: color 0.25s;
+  background-color: #222;
+  color: #ccc;
+  border-radius: 0;
+  border-bottom: 1px solid #222233;
+  text-align: center;
+  font-weight: 500;
+
+  padding-inline: 0.3rem;
+  transition: color 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
+
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    color: #009a5a;
+    text-shadow: 1px 1px 8px #77d5;
+    outline: none;
+  }
+}
+
+.gameOptionsMenu button.selected {
+  background-color: #444;
+  color: #00bb5a;
+}
+
+.genSelectBtns {
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.difficultySelectBtns {
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, 1fr);
+
+  & button {
+    text-align: end;
+    font-size: 0.7rem;
+  }
+}
+
+.githubLink {
+  margin-block-start: auto;
+}
+
+.pokedexToggleBtn {
+  background-color: #aa0044;
+}

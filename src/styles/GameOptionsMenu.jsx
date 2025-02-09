@@ -1,3 +1,3 @@
-export default function GameOptionsMenu({ children }) {
-  return <section className="lid__menu-area">{children}</section>;
+export default function GameOptionsMenu({ styles, children }) {
+  return <section className={styles}>{children}</section>;
 }
