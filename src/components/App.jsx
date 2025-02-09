@@ -5,6 +5,7 @@ import InputGroup from './InputGroup.jsx';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import SetAngleInput from './SetAngleInput.jsx';
+// import usePokemon from '../hooks/usePokemon-old.js';
 import usePokemon from '../hooks/usePokemon.js';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
@@ -28,8 +29,12 @@ export default function App() {
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
-  const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
+  const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
+
+  // const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
   // const allPokemonInGen = [];
+  const getPokemonIdsForCurrentGen = useCallback(() => {}, []);
+  const allPokemonInGen = getPokemonIdsForCurrentGen();
 
   const handleGenerationSelect = (e) => {
     if (e.target.tagName === 'BUTTON') {
@@ -78,7 +83,13 @@ export default function App() {
       <main className="container">
         <Scene rotation={sceneRotation}>
           {pokedexIsOpen ? (
-            <Pokedex isOpen={pokedexIsOpen} toggleOpen={() => {}}></Pokedex>
+            <Pokedex
+              isOpen={pokedexIsOpen}
+              pokemonDict={pokemonDict}
+              fetchPokemonDetails={fetchPokemonDetails}
+              isLoading={isLoading}
+              toggleOpen={() => {}}
+            ></Pokedex>
           ) : (
             <GameArea
               style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
@@ -126,11 +137,6 @@ export default function App() {
           ©︎jconnorbuilds 2025 <a href="https://github.com/jconnorbuilds">GitHub</a>
         </p>
       </Sidebar>
-      {/* <footer className="footer container">
-        <div className="placeholder">
-         
-        </div>
-      </footer> */}
     </div>
   );
 }

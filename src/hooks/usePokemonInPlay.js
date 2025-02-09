@@ -8,7 +8,7 @@ export default function usePokemonInPlay(allPokemonInGen, drawStarters, levelSiz
   const [needsNewPkmn, setNeedsNewPkmn] = useState(true);
 
   useEffect(() => {
-    if (!allPokemonInGen.length) return;
+    if (!allPokemonInGen?.length) return;
     const generateSelection = () => {
       if (!ignore) {
         if (!allPokemonInGen) return;

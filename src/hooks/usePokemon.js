@@ -1,91 +1,135 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
-const getPokemonSpeciesURLs = (pkmnBasicData) => {
-  return pkmnBasicData.map((pokemon) => pokemon.url);
-};
-
-const fetchAllPokemonInGeneration = async (generation) => {
-  try {
-    const url = `https://pokeapi.co/api/v2/generation/${generation}`;
-    const response = await fetch(url);
-    const generationData = await response.json();
-    const pokemonSpecies = generationData.pokemon_species;
-
-    return pokemonSpecies;
-  } catch (err) {
-    `Unable to fetch all pokemon: ${err}`;
-  }
-};
-
-const fetchPokemonSpeciesData = async (urls) => {
-  try {
-    const promises = urls.map((url) => fetch(url));
-    const responses = await Promise.all(promises);
-    const data = await Promise.all(responses.map((response) => response.json()));
-    return data;
-  } catch (err) {
-    throw new Error(`Failed to fetch species data for urls: ${urls} /
-      Error: ${err}`);
-  }
-};
-
-const fetchPokemonData = async (pkmnIDs) => {
-  const urls = pkmnIDs.map((pkmnID) => `https://pokeapi.co/api/v2/pokemon/${pkmnID}`);
-  try {
-    const promises = urls.map((url) => fetch(url));
-    const responses = await Promise.all(promises);
-    const data = await Promise.all(responses.map((response) => response.json()));
-    return data;
-  } catch (error) {
-    throw new Error(`Failed to fetch pokemon data: ${error}`);
-  }
-};
-
-export default function usePokemon(generation) {
-  const [allPokemonInGen, setAllPokemonInGen] = useState(null);
-  const [previousGen, setPreviousGen] = useState(generation);
+export default function usePokemon({ isOpen }) {
+  const [pokemonDict, setPokemonDict] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
+
+  const pokemonDictIsLoaded = Object.keys(pokemonDict).length;
+
+  const getPkmnSubset = useCallback(
+    (offset, size) => {
+      const pkmnSubset = Array(size)
+        .fill(true)
+        .reduce(
+          (acc, cur, idx) => {
+            const pkmnIdx = idx + offset;
+            const groupName = pokemonDict[pkmnIdx].fullyLoaded ? 'cached' : 'new';
+            return {
+              ...acc,
+              [groupName]: { ...acc[groupName], [pkmnIdx]: pokemonDict[pkmnIdx] },
+            };
+          },
+          { new: {}, cached: {} },
+        );
+
+      const newPkmn = pkmnSubset.new;
+      const cachedPkmn = pkmnSubset.cached;
+      return { newPkmn, cachedPkmn };
+    },
+    [pokemonDict],
+  );
+
+  const fetchFullPokemonData = async (partialData) => {
+    const pkmnUrls = getPkmnURLs(partialData);
+    const pkmnData = await fetchMultipleUrls(pkmnUrls);
+    const pkmnSpeciesData = await fetchMultipleUrls(
+      pkmnData.map((pkmn) => pkmn.species.url),
+    );
+
+    const fullPokemonData = Object.entries(partialData).reduce((acc, cur, idx) => {
+      const [pkmnIdx, data] = cur;
+
+      const fullPkmnData = {
+        ...data,
+        data: pkmnData[idx],
+        speciesData: pkmnSpeciesData[idx],
+        fullyLoaded: true,
+      };
+
+      return { ...acc, [pkmnIdx]: fullPkmnData };
+    }, {});
+
+    return fullPokemonData;
+  };
+
+  // Fetch comprehensive pokemon data and create the pokemon object for the subset of pokemon that will be loaded
+  const fetchPokemonDetails = useCallback(
+    async ({ offset = undefined, size = undefined, singlePkmnId = undefined }) => {
+      if (offset === undefined && size === undefined && singlePkmnId === undefined) {
+        return;
+      }
+      if (singlePkmnId >= 0) {
+        const fullPokemonData = await fetchFullPokemonData({
+          [singlePkmnId]: pokemonDict[singlePkmnId],
+        });
+
+        setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
+      } else {
+        console.log('IS THIS EVER GETTING USED');
+        try {
+          const { newPkmn } = getPkmnSubset(offset, size);
+          if (newPkmn) {
+            const fullPokemonData = await fetchFullPokemonData(newPkmn);
+            setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
+          }
+        } catch (err) {
+          console.error(`Error fetching pokemon details: ${err}`);
+        }
+      }
+    },
+    [getPkmnSubset, pokemonDict],
+  );
 
   useEffect(() => {
-    const fetchPokemon = async () => {
-      setProgress(0);
-      if (!ignore) {
-        // Set to loading and invalidate previous pokemon
-        setIsLoading(true);
-        setAllPokemonInGen(null);
+    const fetchAllPokemonBasicInfo = async () => {
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=-1&offset=0`);
+        const data = await res.json();
+        const pkmnDict = data.results.reduce((acc, cur, idx) => {
+          const pkmnDataWithIdx = { ...cur, idx: +idx };
+          return { ...acc, [idx]: pkmnDataWithIdx };
+        }, {});
 
-        // Fetch data and track progress
-        const allPokemon = await fetchAllPokemonInGeneration(generation);
-        setProgress(10);
-        const speciesURLs = getPokemonSpeciesURLs(allPokemon);
-        const speciesData = await fetchPokemonSpeciesData(speciesURLs);
-        setProgress(75);
-        const pkmnData = await fetchPokemonData(speciesData.map((pokemon) => pokemon.id));
-        setProgress(90);
-
-        // Create the final data object
-        const pokemon = speciesData.map((pkmn, idx) => ({
-          name: pkmn.name,
-          data: pkmnData[idx],
-          speciesData: pkmn,
-        }));
-        pokemon.sort((pkmn1, pkmn2) => pkmn1.data.id - pkmn2.data.id);
-
-        setAllPokemonInGen(pokemon);
-        setPreviousGen(generation);
-        setProgress(100);
-        setIsLoading(false);
+        setPokemonDict(pkmnDict);
+        return pkmnDict;
+      } catch (err) {
+        console.error(`Error fetching pokemon: ${err}`);
       }
     };
 
-    let ignore = false;
-    if (previousGen !== generation || !allPokemonInGen) fetchPokemon();
-
-    return () => {
-      ignore = true;
+    const doFetch = async () => {
+      if (!pokemonDictIsLoaded) {
+        console.log('getting all pkmn');
+        await fetchAllPokemonBasicInfo();
+      }
     };
-  }, [generation, previousGen, allPokemonInGen]);
 
-  return { allPokemonInGen, isLoading, progress };
+    if (isOpen) doFetch();
+  }, [isOpen, pokemonDictIsLoaded]);
+
+  return {
+    pokemonDict,
+    fetchPokemonDetails,
+    isLoading,
+  };
+}
+
+function getPkmnURLs(pkmnSubsetBasicData) {
+  return Object.values(pkmnSubsetBasicData).map((pkmn) => pkmn.url);
+}
+
+async function fetchMultipleUrls(urls) {
+  try {
+    if (!Array.isArray(urls)) {
+      throw new TypeError(`urls is ${typeof urls}, but you need to provide an array`);
+    }
+
+    const promises = urls.map((url) => fetch(url));
+    const responses = await Promise.all(promises);
+    const data = await Promise.all(responses.map((response) => response.json()));
+
+    return data;
+  } catch (err) {
+    console.error(`Failed to fetch urls: ${err}`);
+  }
 }

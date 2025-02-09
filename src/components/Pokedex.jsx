@@ -9,15 +9,20 @@ import MainDisplay from './MainDisplay.jsx';
 
 import useDelay from '../hooks/useDelay.js';
 import useEvolutionChain from '../hooks/useEvolutionChain.js';
-import useLazyLoadPkmn from '../hooks/useLazyLoadPkmn.js';
+// import usePokemon from '../hooks/usePokemon.js';
 
-export default function Pokedex({ isOpen, toggleOpen }) {
+export default function Pokedex({
+  isOpen,
+  toggleOpen,
+  pokemonDict,
+  fetchPokemonDetails,
+  isLoading,
+}) {
   const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
   const [pokedexMode, setPokedexMode] = useState('list');
   const [currentPokemonId, setCurrentPokemonId] = useState(null);
 
-  const { pokemonDict, fetchPokemonDetails, isLoading } = useLazyLoadPkmn({ isOpen });
   const { evolutionChain } = useEvolutionChain({
     currentPokemonId,
     allPokemon: pokemonDict,
