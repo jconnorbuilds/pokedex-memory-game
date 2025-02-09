@@ -78,7 +78,7 @@ export default function App() {
       <main className="container">
         <Scene rotation={sceneRotation}>
           {pokedexIsOpen ? (
-            <Pokedex isOpen={pokedexIsOpen} progress={0} toggleOpen={() => {}}></Pokedex>
+            <Pokedex isOpen={pokedexIsOpen} toggleOpen={() => {}}></Pokedex>
           ) : (
             <GameArea
               style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}

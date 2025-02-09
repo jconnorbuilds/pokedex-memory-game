@@ -11,7 +11,7 @@ import useDelay from '../hooks/useDelay.js';
 import useEvolutionChain from '../hooks/useEvolutionChain.js';
 import useLazyLoadPkmn from '../hooks/useLazyLoadPkmn.js';
 
-export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
+export default function Pokedex({ isOpen, toggleOpen }) {
   const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
   const [pokedexMode, setPokedexMode] = useState('list');
@@ -77,7 +77,6 @@ export default function Pokedex({ isOpen, progress, toggleOpen, children }) {
             currentPokemonId={currentPokemonId}
             evolutionChain={evolutionChain}
           />
-          {children}
         </PokedexLid>
       </div>
     </div>
