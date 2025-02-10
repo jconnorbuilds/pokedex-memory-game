@@ -10,11 +10,11 @@ const capitalize = (string) => {
 
 export default function Card({ pokemon, handleClick, gameStatus }) {
   const sprite = pokemon.isShiny
-    ? pokemon.data.sprites.other['official-artwork'].front_shiny
-    : pokemon.data.sprites.other['official-artwork'].front_default;
+    ? pokemon?.data?.sprites.other['official-artwork'].front_shiny
+    : pokemon?.data?.sprites.other['official-artwork'].front_default;
 
-  const typeName = pokemon.data.types[0].type.name;
-  const ability = pokemon.data.moves[0].move.name;
+  const typeName = pokemon?.data?.types[0].type.name;
+  const ability = pokemon?.data?.moves[0].move.name;
 
   const toggleShadowHover = (e, isHovered) => {
     const shadow = e.target.querySelector('.card-shadow');

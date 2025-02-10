@@ -17,17 +17,16 @@ const DisplayListMode = memo(function DisplayListMode({
   const hasNextPage = Object.keys(pkmnToDisplay).length < 1025; // Hardcoded placeholder for now
   const itemCount = Object.keys(pkmnToDisplay).length + (hasNextPage ? 1 : 0);
   const isItemLoaded = (index) => pkmnToDisplay[index]?.fullyLoaded;
-  const getPkmnGlobalIdx = (index) => +Object.values(pkmnToDisplay)[index]?.idx;
-  // console.log('PKMN TO DISPLAY:', pkmnToDisplay);
+  const getPkmnId = (index) => +Object.values(pkmnToDisplay)[index]?.idx;
 
   // The render function for each row in the list
   const Row = ({ index, style }) => {
-    const globalIdx = getPkmnGlobalIdx(index) || 0;
+    const id = getPkmnId(index);
     return (
       <PkmnListButton
-        pkmnIdx={globalIdx}
+        index={index}
         allPkmn={allPokemon}
-        onClick={() => selectPokemon({ id: globalIdx })}
+        onClick={() => selectPokemon({ id })}
         styles={{ ...styles, reactWindow: style }}
       ></PkmnListButton>
     );

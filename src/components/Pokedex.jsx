@@ -38,10 +38,12 @@ export default function Pokedex({
   const handlePkmnSelection = useCallback(
     async ({ id, name }) => {
       const key = name ? getPkmnIdxByName(name, pokemonDict) : id;
-      const pokemonIsLoaded = pokemonDict[key].fullyLoaded === true;
+      const pkmn = Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
+      const pokemonIsLoaded = pkmn.fullyLoaded === true;
       if (!pokemonIsLoaded) fetchPokemonDetails({ singlePkmnId: key });
 
-      setCurrentPokemonId(key);
+      const idx = Object.keys(pokemonDict).find((key) => pokemonDict[key].idx === id);
+      setCurrentPokemonId(idx);
       setPokedexMode('singlePkmn');
     },
 

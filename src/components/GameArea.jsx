@@ -8,9 +8,10 @@ import Button from './Button.jsx';
 import useGameProgress from '../hooks/useGameProgress.js';
 
 export default function GameArea({
-  level,
-  allPokemonInGen,
   style,
+  level,
+  pokemonDict,
+  allPokemonInGen,
   generation,
   incrementScore,
   resetScore,
@@ -18,6 +19,7 @@ export default function GameArea({
   gameStatus,
   nextGame,
   reportGameStatus,
+  fetchPokemonDetails,
 }) {
   const { updateGameProgress } = useGameProgress();
   const { includeStarters, dontIncludeStarters } = useStarters(generation);
@@ -26,7 +28,6 @@ export default function GameArea({
     includeStarters,
     level.size,
   );
-  console.log('PKMN IN PLAY', pokemonInPlay);
 
   const startNextGame = () => {
     if (includeStarters) dontIncludeStarters();
@@ -52,10 +53,12 @@ export default function GameArea({
         generation={generation}
         gameOn={gameOn}
         gameStatus={gameStatus}
+        pokemonDict={pokemonDict}
         incrementScore={incrementScore}
         onGameWon={handleGameWon}
         onGameLost={handleGameLost}
         pokemonInPlay={pokemonInPlay}
+        fetchPokemonDetails={fetchPokemonDetails}
       />
       <GameResult gameOn={gameOn} gameStatus={gameStatus}>
         <Button action={startNextGame} styles={styles.gameResult}>

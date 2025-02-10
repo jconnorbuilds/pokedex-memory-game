@@ -1,4 +1,5 @@
 export default function SetAngleInput({ axis, label, value, onChange }) {
+  console.log(label);
   return (
     <div className="angle-input">
       <label htmlFor={`${label}-angle`} style={{ display: 'none' }}>

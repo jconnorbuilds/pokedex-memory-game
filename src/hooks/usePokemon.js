@@ -1,83 +1,48 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { p } from 'framer-motion/client';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 
 export default function usePokemon() {
   const [pokemonDict, setPokemonDict] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const pokemonDictIsLoaded = Object.keys(pokemonDict).length;
+  const pokemonDictIsLoaded = useMemo(
+    () => Object.keys(pokemonDict).length,
+    [pokemonDict],
+  );
 
-  const getPkmnSubset = useCallback(
-    (offset, size) => {
-      const pkmnSubset = Array(size)
-        .fill(true)
-        .reduce(
-          (acc, cur, idx) => {
-            const pkmnIdx = idx + offset;
-            const groupName = pokemonDict[pkmnIdx].fullyLoaded ? 'cached' : 'new';
-            return {
-              ...acc,
-              [groupName]: { ...acc[groupName], [pkmnIdx]: pokemonDict[pkmnIdx] },
-            };
-          },
-          { new: {}, cached: {} },
-        );
+  const fetchFullPokemonData = useCallback(
+    async (id) => {
+      const partialData = Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
+      const index = Object.keys(pokemonDict).find((key) => pokemonDict[key].idx === id);
+      const url = partialData.url;
+      const pkmnData = await fetchMultipleUrls([url]);
+      const pkmnSpeciesData = await fetchMultipleUrls(
+        pkmnData.map((pkmn) => pkmn.species.url),
+      );
 
-      const newPkmn = pkmnSubset.new;
-      const cachedPkmn = pkmnSubset.cached;
-      return { newPkmn, cachedPkmn };
+      const fullPokemonData = {
+        [index]: {
+          ...partialData,
+          data: pkmnData[0],
+          speciesData: pkmnSpeciesData[0],
+          fullyLoaded: true,
+        },
+      };
+
+      return fullPokemonData;
     },
     [pokemonDict],
   );
 
-  const fetchFullPokemonData = async (partialData) => {
-    const pkmnUrls = getPkmnURLs(partialData);
-    const pkmnData = await fetchMultipleUrls(pkmnUrls);
-    const pkmnSpeciesData = await fetchMultipleUrls(
-      pkmnData.map((pkmn) => pkmn.species.url),
-    );
-
-    const fullPokemonData = Object.entries(partialData).reduce((acc, cur, idx) => {
-      const [pkmnIdx, data] = cur;
-
-      const fullPkmnData = {
-        ...data,
-        data: pkmnData[idx],
-        speciesData: pkmnSpeciesData[idx],
-        fullyLoaded: true,
-      };
-
-      return { ...acc, [pkmnIdx]: fullPkmnData };
-    }, {});
-
-    return fullPokemonData;
-  };
-
   // Fetch comprehensive pokemon data and create the pokemon object for the subset of pokemon that will be loaded
   const fetchPokemonDetails = useCallback(
-    async ({ offset = undefined, size = undefined, singlePkmnId = undefined }) => {
-      if (offset === undefined && size === undefined && singlePkmnId === undefined) {
-        return;
-      }
-      if (singlePkmnId >= 0) {
-        const fullPokemonData = await fetchFullPokemonData({
-          [singlePkmnId]: pokemonDict[singlePkmnId],
-        });
-
+    async ({ singlePkmnId = undefined }) => {
+      if (singlePkmnId !== undefined) {
+        const fullPokemonData = await fetchFullPokemonData(singlePkmnId);
         setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
-      } else {
-        console.log('IS THIS EVER GETTING USED');
-        try {
-          const { newPkmn } = getPkmnSubset(offset, size);
-          if (newPkmn) {
-            const fullPokemonData = await fetchFullPokemonData(newPkmn);
-            setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
-          }
-        } catch (err) {
-          console.error(`Error fetching pokemon details: ${err}`);
-        }
       }
     },
-    [getPkmnSubset, pokemonDict],
+    [fetchFullPokemonData],
   );
 
   useEffect(() => {
@@ -86,14 +51,15 @@ export default function usePokemon() {
         const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1025&offset=0`);
         const data = await res.json();
         const pkmnDict = data.results.reduce((acc, cur, idx) => {
-          const pkmnId = cur.url.split('/')[6];
+          const id = cur.url.split('/')[6];
           // const pkmnDataWithIdx = { ...cur, idx: +idx };
-          const pkmnDataWithIdx = { ...cur, idx: +pkmnId };
+          const pkmnDataWithIdx = { ...cur, idx: +id };
           return { ...acc, [idx]: pkmnDataWithIdx };
         }, {});
-
+        // console.log('setting pkmn dict');
+        // console.log('PKMN DICT', pkmnDict);
         setPokemonDict(pkmnDict);
-        return pkmnDict;
+        // return pkmnDict;
       } catch (err) {
         console.error(`Error fetching pokemon: ${err}`);
       }
@@ -114,10 +80,6 @@ export default function usePokemon() {
     fetchPokemonDetails,
     isLoading,
   };
-}
-
-function getPkmnURLs(pkmnSubsetBasicData) {
-  return Object.values(pkmnSubsetBasicData).map((pkmn) => pkmn.url);
 }
 
 async function fetchMultipleUrls(urls) {

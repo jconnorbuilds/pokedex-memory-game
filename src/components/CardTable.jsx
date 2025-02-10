@@ -1,29 +1,77 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import Card from './Card.jsx';
 import usePokemonSubset from '../hooks/usePokemonSubset.js';
+import { get } from 'jquery';
 
 export default function CardTable({
   generation,
   gameOn,
   gameStatus,
+  pokemonDict,
   incrementScore,
   onGameWon,
   onGameLost,
   pokemonInPlay,
+  fetchPokemonDetails,
 }) {
   const [handKey, setHandKey] = useState(0);
   const [prevGen, setPrevGen] = useState(generation);
   const [prevGameStatus, setPrevGameStatus] = useState(gameOn);
-  const [selectedNames, setSelectedNames] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
 
-  const { pokemonToShow } = usePokemonSubset({ pokemonInPlay, selectedNames });
+  const { pkmnIdsToShow } = usePokemonSubset({
+    pokemonInPlay,
+    selectedIds,
+  });
+
+  // const pokemonToShow = useMemo(() => {
+  //   return pkmnIdsToShow?.map((id) => {
+  //     return Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
+  //   });
+  // }, [pkmnIdsToShow, pokemonDict]);
+
+  // useEffect(() => {
+  //   const getMissingData = async () => {
+  //     pokemonToShow?.forEach((pkmn) => {
+  //       if (!pkmn?.fullyLoaded) {
+  //         fetchPokemonDetails({ singlePkmnId: pkmn.idx });
+  //       }
+  //     });
+  //   };
+
+  //   getMissingData();
+  // }, [fetchPokemonDetails, pokemonToShow]);
+  const getPkmnById = useCallback(
+    (id) => {
+      return Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
+    },
+    [pokemonDict],
+  );
+
+  useEffect(() => {
+    if (!pkmnIdsToShow) return;
+    pkmnIdsToShow.forEach((id) => {
+      const pkmn = getPkmnById(id);
+      console.log(pkmn);
+      // Or if your dict is keyed by pkmn.idx, adapt accordingly
+      if (!pkmn?.fullyLoaded) {
+        fetchPokemonDetails({ singlePkmnId: id });
+      }
+    });
+  }, [pkmnIdsToShow, pokemonDict, fetchPokemonDetails, getPkmnById]);
+
+  // 3) Actually build your array of Pokémon to render
+  const pokemonToShow = useMemo(() => {
+    if (!pkmnIdsToShow) return [];
+    return pkmnIdsToShow.map((id) => getPkmnById(id));
+  }, [pkmnIdsToShow, getPkmnById]);
 
   const gameStartedOrFinished = prevGameStatus !== gameOn;
   const generationChanged = prevGen !== generation;
 
   if (gameStartedOrFinished || generationChanged) {
     if (gameOn) {
-      setSelectedNames([]);
+      setSelectedIds([]);
       setHandKey(0);
     }
     setPrevGameStatus(gameOn);
@@ -31,24 +79,22 @@ export default function CardTable({
   }
 
   const onSuccessfulChoice = (id) => {
-    const newClickedIds = selectedNames.concat([id]);
+    const newClickedIds = selectedIds.concat([id]);
     const gameWon = newClickedIds.length === pokemonInPlay.length;
 
     incrementScore();
-    setSelectedNames(newClickedIds);
+    setSelectedIds(newClickedIds);
 
-    gameWon
-      ? onGameWon({ pokemon: pokemonInPlay.map((pkmn) => pkmn.name) })
-      : setHandKey(handKey + 1);
+    gameWon ? onGameWon({ pokemon: pokemonInPlay }) : setHandKey(handKey + 1);
   };
 
   const handleChoice = (id) => {
     if (!gameOn) return;
-    const successfulChoice = !selectedNames.includes(id);
+    const successfulChoice = !selectedIds.includes(id);
     successfulChoice ? onSuccessfulChoice(id) : onGameLost();
   };
 
-  if (!pokemonInPlay) return <p>loading cards...</p>;
+  if (!pokemonInPlay || !pokemonToShow) return <p>loading cards...</p>;
   return (
     <div className="card-table">
       <Hand key={handKey}>

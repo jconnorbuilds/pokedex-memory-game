@@ -15,16 +15,19 @@ function getRandomSubset(array, subsetSize) {
   return shuffled.slice(0, subsetSize);
 }
 
-export default function usePokemonSubset({ pokemonInPlay, selectedNames }) {
+export default function usePokemonSubset({ pokemonInPlay, selectedIds }) {
   function isValidSubset(subset, usedNames) {
-    return subset.some((pkmn) => !usedNames.includes(pkmn.name));
+    console.log('SUBSET', subset);
+    console.log('USED NAMES', usedNames);
+    return subset.some((pkmn) => !usedNames.includes(pkmn));
   }
 
   // Selects a random subset of the cards currently in play
-  const pokemonToShow = useMemo(() => {
+  const pkmnIdsToShow = useMemo(() => {
     if (!pokemonInPlay) return;
-    if (selectedNames.length === pokemonInPlay.length) {
-      // Return all pokemon if player has won
+
+    // Return all pokemon if player has won
+    if (selectedIds.length === pokemonInPlay.length) {
       return pokemonInPlay;
     }
 
@@ -34,12 +37,12 @@ export default function usePokemonSubset({ pokemonInPlay, selectedNames }) {
     // TODO: make this more robust
     for (let attempt = 0; attempt < 50; attempt++) {
       const selection = getRandomSubset(pokemonInPlay, subsetSize);
-      if (isValidSubset(selection, selectedNames)) return selection;
+      if (isValidSubset(selection, selectedIds)) return selection;
     }
 
     console.error('Unable to make valid pokemon selection in 50 attempts');
     return [];
-  }, [selectedNames, pokemonInPlay]);
+  }, [selectedIds, pokemonInPlay]);
 
-  return { pokemonToShow };
+  return { pkmnIdsToShow };
 }

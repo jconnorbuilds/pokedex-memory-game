@@ -96,6 +96,7 @@ export default function App() {
             <GameArea
               style={pokedexIsOpen ? { transform: 'scale(0.75)' } : {}}
               level={level}
+              pokemonDict={pokemonDict}
               allPokemonInGen={allPokemonInGen}
               generation={generation}
               incrementScore={incrementScore}
@@ -104,6 +105,7 @@ export default function App() {
               gameStatus={gameStatus}
               nextGame={nextGame}
               reportGameStatus={reportGameStatus}
+              fetchPokemonDetails={fetchPokemonDetails}
             />
           )}
         </Scene>
@@ -124,11 +126,11 @@ export default function App() {
         <div className="dev-toolbar">
           <div className="toolbar__widget">
             <h2>Scene</h2>
-            <AngleInputs
+            {/* <AngleInputs
               labelPrefix={'scene'}
               target={sceneRotation}
               onChange={setSceneRotationAxis}
-            ></AngleInputs>
+            ></AngleInputs> */}
           </div>
           <div className="toolbar__widget">
             <h2>Pokedex</h2>
