@@ -39,6 +39,7 @@ export default function usePokemon() {
     async ({ singlePkmnId = undefined }) => {
       if (singlePkmnId !== undefined) {
         const fullPokemonData = await fetchFullPokemonData(singlePkmnId);
+        console.log('fullPokemonData', fullPokemonData);
         setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
       }
     },

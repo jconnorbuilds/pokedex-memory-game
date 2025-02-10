@@ -1,6 +1,6 @@
 import '../styles/Pokedex.css';
 import { useEffect, useState, useCallback } from 'react';
-import { getPkmnIdxByName } from '../utils/utils.js';
+import { getPkmnIdByName } from '../utils/utils.js';
 import usePokedexParallax from '../hooks/usePokedexParallax.js';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
@@ -37,13 +37,13 @@ export default function Pokedex({
   // Sets the current pokemon ID, fetching the full data if it hasn't been loaded yet
   const handlePkmnSelection = useCallback(
     async ({ id, name }) => {
-      const key = name ? getPkmnIdxByName(name, pokemonDict) : id;
+      const key = name ? getPkmnIdByName(name, pokemonDict) : id;
       const pkmn = Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
       const pokemonIsLoaded = pkmn.fullyLoaded === true;
       if (!pokemonIsLoaded) fetchPokemonDetails({ singlePkmnId: key });
 
-      const idx = Object.keys(pokemonDict).find((key) => pokemonDict[key].idx === id);
-      setCurrentPokemonId(idx);
+      // const id = +Object.keys(pokemonDict).find((key) => pokemonDict[key].idx === id);
+      setCurrentPokemonId(id);
       setPokedexMode('singlePkmn');
     },
 

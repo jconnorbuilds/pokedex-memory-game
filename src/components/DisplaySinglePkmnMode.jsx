@@ -8,9 +8,10 @@ export default function DisplaySinglePkmnMode({
   evolutionChain,
   handlePkmnSelection,
 }) {
-  const currPkmn = pokemonList[currentPokemonId];
+  const allPkmn = Object.values(pokemonList);
+  const currPkmn = allPkmn.find((pkmn) => pkmn.idx === currentPokemonId);
   const loading = !currPkmn?.fullyLoaded;
-  // console.log('DSPM currpok', currentPokemon);
+
   const sprite = loading ? '#' : currPkmn?.data.sprites.other['home'].front_default;
   const ability = loading ? '...' : currPkmn?.data.abilities[0].ability.name;
   return (

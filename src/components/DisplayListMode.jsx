@@ -25,7 +25,7 @@ const DisplayListMode = memo(function DisplayListMode({
     return (
       <PkmnListButton
         index={index}
-        allPkmn={allPokemon}
+        pkmnToDisplay={pkmnToDisplay}
         onClick={() => selectPokemon({ id })}
         styles={{ ...styles, reactWindow: style }}
       ></PkmnListButton>

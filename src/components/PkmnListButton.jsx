@@ -1,7 +1,7 @@
 import pokeballIcon from '../assets/images/pokeball.webp';
 
-export default function PkmnListButton({ index, allPkmn, styles, onClick }) {
-  const pkmn = allPkmn[index];
+export default function PkmnListButton({ index, pkmnToDisplay, styles, onClick }) {
+  const pkmn = pkmnToDisplay[index];
   const nationalDexNumber = +pkmn?.speciesData?.pokedex_numbers[0].entry_number || 0;
   const pkmnIcon = pkmn?.data?.sprites.front_default;
   const isLoading = !pkmn?.fullyLoaded;
@@ -13,17 +13,17 @@ export default function PkmnListButton({ index, allPkmn, styles, onClick }) {
       <span>{pkmn.name}</span>
       <div className={styles.pkmnInfo}>
         <span className={styles.dexNum}>#{nationalDexNumber}</span>
-        {/* {isLoading ? (
+        {isLoading ? (
           <div>...</div>
-        ) : ( */}
-        <img
-          className={styles.pokemonIcon}
-          width="40px"
-          height="40px"
-          src={pkmnIcon}
-          alt={`${pkmn.name} icon`}
-        />
-        {/* )} */}
+        ) : (
+          <img
+            className={styles.pokemonIcon}
+            width="40px"
+            height="40px"
+            src={pkmnIcon}
+            alt={`${pkmn.name} icon`}
+          />
+        )}
 
         <div className={styles.icons}>
           <img

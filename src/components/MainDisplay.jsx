@@ -21,22 +21,28 @@ export default function MainDisplay({
 }) {
   const [filteredPkmn, setFilteredPkmn] = useState({});
   const pkmnToDisplay = Object.keys(filteredPkmn).length ? filteredPkmn : pokemonList;
-  const currPkmn = pokemonList[currentPokemonId];
+  // console.log('PKMN TO DISPLAY', pkmnToDisplay);
+  const currPkmn = Object.values(pokemonList).find(
+    (pkmn) => pkmn.idx === currentPokemonId,
+  );
 
   const infiniteLoaderRef = useRef(null);
 
   const doFilterPkmn = useCallback(
     (filterString) => {
+      console.log('filtering');
       const entries = Object.entries(pokemonList);
       const filteredEntries = entries.filter(([, pkmn]) =>
         pkmn.name.includes(filterString),
       );
+      // console.log('FILTERED ENTRIES', filteredEntries);
 
-      // Re-index the filtered pokemon
+      // Re-index the filtered pokemon, seems necessary for the infinite scrolling
       const filteredPkmn = filteredEntries.reduce((acc, cur, idx) => {
+        // return { ...acc, [idx]: cur[1] };
         return { ...acc, [idx]: cur[1] };
       }, {});
-
+      console.log('FILTERED PKMN', filteredPkmn);
       return filteredPkmn;
     },
     [pokemonList],

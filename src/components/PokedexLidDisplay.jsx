@@ -21,7 +21,9 @@ export default function PokedexLidDisplay({
 }) {
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
-  const currPkmn = pokemonList[currentPokemonId];
+  const currPkmn = Object.values(pokemonList).find(
+    (pkmn) => pkmn.idx === currentPokemonId,
+  );
   const stats = currPkmn?.fullyLoaded ? currPkmn.data?.stats : undefined;
   const statNamesFormatted = stats?.map((stat) => {
     const statNames = {
@@ -36,7 +38,7 @@ export default function PokedexLidDisplay({
   });
 
   const generateDataset = (pkmnId) => {
-    const pkmn = pokemonList[pkmnId];
+    const pkmn = Object.values(pokemonList).find((pkmn) => pkmn.idx === pkmnId);
     const currentPkmnColor = 'rgba(75, 192, 192, 0.6)';
     const currentPkmnBorderColor = 'rgba(75, 192, 192, 1)';
     const otherPkmnColor = 'rgba(192, 75, 192, 0.5)';
@@ -66,7 +68,7 @@ export default function PokedexLidDisplay({
     // console.log('EVO CHAIN', evolutionChain);
     // Push the dataset of the current pokemon to the array
 
-    const dataset = generateDataset(evolutionChain.pkmnIdx);
+    const dataset = generateDataset(evolutionChain.pkmnId);
     datasets.push(dataset);
 
     // Recursively check if pokemon evolve, and generate datasets for each evolution

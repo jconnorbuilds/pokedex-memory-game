@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getPkmnIdxByName } from '../utils/utils.js';
+import { getPkmnIdByName } from '../utils/utils.js';
 
 const evolutionChainCache = new Map();
 
@@ -13,11 +13,13 @@ export default function useEvolutionChain({
 
   const formatEvoChainAndFetchData = useCallback(
     async (evoChainData) => {
-      const pkmnIdx = getPkmnIdxByName(evoChainData.species.name, allPokemon);
-
+      const pkmnId = getPkmnIdByName(evoChainData.species.name, allPokemon);
+      const pkmn = Object.values(allPokemon).find(
+        (pokemon) => pokemon.idx === currentPokemonId,
+      );
       // Fetch the pokemon data if it hasn't been loaded yet
-      if (!allPokemon[pkmnIdx]?.fullyLoaded) {
-        await fetchPokemonDetails({ singlePkmnId: pkmnIdx });
+      if (!pkmn?.fullyLoaded) {
+        await fetchPokemonDetails({ singlePkmnId: pkmnId });
       }
 
       // If it evolves, recurse over its evolutions
@@ -26,16 +28,18 @@ export default function useEvolutionChain({
         const evolvesTo = await Promise.all(
           evolutions.map((next) => formatEvoChainAndFetchData(next)),
         );
-        return { pkmnIdx, evolvesTo };
+        return { pkmnId, evolvesTo };
       }
       // If the pokemon is the last in the chain, just return the pokemon index
-      return { pkmnIdx };
+      return { pkmnId };
     },
-    [allPokemon, fetchPokemonDetails],
+    [allPokemon, fetchPokemonDetails, currentPokemonId],
   );
 
   useEffect(() => {
-    const currPkmn = allPokemon[currentPokemonId];
+    const currPkmn = Object.values(allPokemon).find(
+      (pkmn) => pkmn.idx === currentPokemonId,
+    );
     if (!currPkmn) return;
 
     async function fetchEvolutionChain(url) {

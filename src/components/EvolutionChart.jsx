@@ -8,14 +8,14 @@ function createChartData(eChain, segments = [], connections = [], currentBranch 
   const evolutionDiverges = eChain.evolvesTo?.length > 1;
 
   // Add the current pokemon to the segments array
-  segments.push({ id: eChain.pkmnIdx, branch: currentBranch });
+  segments.push({ id: eChain.pkmnId, branch: currentBranch });
 
   // Recursively assign branches to the evolution chain.
   // Branch 0 is the base branch, and all other branches are children of the base branch.
   if (doesEvolve) {
     eChain.evolvesTo.forEach((evo, idx) => {
       const nextBranch = evolutionDiverges ? idx + 1 : currentBranch;
-      connections.push({ from: eChain.pkmnIdx, to: evo.pkmnIdx });
+      connections.push({ from: eChain.pkmnId, to: evo.pkmnId });
       createChartData(evo, segments, connections, nextBranch);
     });
   }
