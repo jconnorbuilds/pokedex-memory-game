@@ -1,25 +1,25 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 // import { GameContext } from './GameContext.js';
 import '../styles/App.css';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 
-import AngleInputGroup from './AngleInputGroup.jsx';
-import usePokemon from '../hooks/usePokemon.js';
-import GenerationSelect from './GenerationSelect.jsx';
-import DifficultySelect from './DifficultySelect.jsx';
-import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
-import UseScore from '../hooks/useScore.js';
-import Scene from './Scene.jsx';
-import useSceneRotation from '../hooks/useSceneRotation.js';
-import GameArea from './GameArea.jsx';
-import Sidebar from './Sidebar.jsx';
-import Button from './Button.jsx';
-import styles from '../styles/App.module.css';
 import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
+import usePokemon from '../hooks/usePokemon.js';
+import useSceneRotation from '../hooks/useSceneRotation.js';
+import UseScore from '../hooks/useScore.js';
+import styles from '../styles/App.module.css';
+import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
+import AngleInputGroup from './AngleInputGroup.jsx';
+import Button from './Button.jsx';
+import DifficultySelect from './DifficultySelect.jsx';
+import GameArea from './GameArea.jsx';
+import GenerationSelect from './GenerationSelect.jsx';
+import Scene from './Scene.jsx';
+import Sidebar from './Sidebar.jsx';
 
-import * as Game from './constants.js';
 import useGameStatus from '../hooks/useGameStatus.js';
+import * as Game from './constants.js';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));

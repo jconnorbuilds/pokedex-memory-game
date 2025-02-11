@@ -1,7 +1,6 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import Card from './Card.jsx';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import usePokemonSubset from '../hooks/usePokemonSubset.js';
-import { get } from 'jquery';
+import Card from './Card.jsx';
 
 export default function CardTable({
   generation,

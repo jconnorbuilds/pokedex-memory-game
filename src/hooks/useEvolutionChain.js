@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getPkmnIdByName } from '../utils/utils.js';
 
 const evolutionChainCache = new Map();

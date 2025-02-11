@@ -1,5 +1,4 @@
-import { p } from 'framer-motion/client';
-import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export default function usePokemon() {
   const [pokemonDict, setPokemonDict] = useState({});

@@ -1,16 +1,16 @@
-import styles from '../styles/PokedexLidDisplay.module.css';
-import Button from './Button.jsx';
 import {
   Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
   Filler,
-  Tooltip,
   Legend,
+  LineElement,
+  PointElement,
+  RadialLinearScale,
+  Tooltip,
   defaults,
 } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
+import styles from '../styles/PokedexLidDisplay.module.css';
+import Button from './Button.jsx';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 

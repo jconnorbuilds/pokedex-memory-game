@@ -1,15 +1,12 @@
-import '../styles/Pokedex.css';
-import { useEffect, useState, useCallback } from 'react';
-import { getPkmnIdByName } from '../utils/utils.js';
+import { useCallback, useState } from 'react';
 import usePokedexParallax from '../hooks/usePokedexParallax.js';
+import '../styles/Pokedex.css';
+import MainDisplay from './MainDisplay.jsx';
 import PokedexBody from './PokedexBody.jsx';
 import PokedexLid from './PokedexLid.jsx';
 import PokedexLidDisplay from './PokedexLidDisplay.jsx';
-import MainDisplay from './MainDisplay.jsx';
 
-import useDelay from '../hooks/useDelay.js';
 import useEvolutionChain from '../hooks/useEvolutionChain.js';
-// import usePokemon from '../hooks/usePokemon.js';
 
 export default function Pokedex({
   isOpen,

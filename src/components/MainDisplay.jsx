@@ -1,11 +1,9 @@
-import { useState, useCallback, useRef } from 'react';
+import { useCallback, useState } from 'react';
 // pokedex screen styles
-import mbStyles from '../styles/PokedexMenuBar.module.css';
-import LoadingBar from './LoadingBar.jsx';
-import { SearchBar, PkmnInfoBar } from './MenuBar.jsx';
+import styles from '../styles/MainDisplay.module.css';
 import DisplayListMode from './DisplayListMode.jsx';
 import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
-import styles from '../styles/MainDisplay.module.css';
+import { PkmnInfoBar, SearchBar } from './MenuBar.jsx';
 
 export default function MainDisplay({
   pokemonList,
