@@ -9,7 +9,7 @@ export default function DisplaySinglePkmnMode({
   handlePkmnSelection,
 }) {
   const allPkmn = Object.values(pokemonList);
-  const currPkmn = allPkmn.find((pkmn) => pkmn.idx === currentPokemonId);
+  const currPkmn = allPkmn.find((pkmn) => pkmn.id === currentPokemonId);
   const loading = !currPkmn?.fullyLoaded;
 
   const sprite = loading ? '#' : currPkmn?.data.sprites.other['home'].front_default;

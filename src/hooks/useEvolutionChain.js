@@ -15,7 +15,7 @@ export default function useEvolutionChain({
     async (evoChainData) => {
       const pkmnId = getPkmnIdByName(evoChainData.species.name, allPokemon);
       const pkmn = Object.values(allPokemon).find(
-        (pokemon) => pokemon.idx === currentPokemonId,
+        (pokemon) => pokemon.id === currentPokemonId,
       );
       // Fetch the pokemon data if it hasn't been loaded yet
       if (!pkmn?.fullyLoaded) {
@@ -38,7 +38,7 @@ export default function useEvolutionChain({
 
   useEffect(() => {
     const currPkmn = Object.values(allPokemon).find(
-      (pkmn) => pkmn.idx === currentPokemonId,
+      (pkmn) => pkmn.id === currentPokemonId,
     );
     if (!currPkmn) return;
 

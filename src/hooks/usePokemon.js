@@ -12,8 +12,8 @@ export default function usePokemon() {
 
   const fetchFullPokemonData = useCallback(
     async (id) => {
-      const partialData = Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
-      const index = Object.keys(pokemonDict).find((key) => pokemonDict[key].idx === id);
+      const partialData = Object.values(pokemonDict).find((pkmn) => pkmn.id === id);
+      const index = Object.keys(pokemonDict).find((key) => pokemonDict[key].id === id);
       const url = partialData.url;
       const pkmnData = await fetchMultipleUrls([url]);
       const pkmnSpeciesData = await fetchMultipleUrls(
@@ -53,14 +53,11 @@ export default function usePokemon() {
         const data = await res.json();
         const pkmnDict = data.results.reduce((acc, cur, idx) => {
           const id = cur.url.split('/')[6];
-          // const pkmnDataWithIdx = { ...cur, idx: +idx };
-          const pkmnDataWithIdx = { ...cur, idx: +id };
+          const pkmnDataWithIdx = { ...cur, id: +id };
           return { ...acc, [idx]: pkmnDataWithIdx };
         }, {});
-        // console.log('setting pkmn dict');
-        // console.log('PKMN DICT', pkmnDict);
+
         setPokemonDict(pkmnDict);
-        // return pkmnDict;
       } catch (err) {
         console.error(`Error fetching pokemon: ${err}`);
       }

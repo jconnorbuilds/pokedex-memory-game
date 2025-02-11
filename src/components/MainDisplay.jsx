@@ -24,19 +24,19 @@ export default function MainDisplay({
 
   const filteredPkmn = filteredPkmnIds.reduce((acc, curr, i) => {
     // Retrieve the pokemon object by its id, and re-index it for infinite scrolling compatibility
-    return { ...acc, [i]: Object.values(pokemonList).find((pkmn) => pkmn.idx === curr) };
+    return { ...acc, [i]: Object.values(pokemonList).find((pkmn) => pkmn.id === curr) };
   }, {});
 
   const pkmnToDisplay = Object.keys(filteredPkmn).length ? filteredPkmn : pokemonList;
   const currPkmn = Object.values(pokemonList).find(
-    (pkmn) => pkmn.idx === currentPokemonId,
+    (pkmn) => pkmn.id === currentPokemonId,
   );
 
   const doFilterPkmn = useCallback(
     (filterString) => {
       const values = Object.values(pokemonList);
       const filteredValues = values.filter((pkmn) => pkmn.name.includes(filterString));
-      const ids = filteredValues.map((pkmn) => pkmn.idx);
+      const ids = filteredValues.map((pkmn) => pkmn.id);
       return ids;
     },
     [pokemonList],

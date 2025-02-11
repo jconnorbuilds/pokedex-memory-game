@@ -22,7 +22,7 @@ export default function PokedexLidDisplay({
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
   const currPkmn = Object.values(pokemonList).find(
-    (pkmn) => pkmn.idx === currentPokemonId,
+    (pkmn) => pkmn.id === currentPokemonId,
   );
   const stats = currPkmn?.fullyLoaded ? currPkmn.data?.stats : undefined;
   const statNamesFormatted = stats?.map((stat) => {
@@ -38,7 +38,7 @@ export default function PokedexLidDisplay({
   });
 
   const generateDataset = (pkmnId) => {
-    const pkmn = Object.values(pokemonList).find((pkmn) => pkmn.idx === pkmnId);
+    const pkmn = Object.values(pokemonList).find((pkmn) => pkmn.id === pkmnId);
     const currentPkmnColor = 'rgba(75, 192, 192, 0.6)';
     const currentPkmnBorderColor = 'rgba(75, 192, 192, 1)';
     const otherPkmnColor = 'rgba(192, 75, 192, 0.5)';

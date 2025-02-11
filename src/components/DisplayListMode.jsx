@@ -14,7 +14,7 @@ const DisplayListMode = memo(function DisplayListMode({
   // Infinite Loader functions
   const itemCount = Object.keys(pkmnToDisplay).length;
   const isItemLoaded = (index) => pkmnToDisplay[index]?.fullyLoaded;
-  const getPkmnId = (index) => +Object.values(pkmnToDisplay)[index]?.idx;
+  const getPkmnId = (index) => +Object.values(pkmnToDisplay)[index]?.id;
 
   // The render function for each row in the list
   const Row = ({ index, style }) => {
@@ -32,7 +32,7 @@ const DisplayListMode = memo(function DisplayListMode({
   // Load more pokemon as the user scrolls through the list
   const loadMoreItems = async (startIdx, stopIdx) => {
     for (let i = startIdx; i <= stopIdx; i++) {
-      fetchPokemonDetails({ singlePkmnId: pkmnToDisplay[i].idx });
+      fetchPokemonDetails({ singlePkmnId: pkmnToDisplay[i].id });
     }
   };
 

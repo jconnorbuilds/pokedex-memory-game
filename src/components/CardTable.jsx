@@ -26,7 +26,7 @@ export default function CardTable({
 
   const getPkmnById = useCallback(
     (id) => {
-      return Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
+      return Object.values(pokemonDict).find((pkmn) => pkmn.id === id);
     },
     [pokemonDict],
   );

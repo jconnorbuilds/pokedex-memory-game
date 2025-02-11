@@ -3,5 +3,5 @@ export const getPkmnIdxByName = (name, pokemonDict) => {
 };
 
 export const getPkmnIdByName = (name, pokemonDict) => {
-  return Object.values(pokemonDict).find((pkmn) => pkmn.name === name).idx;
+  return Object.values(pokemonDict).find((pkmn) => pkmn.name === name).id;
 };
