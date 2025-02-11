@@ -1,7 +1,7 @@
-import styles from '../styles/EvolutionChart.module.css';
-import EvoChartNodes from './EvoChartNodes.jsx';
-import EvoChartConnections from './EvoChartConnections.jsx';
 import { useMemo } from 'react';
+import styles from '../styles/EvolutionChart.module.css';
+import EvoChartConnections from './EvoChartConnections.jsx';
+import EvoChartNodes from './EvoChartNodes.jsx';
 const CHART_VB_W = 100;
 const CHART_VB_H = 30;
 
