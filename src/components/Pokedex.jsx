@@ -36,11 +36,10 @@ export default function Pokedex({
 
   // Sets the current pokemon ID, fetching the full data if it hasn't been loaded yet
   const handlePkmnSelection = useCallback(
-    async ({ id, name }) => {
-      const key = name ? getPkmnIdByName(name, pokemonDict) : id;
+    async (id) => {
       const pkmn = Object.values(pokemonDict).find((pkmn) => pkmn.id === id);
       const pokemonIsLoaded = pkmn.fullyLoaded === true;
-      if (!pokemonIsLoaded) fetchPokemonDetails({ singlePkmnId: key });
+      if (!pokemonIsLoaded) fetchPokemonDetails(id);
 
       setCurrentPokemonId(id);
       setPokedexMode('singlePkmn');

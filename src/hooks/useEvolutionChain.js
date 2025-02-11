@@ -11,36 +11,35 @@ export default function useEvolutionChain({
   const [evolutionChain, setEvolutionChain] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const formatEvoChainAndFetchData = useCallback(
-    async (evoChainData) => {
-      const pkmnId = getPkmnIdByName(evoChainData.species.name, allPokemon);
-      const pkmn = Object.values(allPokemon).find(
-        (pokemon) => pokemon.id === currentPokemonId,
-      );
-      // Fetch the pokemon data if it hasn't been loaded yet
-      if (!pkmn?.fullyLoaded) {
-        await fetchPokemonDetails({ singlePkmnId: pkmnId });
-      }
-
-      // If it evolves, recurse over its evolutions
-      const evolutions = evoChainData.evolves_to;
-      if (evolutions.length) {
-        const evolvesTo = await Promise.all(
-          evolutions.map((next) => formatEvoChainAndFetchData(next)),
-        );
-        return { pkmnId, evolvesTo };
-      }
-      // If the pokemon is the last in the chain, just return the pokemon index
-      return { pkmnId };
+  const ensureFullDataIsLoaded = useCallback(
+    async (pkmnId) => {
+      const pkmn = Object.values(allPokemon).find((p) => p.id === currentPokemonId);
+      if (pkmn?.fullyLoaded === false) await fetchPokemonDetails(pkmnId);
     },
     [allPokemon, fetchPokemonDetails, currentPokemonId],
   );
 
+  const fetchEvoChain = useCallback(
+    async (evoChainData) => {
+      const pkmnId = getPkmnIdByName(evoChainData.species.name, allPokemon);
+      await ensureFullDataIsLoaded(pkmnId); // Fetch the full pokemon data if it hasn't been loaded yet
+
+      if (evoChainData.evolves_to.length) {
+        const evolvesTo = await Promise.all(
+          evoChainData.evolves_to.map((next) => fetchEvoChain(next)),
+        );
+        return { pkmnId, evolvesTo };
+      }
+      return { pkmnId };
+    },
+    [allPokemon, ensureFullDataIsLoaded],
+  );
+
   useEffect(() => {
-    const currPkmn = Object.values(allPokemon).find(
+    const currentPkmn = Object.values(allPokemon).find(
       (pkmn) => pkmn.id === currentPokemonId,
     );
-    if (!currPkmn) return;
+    if (!currentPkmn) return;
 
     async function fetchEvolutionChain(url) {
       if (evolutionChainCache.has(url)) {
@@ -52,8 +51,11 @@ export default function useEvolutionChain({
 
         // Format the evolution chain to use indices as references.
         // This will allow us to easily get the latest data from the global pokemon dictionary.
-        const formattedEvoChain = await formatEvoChainAndFetchData(evolutionChain.chain);
-        console.log('COMPOSITE CHAIN DATA', formattedEvoChain);
+
+        // Fetches the evolution chain and loads the pokemon data for each pokemon in the chain
+        const formattedEvoChain = await fetchEvoChain(evolutionChain.chain);
+
+        // Cache the evolution chain
         evolutionChainCache.set(url, formattedEvoChain);
         return formattedEvoChain;
       } catch (error) {
@@ -63,14 +65,14 @@ export default function useEvolutionChain({
     }
 
     // Fetch the evolution chain and set it as state
-    if (currPkmn?.fullyLoaded) {
+    if (currentPkmn?.fullyLoaded) {
       setLoading(true);
-      fetchEvolutionChain(currPkmn.speciesData.evolution_chain.url)
+      fetchEvolutionChain(currentPkmn.speciesData.evolution_chain.url)
         .then((data) => setEvolutionChain(data))
         .catch((err) => console.error(err))
         .finally(() => setLoading(false));
     }
-  }, [currentPokemonId, allPokemon, fetchPokemonDetails, formatEvoChainAndFetchData]);
+  }, [currentPokemonId, allPokemon, fetchPokemonDetails, fetchEvoChain]);
 
   return { evolutionChain, loading };
 }

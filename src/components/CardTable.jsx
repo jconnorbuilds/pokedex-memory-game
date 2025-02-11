@@ -36,7 +36,7 @@ export default function CardTable({
     pkmnIdsToShow.forEach((id) => {
       const pkmn = getPkmnById(id);
       if (!pkmn?.fullyLoaded) {
-        fetchPokemonDetails({ singlePkmnId: id });
+        fetchPokemonDetails(id);
       }
     });
   }, [pkmnIdsToShow, pokemonDict, fetchPokemonDetails, getPkmnById]);

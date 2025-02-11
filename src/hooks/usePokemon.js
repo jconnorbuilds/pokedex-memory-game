@@ -36,9 +36,9 @@ export default function usePokemon() {
 
   // Fetch comprehensive pokemon data and create the pokemon object for the subset of pokemon that will be loaded
   const fetchPokemonDetails = useCallback(
-    async ({ singlePkmnId = undefined }) => {
-      if (singlePkmnId !== undefined) {
-        const fullPokemonData = await fetchFullPokemonData(singlePkmnId);
+    async (id) => {
+      if (id !== undefined) {
+        const fullPokemonData = await fetchFullPokemonData(id);
         setPokemonDict((prev) => ({ ...prev, ...fullPokemonData }));
       }
     },

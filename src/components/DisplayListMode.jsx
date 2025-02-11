@@ -11,10 +11,11 @@ const DisplayListMode = memo(function DisplayListMode({
   fetchPokemonDetails,
   isLoading,
 }) {
+  const pkmnList = Object.values(pkmnToDisplay);
   // Infinite Loader functions
-  const itemCount = Object.keys(pkmnToDisplay).length;
+  const itemCount = pkmnList.length;
   const isItemLoaded = (index) => pkmnToDisplay[index]?.fullyLoaded;
-  const getPkmnId = (index) => +Object.values(pkmnToDisplay)[index]?.id;
+  const getPkmnId = (index) => +pkmnList[index]?.id;
 
   // The render function for each row in the list
   const Row = ({ index, style }) => {
@@ -23,7 +24,7 @@ const DisplayListMode = memo(function DisplayListMode({
       <PkmnListButton
         index={index}
         pkmnToDisplay={pkmnToDisplay}
-        onClick={() => selectPokemon({ id })}
+        onClick={() => selectPokemon(id)}
         styles={{ ...styles, reactWindow: style }}
       ></PkmnListButton>
     );
@@ -32,7 +33,7 @@ const DisplayListMode = memo(function DisplayListMode({
   // Load more pokemon as the user scrolls through the list
   const loadMoreItems = async (startIdx, stopIdx) => {
     for (let i = startIdx; i <= stopIdx; i++) {
-      fetchPokemonDetails({ singlePkmnId: pkmnToDisplay[i].id });
+      fetchPokemonDetails(pkmnToDisplay[i].id);
     }
   };
 

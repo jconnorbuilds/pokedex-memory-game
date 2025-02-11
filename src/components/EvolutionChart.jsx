@@ -43,6 +43,7 @@ export default function EvolutionChart({
     </div>
   );
 
+  // Render each data node, with a hover radius and styling for the active node
   function renderNodes({ segments }) {
     return segments.map((seg) => {
       const { x, y } = getNodePosition(seg);
@@ -51,7 +52,7 @@ export default function EvolutionChart({
         <g
           key={seg.id}
           className={styles.node + (isActive ? ` ${styles.nodeActive}` : '')}
-          onClick={() => handlePkmnSelection({ id: seg.id })}
+          onClick={() => handlePkmnSelection(seg.id)}
         >
           <circle className={styles.nodeHoverRadius} r="8" cx={x} cy={y}></circle>
           {isActive && (
@@ -63,19 +64,20 @@ export default function EvolutionChart({
     });
   }
 
+  // Render each connection between nodes
   function renderConnections({ segments, connections }) {
     return connections.map((conn) => {
       const fromNode = segments.find((seg) => seg.id === conn.from);
       const toNode = segments.find((seg) => seg.id === conn.to);
-      const fromPos = getNodePosition(fromNode);
-      const toPos = getNodePosition(toNode);
+      const startPos = getNodePosition(fromNode);
+      const endPos = getNodePosition(toNode);
       return (
         <line
           key={`${conn.from}-${conn.to}`}
-          x1={fromPos.x + 7}
-          y1={fromPos.y}
-          x2={toPos.x - 7}
-          y2={toPos.y}
+          x1={startPos.x + 7} // Adjusted so the line doesn't intersect with the node
+          y1={startPos.y}
+          x2={endPos.x - 7} // Adjusted so the line doesn't intersect with the node
+          y2={endPos.y}
         ></line>
       );
     });
