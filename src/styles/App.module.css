@@ -36,23 +36,35 @@
   border-bottom: 1px solid #222233;
   text-align: center;
   font-weight: 500;
+  outline: none;
 
   padding-inline: 0.3rem;
-  transition: color 0.25s ease-in-out, text-shadow 0.25s ease-in-out;
+  transition: 0.1s ease-in-out;
+
+  &.selected {
+    background-color: #444;
+    color: #00b758;
+  }
 
   &:hover,
   &:focus,
   &:focus-visible {
-    color: #009a5a;
+    color: #25d98e;
+    background-color: #666;
     text-shadow: 1px 1px 8px #77d5;
     outline: none;
   }
+
+  &:disabled {
+    background-color: #222;
+    cursor: default;
+  }
 }
 
-.gameOptionsMenu button.selected {
-  background-color: #444;
+/* .gameOptionsMenu button.selected {
+  background-color: #888;
   color: #00bb5a;
-}
+} */
 
 .generationSelect .menuSection {
   grid-template-columns: repeat(5, 1fr);
@@ -65,6 +77,7 @@
 
   & button {
     text-align: end;
+    text-transform: capitalize;
     font-size: 0.7rem;
   }
 }

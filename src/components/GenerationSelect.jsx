@@ -9,12 +9,15 @@ export default function GenerationSelect({ generation, styles, handleSelect }) {
         {Array(10)
           .fill('')
           .map((_, idx) => {
+            if (idx === 9) return <button key={0} disabled></button>;
+
             const genNumber = idx + 1;
             const needsLabel = genNumber <= Game.NUM_OF_GENERATIONS;
+            const selectedClass = +generation === genNumber ? styles.selected : '';
             return (
               <Button
                 key={genNumber}
-                className={+generation === genNumber ? 'selected' : ''}
+                className={selectedClass}
                 value={needsLabel ? genNumber : 0}
               >
                 {needsLabel ? genNumber : ''}

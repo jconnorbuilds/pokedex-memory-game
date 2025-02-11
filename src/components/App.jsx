@@ -23,7 +23,7 @@ import * as Game from './constants.js';
 import useGameStatus from '../hooks/useGameStatus.js';
 
 export default function App() {
-  const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'Easy'));
+  const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
   const [generation, setGeneration] = useState(1);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
@@ -114,11 +114,15 @@ export default function App() {
         </Button>
         <GameOptionsMenu styles={styles.gameOptionsMenu}>
           <GenerationSelect
+            generation={generation}
             handleSelect={handleGenerationSelect}
             styles={styles}
-            generation={generation}
           ></GenerationSelect>
-          <DifficultySelect styles={styles} handleSelect={handleLevelSelect} />
+          <DifficultySelect
+            level={level}
+            handleSelect={handleLevelSelect}
+            styles={styles}
+          />
         </GameOptionsMenu>
         <div className="dev-toolbar">
           <div className="toolbar__widget">
