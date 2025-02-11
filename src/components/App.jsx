@@ -1,11 +1,10 @@
 import { useState, useCallback } from 'react';
 // import { GameContext } from './GameContext.js';
 import '../styles/App.css';
-import InputGroup from './InputGroup.jsx';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
-import SetAngleInput from './SetAngleInput.jsx';
-// import usePokemon from '../hooks/usePokemon-old.js';
+
+import AngleInputGroup from './AngleInputGroup.jsx';
 import usePokemon from '../hooks/usePokemon.js';
 import GenerationSelect from './GenerationSelect.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
@@ -28,7 +27,7 @@ export default function App() {
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { score, best, incrementScore, resetScore } = UseScore();
-  const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
+  const { sceneRotation, setSceneSingleAxisRotation } = useSceneRotation(pokedexIsOpen);
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
   const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
@@ -49,33 +48,10 @@ export default function App() {
     }
   };
 
-  const toggleDexOpenClosed = useCallback(
-    (e) => {
-      // if (e.target.closest('.body__upper-overhang')) {
-      const willOpen = pokedexIsOpen !== true;
-      setPokedexIsOpen(willOpen);
-      // }
-    },
-    [pokedexIsOpen],
-  );
-
-  function AngleInputs({ labelPrefix, target, onChange }) {
-    return (
-      <InputGroup>
-        {['x', 'y', 'z'].map((axis) => {
-          return (
-            <SetAngleInput
-              key={`${labelPrefix}-${axis}`}
-              axis={axis}
-              label={`${labelPrefix}-${axis}`}
-              value={target[axis]}
-              onChange={(value) => onChange(axis, value)}
-            />
-          );
-        })}
-      </InputGroup>
-    );
-  }
+  const toggleDexOpenClosed = useCallback(() => {
+    const willOpen = pokedexIsOpen !== true;
+    setPokedexIsOpen(willOpen);
+  }, [pokedexIsOpen]);
 
   return (
     <div className="app">
@@ -127,11 +103,11 @@ export default function App() {
         <div className="dev-toolbar">
           <div className="toolbar__widget">
             <h2>Scene</h2>
-            {/* <AngleInputs
+            <AngleInputGroup
               labelPrefix={'scene'}
               target={sceneRotation}
-              onChange={setSceneRotationAxis}
-            ></AngleInputs> */}
+              setSceneSingleAxisRotation={setSceneSingleAxisRotation}
+            ></AngleInputGroup>
           </div>
           <div className="toolbar__widget">
             <h2>Pokedex</h2>

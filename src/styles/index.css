@@ -13,9 +13,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 input {
-  background-color: #1a1a1a;
+  background-color: #333;
   color: #ccc;
+
+  &:focus {
+    background-color: #555;
+    outline: none;
+  }
 }
 
 a {

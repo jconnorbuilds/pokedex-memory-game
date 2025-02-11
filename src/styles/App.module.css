@@ -61,11 +61,6 @@
   }
 }
 
-/* .gameOptionsMenu button.selected {
-  background-color: #888;
-  color: #00bb5a;
-} */
-
 .generationSelect .menuSection {
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(2, 1fr);

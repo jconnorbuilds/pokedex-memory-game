@@ -18,7 +18,7 @@ export default function useSceneRotation(pokedexIsOpen) {
     return (axis, degrees) => setState((previous) => ({ ...previous, [axis]: degrees }));
   };
 
-  const setSceneRotationAxis = createSingleAxisRotationSetter(setSceneRotation);
+  const setSceneSingleAxisRotation = createSingleAxisRotationSetter(setSceneRotation);
 
-  return { sceneRotation, setSceneRotationAxis };
+  return { sceneRotation, setSceneSingleAxisRotation };
 }

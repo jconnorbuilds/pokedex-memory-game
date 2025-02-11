@@ -1,5 +1,4 @@
-export default function SetAngleInput({ axis, label, value, onChange }) {
-  console.log(label);
+export default function SetAngleInput({ axis, label, value, axisRotationSetter }) {
   return (
     <div className="angle-input">
       <label htmlFor={`${label}-angle`} style={{ display: 'none' }}>
@@ -12,7 +11,7 @@ export default function SetAngleInput({ axis, label, value, onChange }) {
         style={{ padding: '0 1ch', borderRadius: '8px', border: 'none', width: '75px' }}
         value={value}
         onChange={(e) => {
-          onChange(e.target.value);
+          axisRotationSetter(+e.target.value);
         }}
       ></input>
     </div>
