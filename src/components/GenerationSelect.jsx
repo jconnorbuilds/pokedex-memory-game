@@ -1,4 +1,3 @@
-// import MenuButton from './MenuButton.jsx';
 import Button from './Button.jsx';
 import * as Game from './constants.js';
 

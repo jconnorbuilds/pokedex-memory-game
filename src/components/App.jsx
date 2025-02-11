@@ -31,9 +31,6 @@ export default function App() {
   const { sceneRotation, setSceneRotationAxis } = useSceneRotation(pokedexIsOpen);
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
-
-  // const { allPokemonInGen, isLoading, progress } = usePokemon(generation);
-  // const allPokemonInGen = [];
   const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
 
   const allPokemonInGen = currentGenPkmnIds;
