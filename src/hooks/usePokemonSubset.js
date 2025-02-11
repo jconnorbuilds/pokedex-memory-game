@@ -15,13 +15,11 @@ function getRandomSubset(array, subsetSize) {
   return shuffled.slice(0, subsetSize);
 }
 
-export default function usePokemonSubset({ pokemonInPlay, selectedIds }) {
-  function isValidSubset(subset, usedNames) {
-    console.log('SUBSET', subset);
-    console.log('USED NAMES', usedNames);
-    return subset.some((pkmn) => !usedNames.includes(pkmn));
-  }
+function isValidSubset(subset, usedNames) {
+  return subset.some((pkmn) => !usedNames.includes(pkmn));
+}
 
+export default function usePokemonSubset({ pokemonInPlay, selectedIds }) {
   // Selects a random subset of the cards currently in play
   const pkmnIdsToShow = useMemo(() => {
     if (!pokemonInPlay) return;
