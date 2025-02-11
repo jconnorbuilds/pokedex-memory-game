@@ -3,9 +3,9 @@ import * as Game from './constants.js';
 
 export default function GenerationSelect({ generation, styles, handleSelect }) {
   return (
-    <>
+    <div className={styles.generationSelect}>
       <h2>Generation</h2>
-      <div onClick={handleSelect} className={styles.genSelectBtns}>
+      <div onClick={handleSelect} className={styles.menuSection}>
         {Array(10)
           .fill('')
           .map((_, idx) => {
@@ -22,6 +22,6 @@ export default function GenerationSelect({ generation, styles, handleSelect }) {
             );
           })}
       </div>
-    </>
+    </div>
   );
 }
