@@ -6,7 +6,7 @@ import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
 import { PkmnInfoBar, SearchBar } from './MenuBar.jsx';
 
 export default function MainDisplay({
-  pokemonList,
+  pokemonDict,
   pokedexMode,
   setPokedexMode,
   currentPokemonId,
@@ -22,22 +22,22 @@ export default function MainDisplay({
 
   const filteredPkmn = filteredPkmnIds.reduce((acc, curr, i) => {
     // Retrieve the pokemon object by its id, and re-index it for infinite scrolling compatibility
-    return { ...acc, [i]: Object.values(pokemonList).find((pkmn) => pkmn.id === curr) };
+    return { ...acc, [i]: Object.values(pokemonDict).find((pkmn) => pkmn.id === curr) };
   }, {});
 
-  const pkmnToDisplay = Object.keys(filteredPkmn).length ? filteredPkmn : pokemonList;
-  const currPkmn = Object.values(pokemonList).find(
+  const pkmnToDisplay = Object.keys(filteredPkmn).length ? filteredPkmn : pokemonDict;
+  const currPkmn = Object.values(pokemonDict).find(
     (pkmn) => pkmn.id === currentPokemonId,
   );
 
   const doFilterPkmn = useCallback(
     (filterString) => {
-      const values = Object.values(pokemonList);
+      const values = Object.values(pokemonDict);
       const filteredValues = values.filter((pkmn) => pkmn.name.includes(filterString));
       const ids = filteredValues.map((pkmn) => pkmn.id);
       return ids;
     },
-    [pokemonList],
+    [pokemonDict],
   );
 
   function filterPkmn(filterString) {
@@ -57,7 +57,7 @@ export default function MainDisplay({
             buttonAction={() => setPokedexMode('list')}
           />
           <DisplaySinglePkmnMode
-            pokemonList={pokemonList}
+            pokemonDict={pokemonDict}
             currentPokemonId={currentPokemonId}
             handlePkmnSelection={handlePkmnSelection}
             evolutionChain={evolutionChain}

@@ -15,13 +15,13 @@ import Button from './Button.jsx';
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 export default function PokedexLidDisplay({
-  pokemonList,
+  pokemonDict,
   currentPokemonId,
   evolutionChain,
 }) {
   defaults.font.family = "'Turret Road', 'Roboto'";
   defaults.font.weight = 500;
-  const currPkmn = Object.values(pokemonList).find(
+  const currPkmn = Object.values(pokemonDict).find(
     (pkmn) => pkmn.id === currentPokemonId,
   );
   const stats = currPkmn?.fullyLoaded ? currPkmn.data?.stats : undefined;
@@ -38,7 +38,7 @@ export default function PokedexLidDisplay({
   });
 
   const generateDataset = (pkmnId) => {
-    const pkmn = Object.values(pokemonList).find((pkmn) => pkmn.id === pkmnId);
+    const pkmn = Object.values(pokemonDict).find((pkmn) => pkmn.id === pkmnId);
     const currentPkmnColor = 'rgba(75, 192, 192, 0.6)';
     const currentPkmnBorderColor = 'rgba(75, 192, 192, 1)';
     const otherPkmnColor = 'rgba(192, 75, 192, 0.5)';

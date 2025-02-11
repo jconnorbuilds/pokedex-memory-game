@@ -64,7 +64,7 @@ export default function Pokedex({
       >
         <PokedexBody>
           <MainDisplay
-            pokemonList={pokemonDict}
+            pokemonDict={pokemonDict}
             pokedexMode={pokedexMode}
             setPokedexMode={setPokedexMode}
             currentPokemonId={currentPokemonId}
@@ -77,7 +77,7 @@ export default function Pokedex({
         </PokedexBody>
         <PokedexLid>
           <PokedexLidDisplay
-            pokemonList={pokemonDict}
+            pokemonDict={pokemonDict}
             currentPokemonId={currentPokemonId}
             evolutionChain={evolutionChain}
           />
