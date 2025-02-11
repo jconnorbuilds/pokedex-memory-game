@@ -1,0 +1,35 @@
+.node {
+  pointer-events: all;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.nodeActive .nodeInner {
+  fill: rgb(131, 55, 255);
+}
+
+.nodeHoverRadius {
+  fill: none;
+
+  &:hover + .nodeInner {
+    fill: white;
+  }
+}
+
+circle.nodeInner {
+  pointer-events: none;
+  fill: #777;
+}
+
+line {
+  pointer-events: none;
+  stroke: #ccc;
+  stroke-width: 1;
+}
+
+.activeHighlight {
+  fill: none;
+  stroke: rgb(161, 212, 251);
+  stroke-width: 0.5;
+  filter: drop-shadow(0 0 1px rgb(255, 255, 255));
+}

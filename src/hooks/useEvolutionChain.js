@@ -49,9 +49,8 @@ export default function useEvolutionChain({
       try {
         const evolutionChain = await fetch(url).then((res) => res.json());
 
-        // Format the evolution chain to use indices as references.
-        // This will allow us to easily get the latest data from the global pokemon dictionary.
-
+        // Format the evolution chain.
+        // Pkmn ids can be used as references to get the latest data from the global pokemon dictionary.
         // Fetches the evolution chain and loads the pokemon data for each pokemon in the chain
         const formattedEvoChain = await fetchEvoChain(evolutionChain.chain);
 
