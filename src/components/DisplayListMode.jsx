@@ -25,7 +25,7 @@ const DisplayListMode = memo(function DisplayListMode({
         index={index}
         pkmnToDisplay={pkmnToDisplay}
         onClick={() => selectPokemon(id)}
-        styles={{ ...styles, reactWindow: style }}
+        rwStyles={style}
       ></PkmnListButton>
     );
   };

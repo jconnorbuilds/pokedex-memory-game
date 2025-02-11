@@ -1,15 +1,15 @@
 import pokeballIcon from '../assets/images/pokeball.webp';
+import styles from '../styles/PkmnListButton.module.css';
 
-export default function PkmnListButton({ index, pkmnToDisplay, styles, onClick }) {
+export default function PkmnListButton({ index, pkmnToDisplay, rwStyles, onClick }) {
   const pkmn = pkmnToDisplay[index];
   const nationalDexNumber = +pkmn?.speciesData?.pokedex_numbers[0].entry_number || 0;
   const pkmnIcon = pkmn?.data?.sprites.front_default;
   const isLoading = !pkmn?.fullyLoaded;
-  // console.log('PKMN ON BUTTON', pkmn);
 
   if (!pkmn) return <div>Loading...</div>;
   return (
-    <button style={styles.reactWindow} onClick={onClick} value={pkmn.name}>
+    <button style={rwStyles} onClick={onClick} value={pkmn.name}>
       <span>{pkmn.name}</span>
       <div className={styles.pkmnInfo}>
         <span className={styles.dexNum}>#{nationalDexNumber}</span>

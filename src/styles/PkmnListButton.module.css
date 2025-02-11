@@ -1,0 +1,30 @@
+.icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pokeballIcon {
+  display: inline;
+  width: 15px;
+  height: 15px;
+  aspect-ratio: 1;
+}
+
+.pokemonIcon {
+  display: inline;
+  width: 85px;
+  height: 85px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.pkmnInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dexNum {
+  font-size: 0.8rem;
+}
