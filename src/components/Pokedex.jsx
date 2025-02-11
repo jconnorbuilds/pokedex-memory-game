@@ -26,12 +26,13 @@ export default function Pokedex({
     fetchPokemonDetails,
   });
 
+  // Reset the pokedex angle when it's opened or closed
   if (prevOpen !== isOpen) {
     setPrevOpen(isOpen);
     setPokedexAngle({ x: 0, y: 0, z: 0 });
   }
 
-  // Sets the current pokemon ID, fetching the full data if it hasn't been loaded yet
+  // Set the current pokemon ID, fetching the full data if it hasn't been loaded yet
   const handlePkmnSelection = useCallback(
     async (id) => {
       const pkmn = Object.values(pokemonDict).find((pkmn) => pkmn.id === id);
@@ -45,6 +46,7 @@ export default function Pokedex({
     [pokemonDict, fetchPokemonDetails, setCurrentPokemonId],
   );
 
+  // Calculate the pokedex's transformation styles based on pokedexAngle state
   const pokedexTransform = {
     transform: `
   rotateX(${pokedexAngle.x}deg)
