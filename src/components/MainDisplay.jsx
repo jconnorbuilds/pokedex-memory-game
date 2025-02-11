@@ -32,8 +32,6 @@ export default function MainDisplay({
     (pkmn) => pkmn.idx === currentPokemonId,
   );
 
-  const infiniteLoaderRef = useRef(null);
-
   const doFilterPkmn = useCallback(
     (filterString) => {
       const values = Object.values(pokemonList);
@@ -56,7 +54,7 @@ export default function MainDisplay({
         <>
           <PkmnInfoBar
             pokedexMode={pokedexMode}
-            natlDexNum={currPkmn?.speciesData.pokedex_numbers[0].entry_number}
+            natlDexNum={currPkmn?.speciesData?.pokedex_numbers[0]?.entry_number}
             pkmnName={currPkmn?.name}
             buttonAction={() => setPokedexMode('list')}
           />
@@ -77,8 +75,6 @@ export default function MainDisplay({
             filterPkmn={filterPkmn}
           />
           <DisplayListMode
-            allPokemon={pokemonList}
-            infiniteLoaderRef={infiniteLoaderRef}
             pkmnToDisplay={pkmnToDisplay}
             selectPokemon={handlePkmnSelection}
             fetchPokemonDetails={fetchPokemonDetails}

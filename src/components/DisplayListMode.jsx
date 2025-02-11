@@ -6,16 +6,13 @@ import { FixedSizeList as List } from 'react-window';
 import { memo } from 'react';
 
 const DisplayListMode = memo(function DisplayListMode({
-  allPokemon,
-  infiniteLoaderRef,
   pkmnToDisplay,
   selectPokemon,
   fetchPokemonDetails,
   isLoading,
 }) {
-  // Check if there are more pokemon to load (necessary for InfiniteLoader)
-  const hasNextPage = Object.keys(pkmnToDisplay).length < 1025; // Hardcoded placeholder for now
-  const itemCount = Object.keys(pkmnToDisplay).length + (hasNextPage ? 1 : 0);
+  // Infinite Loader functions
+  const itemCount = Object.keys(pkmnToDisplay).length;
   const isItemLoaded = (index) => pkmnToDisplay[index]?.fullyLoaded;
   const getPkmnId = (index) => +Object.values(pkmnToDisplay)[index]?.idx;
 
@@ -34,14 +31,13 @@ const DisplayListMode = memo(function DisplayListMode({
 
   // Load more pokemon as the user scrolls through the list
   const loadMoreItems = async (startIdx, stopIdx) => {
-    for (let i = startIdx; i < stopIdx; i++) {
+    for (let i = startIdx; i <= stopIdx; i++) {
       fetchPokemonDetails({ singlePkmnId: pkmnToDisplay[i].idx });
     }
   };
 
   return (
     <InfiniteLoader
-      ref={infiniteLoaderRef}
       isItemLoaded={isItemLoaded}
       itemCount={itemCount}
       loadMoreItems={isLoading ? () => {} : loadMoreItems}

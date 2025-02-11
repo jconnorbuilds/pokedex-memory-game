@@ -5,7 +5,7 @@ export default function PkmnListButton({ index, pkmnToDisplay, styles, onClick }
   const nationalDexNumber = +pkmn?.speciesData?.pokedex_numbers[0].entry_number || 0;
   const pkmnIcon = pkmn?.data?.sprites.front_default;
   const isLoading = !pkmn?.fullyLoaded;
-  // console.log('isLoading', isLoading);
+  // console.log('PKMN ON BUTTON', pkmn);
 
   if (!pkmn) return <div>Loading...</div>;
   return (
