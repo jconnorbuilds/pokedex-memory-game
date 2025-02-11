@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export default function usePokemon() {
   const [pokemonDict, setPokemonDict] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const pokemonDictIsLoaded = useMemo(
     () => Object.keys(pokemonDict).length,
@@ -62,10 +62,7 @@ export default function usePokemon() {
     };
 
     const doFetch = async () => {
-      if (!pokemonDictIsLoaded) {
-        console.log('getting all pkmn');
-        await fetchAllPokemonBasicInfo();
-      }
+      if (!pokemonDictIsLoaded) await fetchAllPokemonBasicInfo();
     };
 
     doFetch();
@@ -74,7 +71,7 @@ export default function usePokemon() {
   return {
     pokemonDict,
     fetchPokemonDetails,
-    isLoading,
+    isLoading: false, // Placeholder for future loading state, may not be necessary
   };
 }
 
