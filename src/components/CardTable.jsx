@@ -24,23 +24,6 @@ export default function CardTable({
     selectedIds,
   });
 
-  // const pokemonToShow = useMemo(() => {
-  //   return pkmnIdsToShow?.map((id) => {
-  //     return Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
-  //   });
-  // }, [pkmnIdsToShow, pokemonDict]);
-
-  // useEffect(() => {
-  //   const getMissingData = async () => {
-  //     pokemonToShow?.forEach((pkmn) => {
-  //       if (!pkmn?.fullyLoaded) {
-  //         fetchPokemonDetails({ singlePkmnId: pkmn.idx });
-  //       }
-  //     });
-  //   };
-
-  //   getMissingData();
-  // }, [fetchPokemonDetails, pokemonToShow]);
   const getPkmnById = useCallback(
     (id) => {
       return Object.values(pokemonDict).find((pkmn) => pkmn.idx === id);
@@ -52,15 +35,12 @@ export default function CardTable({
     if (!pkmnIdsToShow) return;
     pkmnIdsToShow.forEach((id) => {
       const pkmn = getPkmnById(id);
-      console.log(pkmn);
-      // Or if your dict is keyed by pkmn.idx, adapt accordingly
       if (!pkmn?.fullyLoaded) {
         fetchPokemonDetails({ singlePkmnId: id });
       }
     });
   }, [pkmnIdsToShow, pokemonDict, fetchPokemonDetails, getPkmnById]);
 
-  // 3) Actually build your array of Pokémon to render
   const pokemonToShow = useMemo(() => {
     if (!pkmnIdsToShow) return [];
     return pkmnIdsToShow.map((id) => getPkmnById(id));

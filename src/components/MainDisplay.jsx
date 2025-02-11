@@ -19,9 +19,15 @@ export default function MainDisplay({
   evolutionChain,
   screenOn = true,
 }) {
-  const [filteredPkmn, setFilteredPkmn] = useState({});
+  // Can we use filtered pkmn IDs instead?
+  const [filteredPkmnIds, setFilteredPkmnIds] = useState([]);
+
+  const filteredPkmn = filteredPkmnIds.reduce((acc, curr, i) => {
+    // Retrieve the pokemon object by its id, and re-index it for infinite scrolling compatibility
+    return { ...acc, [i]: Object.values(pokemonList).find((pkmn) => pkmn.idx === curr) };
+  }, {});
+
   const pkmnToDisplay = Object.keys(filteredPkmn).length ? filteredPkmn : pokemonList;
-  // console.log('PKMN TO DISPLAY', pkmnToDisplay);
   const currPkmn = Object.values(pokemonList).find(
     (pkmn) => pkmn.idx === currentPokemonId,
   );
@@ -30,26 +36,18 @@ export default function MainDisplay({
 
   const doFilterPkmn = useCallback(
     (filterString) => {
-      console.log('filtering');
-      const entries = Object.entries(pokemonList);
-      const filteredEntries = entries.filter(([, pkmn]) =>
-        pkmn.name.includes(filterString),
-      );
-      // console.log('FILTERED ENTRIES', filteredEntries);
-
-      // Re-index the filtered pokemon, seems necessary for the infinite scrolling
-      const filteredPkmn = filteredEntries.reduce((acc, cur, idx) => {
-        // return { ...acc, [idx]: cur[1] };
-        return { ...acc, [idx]: cur[1] };
-      }, {});
-      console.log('FILTERED PKMN', filteredPkmn);
-      return filteredPkmn;
+      const values = Object.values(pokemonList);
+      const filteredValues = values.filter((pkmn) => pkmn.name.includes(filterString));
+      const ids = filteredValues.map((pkmn) => pkmn.idx);
+      return ids;
     },
     [pokemonList],
   );
 
   function filterPkmn(filterString) {
-    !filterString ? setFilteredPkmn([]) : setFilteredPkmn(doFilterPkmn(filterString));
+    filterString
+      ? setFilteredPkmnIds(doFilterPkmn(filterString))
+      : setFilteredPkmnIds([]);
   }
 
   function renderMainContent(mode) {
