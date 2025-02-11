@@ -21,12 +21,6 @@ circle.nodeInner {
   fill: #777;
 }
 
-line {
-  pointer-events: none;
-  stroke: #ccc;
-  stroke-width: 1;
-}
-
 .activeHighlight {
   fill: none;
   stroke: rgb(161, 212, 251);

@@ -1,3 +1,5 @@
+import styles from '../styles/Connections.module.css';
+
 // Renders each connection between nodes
 export default function EvoChartConnections({ chartData, getNodePosition }) {
   const { segments, connections } = chartData;
@@ -8,6 +10,7 @@ export default function EvoChartConnections({ chartData, getNodePosition }) {
     const endPos = getNodePosition(toNode);
     return (
       <line
+        className={styles.connector}
         key={`${conn.from}-${conn.to}`}
         x1={startPos.x + 7} // Adjusted so the line doesn't intersect with the node
         y1={startPos.y}
