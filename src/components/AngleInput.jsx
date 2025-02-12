@@ -1,19 +1,19 @@
-export default function SetAngleInput({ axis, label, value, axisRotationSetter }) {
+import styles from '../styles/AngleInput.module.css';
+
+export default function AngleInput({ axis, label, value, axisRotationSetter }) {
   return (
-    <div className="angle-input">
-      <label htmlFor={`${label}-angle`} style={{ display: 'none' }}>
-        {label}
-      </label>
+    <div className={styles.angleInput}>
+      <label htmlFor={`${label}-angle`}>{axis}∠</label>
       <input
         name={`${label}-angle`}
         type="number"
         placeholder={`${axis} angle`}
-        style={{ padding: '0 1ch', borderRadius: '8px', border: 'none', width: '75px' }}
         value={value}
         onChange={(e) => {
-          axisRotationSetter(+e.target.value);
+          axisRotationSetter(e.target.value);
         }}
       ></input>
+      °
     </div>
   );
 }

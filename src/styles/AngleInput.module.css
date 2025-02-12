@@ -1,0 +1,19 @@
+.angleInput {
+  & input {
+    width: 5ch;
+    text-align: right;
+    padding-inline: 1ch;
+    border-radius: 8px;
+    border: none;
+    background-color: inherit;
+
+    &:hover,
+    &:focus {
+      background-color: #2a2a2a;
+      outline: none;
+    }
+  }
+  & label {
+    margin-inline-end: 1ch;
+  }
+}
