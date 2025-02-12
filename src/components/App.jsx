@@ -10,11 +10,12 @@ import useSceneRotation from '../hooks/useSceneRotation.js';
 import UseScore from '../hooks/useScore.js';
 import styles from '../styles/App.module.css';
 import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
-import AngleInputGroup from './AngleInputGroup.jsx';
 import Button from './Button.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
 import GameArea from './GameArea.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
+import InputGroup from './InputGroup.jsx';
+import AngleInput from './AngleInput.jsx';
 import Scene from './Scene.jsx';
 import Sidebar from './Sidebar.jsx';
 
@@ -102,16 +103,22 @@ export default function App() {
         </GameOptionsMenu>
         <div className="dev-toolbar">
           <div className="toolbar__widget">
-            <h2>Scene</h2>
-            <AngleInputGroup
-              labelPrefix={'scene'}
-              target={sceneRotation}
-              setSceneSingleAxisRotation={setSceneSingleAxisRotation}
-            ></AngleInputGroup>
-          </div>
-          <div className="toolbar__widget">
-            <h2>Pokedex</h2>
-            {/* {renderAngleInputs('scene', pokedexAngle, setPokedexRotation)} */}
+            <h2>Scene rotation</h2>
+            <InputGroup>
+              {['x', 'y', 'z'].map((axis) => {
+                return (
+                  <AngleInput
+                    key={`scene-${axis}`}
+                    axis={axis}
+                    label={`scene-${axis}`}
+                    value={sceneRotation[axis]}
+                    axisRotationSetter={(value) =>
+                      setSceneSingleAxisRotation(axis, value)
+                    }
+                  />
+                );
+              })}
+            </InputGroup>
           </div>
         </div>
         <p className={styles.githubLink}>
