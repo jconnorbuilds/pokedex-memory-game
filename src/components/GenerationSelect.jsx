@@ -1,5 +1,5 @@
 import Button from './Button.jsx';
-import * as Game from './constants.js';
+import * as Game from '../utils/constants.js';
 
 export default function GenerationSelect({ generation, styles, handleSelect }) {
   return (

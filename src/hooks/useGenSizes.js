@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { NUM_OF_GENERATIONS } from '../components/constants.js';
+import { NUM_OF_GENERATIONS } from '../utils/constants.js';
 export default function useGenSizes() {
   const [genSizes, setGenSizes] = useState({});
 

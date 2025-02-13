@@ -1,4 +1,4 @@
-import { NUM_OF_GENERATIONS } from '../components/constants.js';
+import { NUM_OF_GENERATIONS } from '../utils/constants.js';
 import useLocalStorage from './useLocalStorage.js';
 
 // Is this hook necessary?

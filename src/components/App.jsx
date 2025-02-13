@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-// import { GameContext } from './GameContext.js';
 import '../styles/App.css';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
@@ -10,17 +9,17 @@ import useSceneRotation from '../hooks/useSceneRotation.js';
 import UseScore from '../hooks/useScore.js';
 import styles from '../styles/App.module.css';
 import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
+import AngleInput from './AngleInput.jsx';
 import Button from './Button.jsx';
 import DifficultySelect from './DifficultySelect.jsx';
 import GameArea from './GameArea.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import InputGroup from './InputGroup.jsx';
-import AngleInput from './AngleInput.jsx';
 import Scene from './Scene.jsx';
 import Sidebar from './Sidebar.jsx';
 
 import useGameStatus from '../hooks/useGameStatus.js';
-import * as Game from './constants.js';
+import * as Game from '../utils/constants.js';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
