@@ -1,0 +1,196 @@
+.card {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  display: flex;
+  transition: box-shadow 0.1s ease-in-out;
+  border-radius: 8px;
+  color: #fafafa;
+  text-shadow: 1px 1px 2px #000;
+  font-family: Prompt, serif;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:has(.shiny) {
+    box-shadow: 0 0 5px 3px #fffb00cc;
+  }
+}
+
+.cardWrapper {
+  width: 180px;
+  min-width: 180px;
+  aspect-ratio: 11/16;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.shadow {
+  position: absolute;
+  border-radius: inherit;
+  background-color: #00000055;
+  transform: translate3d(0, 0, 0);
+  box-shadow: 0 0 5px 0px #00000055;
+  width: 100%;
+  height: 100%;
+  transform: translate3d(0, 0, 0);
+
+  &.hovered {
+    transform: translate3d(-2px, -2px, -15px);
+    box-shadow: 0 0 20px 20px #00000055;
+    width: 80%;
+    height: 80%;
+    transition: 0.1s ease-in-out;
+  }
+}
+
+.front,
+.back,
+.front *,
+.back * {
+  backface-visibility: hidden;
+}
+
+.front,
+.back {
+  position: absolute;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: 6px solid #d9d9d9;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.front {
+  transform: rotateY(-179.9deg);
+  padding-top: 0;
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    /* An overlay to tint/shade the card's background img for better text readability */
+    content: '';
+    background-image: linear-gradient(to bottom, #0006 40%, #fff7);
+    inset: 0;
+    position: absolute;
+  }
+}
+
+.back {
+  background-color: rebeccapurple;
+}
+
+.blurBg {
+  backdrop-filter: blur(2px);
+}
+
+.name {
+  padding-inline: 0.2rem;
+  padding-top: 0.2rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  justify-self: start;
+  position: relative;
+  max-width: 100%;
+  width: 100%;
+}
+
+.sprite {
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.moves {
+  flex: 1;
+  padding-inline: 0.2rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1ch;
+  margin-left: -2ch;
+}
+
+/**-------------------
+    Type Backgrounds
+---------------------**/
+
+.bugType {
+  background-image: url('../assets/type-bg/bug-type-bg.webp');
+}
+
+.darkType {
+  background-image: url('../assets/type-bg/dark-type-bg.webp');
+}
+
+.dragonType {
+  background-image: url('../assets/type-bg/dragon-type-bg.webp');
+}
+
+.electricType {
+  background-image: url('../assets/type-bg/electric-type-bg.webp');
+}
+
+.fairyType {
+  background-image: url('../assets/type-bg/fairy-type-bg.webp');
+}
+
+.fightingType {
+  background-image: url('../assets/type-bg/fighting-type-bg.webp');
+}
+
+.fireType {
+  background-image: url('../assets/type-bg/fire-type-bg.webp');
+}
+
+.flyingType {
+  background-image: url('../assets/type-bg/flying-type-bg.webp');
+}
+
+.ghostType {
+  background-image: url('../assets/type-bg/ghost-type-bg.webp');
+}
+
+.grassType {
+  background-image: url('../assets/type-bg/grass-type-bg.webp');
+}
+
+.groundType {
+  background-image: url('../assets/type-bg/ground-type-bg.webp');
+}
+
+.iceType {
+  background-image: url('../assets/type-bg/ice-type-bg.webp');
+}
+
+.normalType {
+  background-image: url('../assets/type-bg/normal-type-bg.webp');
+}
+
+.poisonType {
+  background-image: url('../assets/type-bg/poison-type-bg.webp');
+}
+
+.psychicType {
+  background-image: url('../assets/type-bg/psychic-type-bg.webp');
+}
+
+.rockType {
+  background-image: url('../assets/type-bg/rock-type-bg.webp');
+}
+
+.steelType {
+  background-image: url('../assets/type-bg/steel-type-bg.webp');
+}
+
+.waterType {
+  background-image: url('../assets/type-bg/water-type-bg.webp');
+}

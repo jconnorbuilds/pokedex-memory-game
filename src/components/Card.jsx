@@ -1,6 +1,9 @@
+import styles from '../styles/Card.module.css';
+
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandFist } from '@fortawesome/free-solid-svg-icons';
+import { useState } from 'react';
 
 const ANIMATION_DURATION = 1.25;
 
@@ -9,35 +12,24 @@ const capitalize = (string) => {
 };
 
 export default function Card({ pokemon, handleClick, gameStatus }) {
+  const [hovered, setHovered] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Removes the hovered state if the card if the not hovered.
+  // Adds the hovered state only if the card is hovered and also not currently being animated.
+  const setHoveredIfNotBusy = (isHovered) => {
+    // if (isHovered && isAnimating) return;
+    if (isHovered && !isAnimating) {
+      setHovered(isHovered);
+    } else setHovered(false);
+  };
+
   const sprite = pokemon.isShiny
     ? pokemon?.data?.sprites.other['official-artwork'].front_shiny
     : pokemon?.data?.sprites.other['official-artwork'].front_default;
 
   const typeName = pokemon?.data?.types[0].type.name;
   const ability = pokemon?.data?.moves[0].move.name;
-
-  const toggleShadowHover = (e, isHovered) => {
-    const shadow = e.target.querySelector('.card-shadow');
-    const noHover = !!e.target.closest('.no-hover'); //
-    if (noHover) return;
-    if (isHovered) {
-      shadow.style.transform = 'translate3d(0, 0, -15px)';
-      shadow.style.boxShadow = '0 0 20px 20px #00000055';
-      shadow.style.width = '80%';
-      shadow.style.height = '80%';
-      shadow.style.transition = '0.1s ease-in-out';
-    } else {
-      shadow.style.transform = 'translate3d(0, 0, 0)';
-      shadow.style.boxShadow = '0 0 5px 0px #00000055';
-      shadow.style.width = '100%';
-      shadow.style.height = '100%';
-    }
-  };
-
-  const toggleDisableHover = (disabled) => {
-    const cardTable = document.querySelector('.card-table');
-    cardTable.classList.toggle('no-hover', disabled);
-  };
 
   const cardWrapperVariants = {
     initial: { translateZ: '1px' },
@@ -71,12 +63,15 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
     },
   };
 
+  // TODO: clean this up. Currently buggy because of the mixture of css and framer-motion animations
+  // Specifically, it looks bad when hovering while the animation is going on.
+  // Attempted to fix this with state, but it's not working as expected.
   const shadowVariants = {
     initial: {
       width: '100%',
       height: '100%',
       backgroundColor: '#00000055',
-      boxShadow: '0 0 5px 0px #00000055',
+      boxShadow: '0 0 20px 20px #00000055',
     },
     flip: {
       width: ['100%', '80%', '1%', '80%', '100%'],
@@ -108,14 +103,15 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
   };
 
   return (
+    // TODO: Change the outer motion.div to motion.button for better accessibility + keyboard navigation
+    // Currently swapping out div for button causes the shadow animation to break.
     <motion.div
       initial="initial"
-      className="card-wrapper"
+      className={styles.cardWrapper}
       variants={cardWrapperVariants}
       onClick={() => handleClick(pokemon.name)}
-      tabIndex={1}
-      onHoverStart={(e) => toggleShadowHover(e, true)}
-      onHoverEnd={(e) => toggleShadowHover(e, false)}
+      onHoverStart={() => setHoveredIfNotBusy(true)}
+      onHoverEnd={() => setHoveredIfNotBusy(false)}
       whileHover={() => {
         const hover = !document.querySelector('.card-table.no-hover');
         if (hover) return 'hover';
@@ -125,14 +121,8 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
       <motion.div
         initial="initial"
         variants={shadowVariants}
-        className="card-shadow"
+        className={`${styles.shadow} ${hovered ? styles.hovered : ''}`}
         animate={gameStatus === 'won' ? 'win' : 'flip'} // TODO: add a loading state, and use gameStatus directly as the key to animate
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          translateZ: '0px',
-        }}
         transition={{
           duration: ANIMATION_DURATION,
           times: [0, 0.33, 0.4, 0.6, 0.98],
@@ -140,31 +130,35 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
       ></motion.div>
       <motion.div
         initial="initial"
-        className="card"
+        className={`${styles.card}`}
         variants={cardVariants}
         animate={gameStatus === 'won' ? 'win' : 'flip'}
         transition={{
           duration: ANIMATION_DURATION,
         }}
-        onAnimationStart={() => toggleDisableHover(true)}
-        onAnimationComplete={() => toggleDisableHover(false)}
+        onAnimationStart={() => setIsAnimating(true)}
+        onAnimationComplete={() => setIsAnimating(false)}
       >
-        <div className={`card__front ${pokemon.isShiny && 'shiny'} type-${typeName}`}>
-          <div className="card__name blur-bg">
+        <div
+          className={`${styles.front} ${pokemon.isShiny && styles.shiny} ${
+            styles[`${typeName}Type`]
+          }`}
+        >
+          <div className={`${styles.name} ${styles.blurBg}`}>
             <p>{capitalize(pokemon.name)}</p>
             <hr />
           </div>
 
-          <div className="card__picture">
+          <div className={styles.sprite}>
             <img src={sprite} alt={pokemon.name} width="168px" />
           </div>
           <hr />
-          <div className="card__moves blur-bg">
+          <div className={`${styles.moves} ${styles.blurBg}`}>
             <FontAwesomeIcon icon={faHandFist} className="icon-shadow" />
             {ability && <p>{capitalize(ability)}</p>}
           </div>
         </div>
-        <div className="card__back"></div>
+        <div className={styles.back}></div>
       </motion.div>
     </motion.div>
   );
