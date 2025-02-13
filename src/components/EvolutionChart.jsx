@@ -3,7 +3,7 @@ import styles from '../styles/EvolutionChart.module.css';
 import EvoChartConnections from './EvoChartConnections.jsx';
 import EvoChartNodes from './EvoChartNodes.jsx';
 const CHART_VB_W = 100;
-const CHART_VB_H = 30;
+const CHART_VB_H = 75;
 
 export default function EvolutionChart({
   evolutionChain,

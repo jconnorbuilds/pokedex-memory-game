@@ -62,11 +62,6 @@
   right: 0;
   transform-origin: center;
   transition: transform 400ms linear, right 1s ease-in-out;
-
-  &:is(.pokedex--open) {
-    /* Not sure why this the magic value to center the pokedex */
-    /* right: 500px; */
-  }
 }
 
 #pokedex,
