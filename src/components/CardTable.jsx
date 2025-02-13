@@ -18,6 +18,9 @@ export default function CardTable({
   const [prevGameStatus, setPrevGameStatus] = useState(gameOn);
   const [selectedIds, setSelectedIds] = useState([]);
 
+  const gameStartedOrFinished = prevGameStatus !== gameOn;
+  const generationChanged = prevGen !== generation;
+
   const { pkmnIdsToShow } = usePokemonSubset({
     pokemonInPlay,
     selectedIds,
@@ -44,9 +47,6 @@ export default function CardTable({
     if (!pkmnIdsToShow) return [];
     return pkmnIdsToShow.map((id) => getPkmnById(id));
   }, [pkmnIdsToShow, getPkmnById]);
-
-  const gameStartedOrFinished = prevGameStatus !== gameOn;
-  const generationChanged = prevGen !== generation;
 
   if (gameStartedOrFinished || generationChanged) {
     if (gameOn) {

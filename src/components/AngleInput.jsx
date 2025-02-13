@@ -7,7 +7,7 @@ export default function AngleInput({ axis, label, value, axisRotationSetter }) {
       <input
         name={`${label}-angle`}
         type="number"
-        placeholder={`${axis} angle`}
+        placeholder={`${axis}`}
         value={value}
         onChange={(e) => {
           axisRotationSetter(e.target.value);

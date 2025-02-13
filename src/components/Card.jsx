@@ -18,20 +18,19 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
 
   const toggleShadowHover = (e, isHovered) => {
     const shadow = e.target.querySelector('.card-shadow');
-    const noHover = !!e.target.closest('.no-hover');
-    if (!noHover) {
-      if (isHovered && !noHover) {
-        shadow.style.transform = 'translate3d(0, 0, -15px)';
-        shadow.style.boxShadow = '0 0 20px 20px #00000055';
-        shadow.style.width = '80%';
-        shadow.style.height = '80%';
-        shadow.style.transition = '0.1s ease-in-out';
-      } else {
-        shadow.style.transform = 'translate3d(0, 0, 0)';
-        shadow.style.boxShadow = '0 0 5px 0px #00000055';
-        shadow.style.width = '100%';
-        shadow.style.height = '100%';
-      }
+    const noHover = !!e.target.closest('.no-hover'); //
+    if (noHover) return;
+    if (isHovered) {
+      shadow.style.transform = 'translate3d(0, 0, -15px)';
+      shadow.style.boxShadow = '0 0 20px 20px #00000055';
+      shadow.style.width = '80%';
+      shadow.style.height = '80%';
+      shadow.style.transition = '0.1s ease-in-out';
+    } else {
+      shadow.style.transform = 'translate3d(0, 0, 0)';
+      shadow.style.boxShadow = '0 0 5px 0px #00000055';
+      shadow.style.width = '100%';
+      shadow.style.height = '100%';
     }
   };
 
@@ -114,19 +113,20 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
       className="card-wrapper"
       variants={cardWrapperVariants}
       onClick={() => handleClick(pokemon.name)}
+      tabIndex={1}
       onHoverStart={(e) => toggleShadowHover(e, true)}
       onHoverEnd={(e) => toggleShadowHover(e, false)}
       whileHover={() => {
         const hover = !document.querySelector('.card-table.no-hover');
         if (hover) return 'hover';
       }}
-      animate={gameStatus === 'won' ? 'win' : 'flip'}
+      animate={gameStatus === 'won' ? 'win' : 'flip'} // TODO: add a loading state, and use gameStatus directly as the key to animate
     >
       <motion.div
         initial="initial"
         variants={shadowVariants}
         className="card-shadow"
-        animate={gameStatus === 'won' ? 'win' : 'flip'}
+        animate={gameStatus === 'won' ? 'win' : 'flip'} // TODO: add a loading state, and use gameStatus directly as the key to animate
         style={{
           position: 'absolute',
           width: '100%',

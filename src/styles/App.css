@@ -136,7 +136,6 @@ main.container {
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-  /* display: none; */
 }
 
 .card {
