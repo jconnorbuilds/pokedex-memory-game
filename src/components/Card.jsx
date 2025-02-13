@@ -7,6 +7,7 @@ import { useState } from 'react';
 
 const ANIMATION_DURATION = 1.25;
 
+// TODO: Remove this, do it with css
 const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -18,9 +19,8 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
   // Removes the hovered state if the card if the not hovered.
   // Adds the hovered state only if the card is hovered and also not currently being animated.
   const setHoveredIfNotBusy = (isHovered) => {
-    // if (isHovered && isAnimating) return;
     if (isHovered && !isAnimating) {
-      setHovered(isHovered);
+      setHovered(true);
     } else setHovered(false);
   };
 
@@ -64,8 +64,8 @@ export default function Card({ pokemon, handleClick, gameStatus }) {
   };
 
   // TODO: clean this up. Currently buggy because of the mixture of css and framer-motion animations
-  // Specifically, it looks bad when hovering while the animation is going on.
-  // Attempted to fix this with state, but it's not working as expected.
+  // Specifically, it looks bad when hovering while the flip animation is happening.
+  // Attempted to fix this by adding isAnimation state, but it's not working as expected.
   const shadowVariants = {
     initial: {
       width: '100%',
