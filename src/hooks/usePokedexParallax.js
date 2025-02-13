@@ -8,7 +8,7 @@ export default function usePokedexParallax(pokedexIsOpen) {
     const sensX = 10;
     const sensY = 50;
     if (e.target.closest('#pokedex')) {
-      // TODO: Set the parallax angle based on the position on the pokedex rather than client
+      // TODO: Set the parallax angle based on the mouse position relative to the pokedex rather than client
       setPokedexAngle((pokedexAngle) => {
         return {
           ...pokedexAngle,
@@ -32,5 +32,5 @@ export default function usePokedexParallax(pokedexIsOpen) {
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, [pokedexIsOpen, handleMouseMove]);
 
-  return [pokedexAngle, setPokedexAngle];
+  return { pokedexAngle, setPokedexAngle };
 }

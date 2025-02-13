@@ -15,11 +15,11 @@ export default function Pokedex({
   fetchPokemonDetails,
   isLoading,
 }) {
-  const [pokedexAngle, setPokedexAngle] = usePokedexParallax(isOpen);
   const [prevOpen, setPrevOpen] = useState(false);
   const [pokedexMode, setPokedexMode] = useState('list');
   const [currentPokemonId, setCurrentPokemonId] = useState(null);
 
+  const { pokedexAngle, setPokedexAngle } = usePokedexParallax(isOpen);
   const { evolutionChain } = useEvolutionChain({
     currentPokemonId,
     allPokemon: pokemonDict,
