@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import '../styles/App.css';
 import { app, analytics } from '../firebase.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
@@ -29,7 +29,7 @@ const auth = getAuth();
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
   const [generation, setGeneration] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [credential, setCredential] = useState(null);
   const [token, setToken] = useState(null);
@@ -54,7 +54,7 @@ export default function App() {
         setToken(credential.accessToken);
         setUser(result.user);
 
-        setIsLoggedIn(true);
+        // setIsLoggedIn(true);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -68,7 +68,13 @@ export default function App() {
 
   // console.log(user, credential, token);
 
-  const logUserOut = () => setIsLoggedIn(false);
+  const logUserOut = () => {
+    signOut(auth).then(() => {
+      setUser(null);
+      setCredential(null);
+      setToken(null);
+    });
+  };
   const allPokemonInGen = currentGenPkmnIds;
 
   const handleGenerationSelect = (e) => {
@@ -121,7 +127,7 @@ export default function App() {
         </Scene>
       </main>
       <Sidebar styles={styles}>
-        {isLoggedIn ? (
+        {user ? (
           <UserPanel user={user} logUserOut={logUserOut}></UserPanel>
         ) : (
           <button onClick={() => logUserIn()}>Log in</button>
