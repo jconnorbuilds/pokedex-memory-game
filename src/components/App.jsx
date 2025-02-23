@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 import '../styles/App.css';
+import { app, analytics } from '../firebase.js';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
-
 import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
 import usePokemon from '../hooks/usePokemon.js';
 import useSceneRotation from '../hooks/useSceneRotation.js';
