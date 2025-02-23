@@ -1,0 +1,37 @@
+.userPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatarPlaceholder {
+  width: 2.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: rebeccapurple;
+  display: grid;
+  place-content: center;
+}
+
+.logOut {
+  font-size: 0.8rem;
+  padding-inline: 1em;
+  background-color: #444;
+
+  &:hover,
+  :focus-visible {
+    outline: none;
+  }
+
+  &:hover,
+  :focus {
+    background-color: #aa0044;
+  }
+}

@@ -20,10 +20,12 @@ import Sidebar from './Sidebar.jsx';
 
 import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
+import UserPanel from './UserPanel.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
   const [generation, setGeneration] = useState(1);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { score, best, incrementScore, resetScore } = UseScore();
@@ -31,6 +33,9 @@ export default function App() {
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
   const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
+
+  const logUserIn = () => setIsLoggedIn(true);
+  const logUserOut = () => setIsLoggedIn(false);
 
   const allPokemonInGen = currentGenPkmnIds;
 
@@ -84,6 +89,11 @@ export default function App() {
         </Scene>
       </main>
       <Sidebar styles={styles}>
+        {isLoggedIn ? (
+          <UserPanel logUserOut={logUserOut}></UserPanel>
+        ) : (
+          <button onClick={() => logUserIn()}>Log in</button>
+        )}
         <Scoreboard styles={styles} scores={{ score, best }} />
         <Button className={styles.pokedexToggleBtn} action={toggleDexOpenClosed}>
           Open/close
