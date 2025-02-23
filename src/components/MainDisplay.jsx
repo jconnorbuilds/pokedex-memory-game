@@ -53,7 +53,7 @@ export default function MainDisplay({
           <PkmnInfoBar
             pokedexMode={pokedexMode}
             natlDexNum={currPkmn?.speciesData?.pokedex_numbers[0]?.entry_number}
-            pkmnName={currPkmn?.name}
+            pkmn={currPkmn}
             buttonAction={() => setPokedexMode('list')}
           />
           <DisplaySinglePkmnMode
