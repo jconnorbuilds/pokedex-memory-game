@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import '../styles/App.css';
 import { app, analytics } from '../firebase.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
@@ -22,10 +23,16 @@ import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
 import UserPanel from './UserPanel.jsx';
 
+const provider = new GoogleAuthProvider();
+const auth = getAuth();
+
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
   const [generation, setGeneration] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const [credential, setCredential] = useState(null);
+  const [token, setToken] = useState(null);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { score, best, incrementScore, resetScore } = UseScore();
@@ -34,9 +41,34 @@ export default function App() {
   const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
   const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
 
-  const logUserIn = () => setIsLoggedIn(true);
-  const logUserOut = () => setIsLoggedIn(false);
+  const logUserIn = () => {
+    // Use the login flow outlined in the Firebase docs
+    // https://firebase.google.com/docs/auth/web/google-signin#web
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // The Google Access Token for accessing the Google API
+        const credential = GoogleAuthProvider.credentialFromResult(result);
 
+        // Set the credential, access token, and user in state
+        setCredential(credential);
+        setToken(credential.accessToken);
+        setUser(result.user);
+
+        setIsLoggedIn(true);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        console.error(error); // TODO: Actually handle errors
+      });
+  };
+
+  // console.log(user, credential, token);
+
+  const logUserOut = () => setIsLoggedIn(false);
   const allPokemonInGen = currentGenPkmnIds;
 
   const handleGenerationSelect = (e) => {
@@ -90,7 +122,7 @@ export default function App() {
       </main>
       <Sidebar styles={styles}>
         {isLoggedIn ? (
-          <UserPanel logUserOut={logUserOut}></UserPanel>
+          <UserPanel user={user} logUserOut={logUserOut}></UserPanel>
         ) : (
           <button onClick={() => logUserIn()}>Log in</button>
         )}
