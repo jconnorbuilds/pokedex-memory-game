@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
 import '../styles/App.css';
-import { app, analytics } from '../firebase.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { app, analytics, db, provider, auth } from '../firebase.js';
+import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { addDoc, doc, setDoc, collection } from 'firebase/firestore';
 import Pokedex from './Pokedex.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
@@ -23,13 +24,9 @@ import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
 import UserPanel from './UserPanel.jsx';
 
-const provider = new GoogleAuthProvider();
-const auth = getAuth();
-
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
   const [generation, setGeneration] = useState(1);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [credential, setCredential] = useState(null);
   const [token, setToken] = useState(null);
@@ -40,6 +37,18 @@ export default function App() {
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
   const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
+
+  const createUserDbEntry = async (user) => {
+    try {
+      await setDoc(doc(db, 'users', user.displayName), {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
+      });
+    } catch (e) {
+      console.error('Error adding user entry: ', e);
+    }
+  };
 
   const logUserIn = () => {
     // Use the login flow outlined in the Firebase docs
@@ -54,7 +63,8 @@ export default function App() {
         setToken(credential.accessToken);
         setUser(result.user);
 
-        // setIsLoggedIn(true);
+        createUserDbEntry(result.user);
+        console.log(result.user);
       })
       .catch((error) => {
         const errorCode = error.code;
