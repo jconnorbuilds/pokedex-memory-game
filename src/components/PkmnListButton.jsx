@@ -1,7 +1,15 @@
 import pokeballIcon from '../assets/images/pokeball.webp';
+import heartDefault from '../assets/images/heart-regular.svg';
+import heartFavorite from '../assets/images/heart-solid.svg';
 import styles from '../styles/PkmnListButton.module.css';
 
-export default function PkmnListButton({ index, pkmnToDisplay, rwStyles, onClick }) {
+export default function PkmnListButton({
+  index,
+  pkmnToDisplay,
+  favorite,
+  rwStyles,
+  onClick,
+}) {
   const pkmn = pkmnToDisplay[index];
   const nationalDexNumber = +pkmn?.speciesData?.pokedex_numbers[0].entry_number || 0;
   const pkmnIcon = pkmn?.data?.sprites.front_default;
@@ -24,15 +32,11 @@ export default function PkmnListButton({ index, pkmnToDisplay, rwStyles, onClick
             alt={`${pkmn.name} icon`}
           />
         )}
-
         <div className={styles.icons}>
-          <img
-            className={styles.pokeballIcon}
-            width={'1.5rem'}
-            height={'1.5rem'}
-            src={pokeballIcon}
-            alt="pokeball icon"
-          />
+          {favorite && (
+            <img className={styles.favorite} src={heartFavorite} alt="pokeball icon" />
+          )}
+          <img className={styles.pokeballIcon} src={pokeballIcon} alt="pokeball icon" />
         </div>
       </div>
     </button>

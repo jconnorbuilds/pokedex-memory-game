@@ -23,6 +23,7 @@ const DisplayListMode = memo(function DisplayListMode({
     return (
       <PkmnListButton
         index={index}
+        favorite={true}
         pkmnToDisplay={pkmnToDisplay}
         onClick={() => selectPokemon(id)}
         rwStyles={style}
