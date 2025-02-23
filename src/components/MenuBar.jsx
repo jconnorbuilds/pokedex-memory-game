@@ -22,18 +22,28 @@ export function MenuBar({ mode, buttonAction, icon, children }) {
 }
 
 const addFavorite = async (user, pkmn) => {
-  try {
-    await setDoc(doc(db, 'users', `${user.displayName}/favorites/${pkmn.id}`), {
-      id: pkmn.id,
-      name: pkmn.name,
-    });
-  } catch (e) {
-    console.error('Error adding user entry: ', e);
+  if (!user) {
+    // TODO: prompt to log in
+  } else {
+    try {
+      await setDoc(doc(db, 'users', `${user.displayName}/favorites/${pkmn.id}`), {
+        id: pkmn.id,
+        name: pkmn.name,
+      });
+    } catch (e) {
+      console.error('Error adding user entry: ', e);
+    }
   }
 };
 
-export function PkmnInfoBar({ pokedexMode, natlDexNum, pkmn, buttonAction }) {
-  const favorite = false;
+export function PkmnInfoBar({
+  pokedexMode,
+  natlDexNum,
+  pkmn,
+  favoritePkmnIds,
+  buttonAction,
+}) {
+  const favorite = favoritePkmnIds.includes(pkmn.id);
   return (
     <MenuBar mode={pokedexMode} buttonAction={buttonAction} icon={faArrowLeftLong}>
       <div className={styles.menuBarContent}>

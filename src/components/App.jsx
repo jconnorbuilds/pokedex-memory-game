@@ -19,6 +19,7 @@ import GenerationSelect from './GenerationSelect.jsx';
 import InputGroup from './InputGroup.jsx';
 import Scene from './Scene.jsx';
 import Sidebar from './Sidebar.jsx';
+import useFavorites from '../hooks/useFavorites.js';
 
 import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
@@ -37,8 +38,9 @@ export default function App() {
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
   const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
+  const { favoritePkmn } = useFavorites({ user });
 
-  const createUserDbEntry = async (user) => {
+  const createOrUpdateUserDbEntry = async (user) => {
     try {
       await setDoc(doc(db, 'users', user.displayName), {
         uid: user.uid,
@@ -50,7 +52,7 @@ export default function App() {
     }
   };
 
-  const logUserIn = () => {
+  const logUserIn = async () => {
     // Use the login flow outlined in the Firebase docs
     // https://firebase.google.com/docs/auth/web/google-signin#web
     signInWithPopup(auth, provider)
@@ -63,8 +65,7 @@ export default function App() {
         setToken(credential.accessToken);
         setUser(result.user);
 
-        createUserDbEntry(result.user);
-        console.log(result.user);
+        createOrUpdateUserDbEntry(result.user);
       })
       .catch((error) => {
         const errorCode = error.code;

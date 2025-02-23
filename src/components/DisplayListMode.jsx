@@ -10,6 +10,7 @@ const DisplayListMode = memo(function DisplayListMode({
   selectPokemon,
   fetchPokemonDetails,
   isLoading,
+  favoritePkmnIds,
 }) {
   const pkmnList = Object.values(pkmnToDisplay);
   // Infinite Loader functions
@@ -20,10 +21,11 @@ const DisplayListMode = memo(function DisplayListMode({
   // The render function for each row in the list
   const Row = ({ index, style }) => {
     const id = getPkmnId(index);
+    const favorite = favoritePkmnIds.includes(id);
     return (
       <PkmnListButton
         index={index}
-        favorite={true}
+        favorite={favorite}
         pkmnToDisplay={pkmnToDisplay}
         onClick={() => selectPokemon(id)}
         rwStyles={style}
