@@ -1,6 +1,7 @@
 import pokeballIcon from '../assets/images/pokeball.webp';
 import heartDefault from '../assets/images/heart-regular.svg';
 import heartFavorite from '../assets/images/heart-solid.svg';
+
 import styles from '../styles/PkmnListButton.module.css';
 
 export default function PkmnListButton({
@@ -34,7 +35,7 @@ export default function PkmnListButton({
         )}
         <div className={styles.icons}>
           {favorite && (
-            <img className={styles.favorite} src={heartFavorite} alt="pokeball icon" />
+            <img className={styles.favorite} src={heartFavorite} alt="favorite icon" />
           )}
           <img className={styles.pokeballIcon} src={pokeballIcon} alt="pokeball icon" />
         </div>
