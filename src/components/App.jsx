@@ -127,27 +127,30 @@ export default function App() {
       </main>
       <Sidebar styles={styles}>
         {user ? (
-          <UserPanel logUserOut={logUserOut} logUserIn={logUserIn}></UserPanel>
+          <UserPanel logUserOut={logUserOut} logUserIn={logUserIn} />
         ) : (
           <button onClick={() => logUserIn()}>Log in</button>
         )}
-        <Scoreboard styles={styles} scores={{ score, best }} />
+
         <Button className={styles.pokedexToggleBtn} action={toggleDexOpenClosed}>
           Open/close
         </Button>
         {!pokedexIsOpen ? (
-          <GameOptionsMenu styles={styles.gameOptionsMenu}>
-            <GenerationSelect
-              generation={generation}
-              handleSelect={handleGenerationSelect}
-              styles={styles}
-            ></GenerationSelect>
-            <DifficultySelect
-              level={level}
-              handleSelect={handleLevelSelect}
-              styles={styles}
-            />
-          </GameOptionsMenu>
+          <>
+            <Scoreboard styles={styles} scores={{ score, best }} />
+            <GameOptionsMenu styles={styles.gameOptionsMenu}>
+              <GenerationSelect
+                generation={generation}
+                handleSelect={handleGenerationSelect}
+                styles={styles}
+              ></GenerationSelect>
+              <DifficultySelect
+                level={level}
+                handleSelect={handleLevelSelect}
+                styles={styles}
+              />
+            </GameOptionsMenu>
+          </>
         ) : null}
 
         <div className="dev-toolbar">
