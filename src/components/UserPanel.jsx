@@ -4,7 +4,6 @@ import { AuthContext } from '../context/AuthContext.jsx';
 
 export default function UserPanel({ logUserOut, logUserIn }) {
   const user = useContext(AuthContext);
-  console.log('USER', user);
   return (
     <div className={styles.userPanel}>
       <div className={styles.manageLogin}>
