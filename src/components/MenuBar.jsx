@@ -1,14 +1,14 @@
-import styles from '../styles/PokedexMenuBar.module.css'; // pokedex screen styles
-import { useContext } from 'react';
-import Button from './Button.jsx';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeftLong, faClose } from '@fortawesome/free-solid-svg-icons';
-import PokemonListFilter from './PokemonListFilter.jsx';
-import heartFavorite from '../assets/images/heart-solid.svg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { useContext } from 'react';
 import heartDefault from '../assets/images/heart-regular.svg';
-import { addDoc, doc, setDoc, collection } from 'firebase/firestore';
-import { db } from '../firebase.js';
+import heartFavorite from '../assets/images/heart-solid.svg';
 import { AuthContext } from '../context/AuthContext.jsx';
+import { db } from '../firebase.js';
+import styles from '../styles/PokedexMenuBar.module.css'; // pokedex screen styles
+import Button from './Button.jsx';
+import PokemonListFilter from './PokemonListFilter.jsx';
 
 export function MenuBar({ mode, buttonAction, icon, children }) {
   const className = `menuBar${mode.charAt(0).toUpperCase() + mode.slice(1)}`;
@@ -23,17 +23,25 @@ export function MenuBar({ mode, buttonAction, icon, children }) {
   );
 }
 
-const addFavorite = async (user, pkmn) => {
+const toggleFavorite = async (user, pkmn) => {
   if (!user) {
     // TODO: prompt to log in
   } else {
+    // The document to search for
+    const docRef = doc(db, 'users', `${user.uid}/favorites/${pkmn.id}`);
     try {
-      await setDoc(doc(db, 'users', `${user.uid}/favorites/${pkmn.id}`), {
-        id: pkmn.id,
-        name: pkmn.name,
-      });
+      // Check if the document exists delete it to unfavorite, or set it to favorite.
+      const entry = await getDoc(docRef);
+      if (entry.exists()) {
+        await deleteDoc(docRef);
+      } else {
+        await setDoc(docRef, {
+          id: pkmn.id,
+          name: pkmn.name,
+        });
+      }
     } catch (e) {
-      console.error('Error adding user entry: ', e);
+      console.error('Error updating user entry: ', e);
     }
   }
 };
@@ -50,7 +58,10 @@ export function PkmnInfoBar({
   return (
     <MenuBar mode={pokedexMode} buttonAction={buttonAction} icon={faArrowLeftLong}>
       <div className={styles.menuBarContent}>
-        <button onClick={() => addFavorite(user, pkmn)} className={styles.favoriteButton}>
+        <button
+          onClick={() => toggleFavorite(user, pkmn)}
+          className={styles.favoriteButton}
+        >
           <img
             className={styles.favoriteIcon}
             src={favorite ? heartFavorite : heartDefault}
