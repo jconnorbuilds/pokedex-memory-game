@@ -1,9 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useContext } from 'react';
 // pokedex screen styles
 import styles from '../styles/MainDisplay.module.css';
 import DisplayListMode from './DisplayListMode.jsx';
 import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
 import { PkmnInfoBar, SearchBar } from './MenuBar.jsx';
+import useFavorites from '../hooks/useFavorites.js';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 export default function MainDisplay({
   pokemonDict,
@@ -15,11 +17,12 @@ export default function MainDisplay({
   isLoading,
   pokedexAngle,
   evolutionChain,
+  showLoginPrompt,
   screenOn = true,
 }) {
-  // Can we use filtered pkmn IDs instead?
   const [filteredPkmnIds, setFilteredPkmnIds] = useState([]);
-
+  const user = useContext(AuthContext);
+  const { favoritePkmnIds } = useFavorites({ user });
   const filteredPkmn = filteredPkmnIds.reduce((acc, curr, i) => {
     // Retrieve the pokemon object by its id, and re-index it for infinite scrolling compatibility
     return { ...acc, [i]: Object.values(pokemonDict).find((pkmn) => pkmn.id === curr) };
@@ -53,8 +56,10 @@ export default function MainDisplay({
           <PkmnInfoBar
             pokedexMode={pokedexMode}
             natlDexNum={currPkmn?.speciesData?.pokedex_numbers[0]?.entry_number}
-            pkmnName={currPkmn?.name}
+            pkmn={currPkmn}
+            favoritePkmnIds={favoritePkmnIds}
             buttonAction={() => setPokedexMode('list')}
+            showLoginPrompt={showLoginPrompt}
           />
           <DisplaySinglePkmnMode
             pokemonDict={pokemonDict}
@@ -77,6 +82,7 @@ export default function MainDisplay({
             selectPokemon={handlePkmnSelection}
             fetchPokemonDetails={fetchPokemonDetails}
             isLoading={isLoading}
+            favoritePkmnIds={favoritePkmnIds}
           />
         </>
       );

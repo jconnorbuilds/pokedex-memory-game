@@ -78,7 +78,7 @@
 }
 
 .githubLink {
-  margin-block-start: auto;
+  align-self: end;
 }
 
 .pokedexToggleBtn {

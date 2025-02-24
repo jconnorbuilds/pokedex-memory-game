@@ -15,6 +15,18 @@
   z-index: 1;
 }
 
+.menuBarContent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.favoriteIcon {
+  height: 15px;
+  width: 20px;
+  /* background-color: red; */
+}
+
 .menuBarSinglePkmn {
   composes: menuBar;
 }
@@ -31,8 +43,25 @@
 
   &:hover,
   &:focus {
-    background-color: #2a2a2a;
+    background-color: #444;
     outline: none;
+  }
+}
+
+.menuBar .favoriteButton {
+  display: grid;
+  place-content: center;
+  padding-inline: 0.25rem;
+  height: 80%;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: #fff;
+    outline: none;
+  }
+
+  &:focus {
+    outline: #fff;
   }
 }
 

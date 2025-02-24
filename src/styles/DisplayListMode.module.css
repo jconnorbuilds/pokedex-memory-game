@@ -11,7 +11,7 @@
 .displayList button {
   display: grid;
   width: 100%;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 45% 1fr;
   padding-inline: 0.5rem;
   align-items: center;
   text-align: start;

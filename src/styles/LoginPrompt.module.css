@@ -1,0 +1,50 @@
+.loginModal {
+  inset: 0.5rem;
+  margin: auto;
+  background-color: #333;
+  border-radius: 10px;
+  padding: 2rem;
+  z-index: 2;
+
+  & h1 {
+    font-size: 2rem;
+  }
+
+  & p {
+    padding-block: 1rem;
+  }
+
+  & button {
+    padding-inline: 1em;
+  }
+
+  & .noThanks {
+    font-size: 0.7rem;
+    background-color: inherit;
+    outline: none;
+    color: #aaa;
+    text-decoration: underline;
+    padding: 0;
+    margin-left: auto;
+
+    &:hover,
+    :focus-visible {
+      color: #aa0044;
+      outline: none;
+    }
+  }
+}
+
+.heartIcon {
+  display: inline;
+  height: 0.6em;
+  width: 1em;
+}
+
+.backdrop {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  background-color: #0007;
+  z-index: 1;
+}
