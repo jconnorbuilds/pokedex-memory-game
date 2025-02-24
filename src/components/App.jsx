@@ -1,9 +1,8 @@
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { signInWithPopup, signOut } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { useCallback, useContext, useState } from 'react';
 import { auth, db, provider } from '../firebase.js';
 import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
-import useFavorites from '../hooks/useFavorites.js';
 import usePokemon from '../hooks/usePokemon.js';
 import useSceneRotation from '../hooks/useSceneRotation.js';
 import UseScore from '../hooks/useScore.js';
@@ -16,18 +15,18 @@ import DifficultySelect from './DifficultySelect.jsx';
 import GameArea from './GameArea.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import InputGroup from './InputGroup.jsx';
+import Login from './Login.jsx';
 import Pokedex from './Pokedex.jsx';
 import Scene from './Scene.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import Sidebar from './Sidebar.jsx';
-import Login from './Login.jsx';
 
 import { AuthContext } from '../context/AuthContext.jsx';
 import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
 
-import UserPanel from './UserPanel.jsx';
 import LoginPrompt from './LoginPrompt.jsx';
+import UserPanel from './UserPanel.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
