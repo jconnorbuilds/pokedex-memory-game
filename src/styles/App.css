@@ -54,6 +54,7 @@ main.container {
 }
 
 .dev-toolbar {
+  margin-block-start: auto;
   display: grid;
   grid-template-columns: repeat(2, max-content);
   gap: 1em;

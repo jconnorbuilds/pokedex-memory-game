@@ -134,18 +134,21 @@ export default function App() {
         <Button className={styles.pokedexToggleBtn} action={toggleDexOpenClosed}>
           Open/close
         </Button>
-        <GameOptionsMenu styles={styles.gameOptionsMenu}>
-          <GenerationSelect
-            generation={generation}
-            handleSelect={handleGenerationSelect}
-            styles={styles}
-          ></GenerationSelect>
-          <DifficultySelect
-            level={level}
-            handleSelect={handleLevelSelect}
-            styles={styles}
-          />
-        </GameOptionsMenu>
+        {!pokedexIsOpen ? (
+          <GameOptionsMenu styles={styles.gameOptionsMenu}>
+            <GenerationSelect
+              generation={generation}
+              handleSelect={handleGenerationSelect}
+              styles={styles}
+            ></GenerationSelect>
+            <DifficultySelect
+              level={level}
+              handleSelect={handleLevelSelect}
+              styles={styles}
+            />
+          </GameOptionsMenu>
+        ) : null}
+
         <div className="dev-toolbar">
           <div className="toolbar__widget">
             <h2>Scene rotation</h2>
