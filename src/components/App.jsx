@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import '../styles/App.css';
 import { app, analytics, db, provider, auth } from '../firebase.js';
 import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
@@ -24,13 +24,12 @@ import useFavorites from '../hooks/useFavorites.js';
 import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
 import UserPanel from './UserPanel.jsx';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
   const [generation, setGeneration] = useState(1);
-  const [user, setUser] = useState(null);
-  const [credential, setCredential] = useState(null);
-  const [token, setToken] = useState(null);
+  const user = useContext(AuthContext);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
 
   const { score, best, incrementScore, resetScore } = UseScore();
@@ -56,17 +55,7 @@ export default function App() {
     // Use the login flow outlined in the Firebase docs
     // https://firebase.google.com/docs/auth/web/google-signin#web
     signInWithPopup(auth, provider)
-      .then((result) => {
-        // The Google Access Token for accessing the Google API
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-
-        // Set the credential, access token, and user in state
-        setCredential(credential);
-        setToken(credential.accessToken);
-        setUser(result.user);
-
-        createOrUpdateUserDbEntry(result.user);
-      })
+      .then((result) => createOrUpdateUserDbEntry(result.user))
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -81,9 +70,7 @@ export default function App() {
 
   const logUserOut = () => {
     signOut(auth).then(() => {
-      setUser(null);
-      setCredential(null);
-      setToken(null);
+      // TODO: show logout UI?
     });
   };
   const allPokemonInGen = currentGenPkmnIds;

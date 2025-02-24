@@ -1,11 +1,11 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useContext } from 'react';
 // pokedex screen styles
 import styles from '../styles/MainDisplay.module.css';
 import DisplayListMode from './DisplayListMode.jsx';
 import DisplaySinglePkmnMode from './DisplaySinglePkmnMode.jsx';
 import { PkmnInfoBar, SearchBar } from './MenuBar.jsx';
 import useFavorites from '../hooks/useFavorites.js';
-import { auth } from '../firebase.js';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 export default function MainDisplay({
   pokemonDict,
@@ -20,8 +20,8 @@ export default function MainDisplay({
   screenOn = true,
 }) {
   const [filteredPkmnIds, setFilteredPkmnIds] = useState([]);
-  const currentUser = auth.currentUser;
-  const { favoritePkmnIds } = useFavorites({ user: currentUser });
+  const user = useContext(AuthContext);
+  const { favoritePkmnIds } = useFavorites({ user });
   const filteredPkmn = filteredPkmnIds.reduce((acc, curr, i) => {
     // Retrieve the pokemon object by its id, and re-index it for infinite scrolling compatibility
     return { ...acc, [i]: Object.values(pokemonDict).find((pkmn) => pkmn.id === curr) };
