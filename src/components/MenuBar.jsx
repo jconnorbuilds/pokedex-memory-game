@@ -28,7 +28,7 @@ const addFavorite = async (user, pkmn) => {
     // TODO: prompt to log in
   } else {
     try {
-      await setDoc(doc(db, 'users', `${user.displayName}/favorites/${pkmn.id}`), {
+      await setDoc(doc(db, 'users', `${user.uid}/favorites/${pkmn.id}`), {
         id: pkmn.id,
         name: pkmn.name,
       });

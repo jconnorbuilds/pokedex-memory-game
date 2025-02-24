@@ -41,7 +41,7 @@ export default function App() {
 
   const createOrUpdateUserDbEntry = async (user) => {
     try {
-      await setDoc(doc(db, 'users', user.displayName), {
+      await setDoc(doc(db, 'users', user.uid), {
         uid: user.uid,
         name: user.displayName,
         email: user.email,

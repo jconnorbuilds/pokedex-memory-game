@@ -7,7 +7,7 @@ export default function useFavorites({ user }) {
 
   if (user) {
     // Use a query snapshot to get real time updates for the entire collection
-    const q = query(collection(db, `users/${user.displayName}/favorites`));
+    const q = query(collection(db, `users/${user.uid}/favorites`));
     onSnapshot(q, (querySnapshot) => {
       const favorites = [];
       querySnapshot.forEach((doc) => favorites.push(doc.data()));
