@@ -25,6 +25,7 @@ import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
 import UserPanel from './UserPanel.jsx';
 import { AuthContext } from '../context/AuthContext.jsx';
+import Login from './Login.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
@@ -129,7 +130,7 @@ export default function App() {
         {user ? (
           <UserPanel logUserOut={logUserOut} logUserIn={logUserIn} />
         ) : (
-          <button onClick={() => logUserIn()}>Log in</button>
+          <Login logUserIn={logUserIn} />
         )}
 
         <Button className={styles.pokedexToggleBtn} action={toggleDexOpenClosed}>

@@ -19,9 +19,13 @@ This app uses the Firebase JS SDK to implement Cloud Firestore
 
 ### Security
 
-The current implementation uses a very broad security rules to allow read and write to any document as long as the user is logged in.
+#### Security Rules
 
-Consideration: This needs to be more strictly scoped to give fewer permissions to the user.
+The current implementation uses security rules to allow read and write to any document, as long as the user is logged in (authenticated) and the database collection represented by the user's UID matches the authenticated user's UID.
+
+#### reCAPTCHA
+
+For further security, I would have liked to incorporate reCAPTCHA v3, possibly using the react-google-recaptcha-v3 component. I considered implementing it for this challenge but would rather spend some time understanding how it works before implementing.
 
 ## Favorites
 
