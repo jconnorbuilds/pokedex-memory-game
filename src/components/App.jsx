@@ -73,6 +73,7 @@ export default function App() {
       // TODO: show logout UI?
     });
   };
+
   const allPokemonInGen = currentGenPkmnIds;
 
   const handleGenerationSelect = (e) => {
@@ -126,7 +127,7 @@ export default function App() {
       </main>
       <Sidebar styles={styles}>
         {user ? (
-          <UserPanel user={user} logUserOut={logUserOut}></UserPanel>
+          <UserPanel logUserOut={logUserOut} logUserIn={logUserIn}></UserPanel>
         ) : (
           <button onClick={() => logUserIn()}>Log in</button>
         )}

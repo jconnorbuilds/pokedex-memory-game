@@ -12,7 +12,7 @@
 }
 
 .avatar {
-  width: 2.5rem;
+  width: 2rem;
   aspect-ratio: 1;
   border-radius: 50%;
   background-color: rebeccapurple;
@@ -20,18 +20,21 @@
   place-content: center;
 }
 
+.manageLogin {
+  display: flex;
+  gap: 1rem;
+}
+
 .logOut {
-  font-size: 0.8rem;
-  padding-inline: 1em;
-  background-color: #444;
+  font-size: 0.7rem;
+  background-color: inherit;
+  outline: none;
+  color: #aaa;
+  text-decoration: underline;
 
   &:hover,
   :focus-visible {
+    color: #aa0044;
     outline: none;
-  }
-
-  &:hover,
-  :focus {
-    background-color: #aa0044;
   }
 }
