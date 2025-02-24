@@ -1,14 +1,13 @@
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import { useCallback, useContext, useState } from 'react';
-import '../styles/App.css';
-import { app, analytics, db, provider, auth } from '../firebase.js';
-import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
-import { addDoc, doc, setDoc, collection } from 'firebase/firestore';
-import Pokedex from './Pokedex.jsx';
-import Scoreboard from './Scoreboard.jsx';
+import { auth, db, provider } from '../firebase.js';
 import useCurrentGenPkmnIds from '../hooks/useCurrentGenPkmnIds.js';
+import useFavorites from '../hooks/useFavorites.js';
 import usePokemon from '../hooks/usePokemon.js';
 import useSceneRotation from '../hooks/useSceneRotation.js';
 import UseScore from '../hooks/useScore.js';
+import '../styles/App.css';
 import styles from '../styles/App.module.css';
 import GameOptionsMenu from '../styles/GameOptionsMenu.jsx';
 import AngleInput from './AngleInput.jsx';
@@ -17,15 +16,16 @@ import DifficultySelect from './DifficultySelect.jsx';
 import GameArea from './GameArea.jsx';
 import GenerationSelect from './GenerationSelect.jsx';
 import InputGroup from './InputGroup.jsx';
+import Pokedex from './Pokedex.jsx';
 import Scene from './Scene.jsx';
+import Scoreboard from './Scoreboard.jsx';
 import Sidebar from './Sidebar.jsx';
-import useFavorites from '../hooks/useFavorites.js';
 
+import { AuthContext } from '../context/AuthContext.jsx';
 import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
-import UserPanel from './UserPanel.jsx';
-import { AuthContext } from '../context/AuthContext.jsx';
 import Login from './Login.jsx';
+import UserPanel from './UserPanel.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
