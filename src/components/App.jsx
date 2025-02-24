@@ -20,25 +20,27 @@ import Pokedex from './Pokedex.jsx';
 import Scene from './Scene.jsx';
 import Scoreboard from './Scoreboard.jsx';
 import Sidebar from './Sidebar.jsx';
+import Login from './Login.jsx';
 
 import { AuthContext } from '../context/AuthContext.jsx';
 import useGameStatus from '../hooks/useGameStatus.js';
 import * as Game from '../utils/constants.js';
-import Login from './Login.jsx';
+
 import UserPanel from './UserPanel.jsx';
+import LoginPrompt from './LoginPrompt.jsx';
 
 export default function App() {
   const [level, setLevel] = useState(Game.LEVELS.find((l) => l.name === 'easy'));
   const [generation, setGeneration] = useState(1);
   const user = useContext(AuthContext);
   const [pokedexIsOpen, setPokedexIsOpen] = useState(true);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   const { score, best, incrementScore, resetScore } = UseScore();
   const { sceneRotation, setSceneSingleAxisRotation } = useSceneRotation(pokedexIsOpen);
   const { gameOn, gameStatus, nextGame, reportGameStatus } = useGameStatus();
   const { pokemonDict, fetchPokemonDetails, isLoading } = usePokemon({ isOpen: true });
   const { currentGenPkmnIds } = useCurrentGenPkmnIds({ generation, pokemonDict });
-  const { favoritePkmn } = useFavorites({ user });
 
   const createOrUpdateUserDbEntry = async (user) => {
     try {
@@ -57,6 +59,7 @@ export default function App() {
     // https://firebase.google.com/docs/auth/web/google-signin#web
     signInWithPopup(auth, provider)
       .then((result) => createOrUpdateUserDbEntry(result.user))
+      .then(() => setShowLoginPrompt(false))
       .catch((error) => {
         console.error(error); // TODO: Actually handle errors
       });
@@ -96,6 +99,11 @@ export default function App() {
   return (
     <div className="app">
       <main className="container">
+        <LoginPrompt
+          open={showLoginPrompt}
+          hide={() => setShowLoginPrompt(false)}
+          logUserIn={logUserIn}
+        />
         <Scene rotation={sceneRotation}>
           {pokedexIsOpen ? (
             <Pokedex
@@ -104,6 +112,7 @@ export default function App() {
               fetchPokemonDetails={fetchPokemonDetails}
               isLoading={isLoading}
               toggleOpen={() => {}}
+              showLoginPrompt={() => setShowLoginPrompt(true)}
             ></Pokedex>
           ) : (
             <GameArea

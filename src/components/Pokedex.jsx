@@ -14,6 +14,7 @@ export default function Pokedex({
   pokemonDict,
   fetchPokemonDetails,
   isLoading,
+  showLoginPrompt,
 }) {
   const [prevOpen, setPrevOpen] = useState(false);
   const [pokedexMode, setPokedexMode] = useState('list');
@@ -73,6 +74,7 @@ export default function Pokedex({
             isLoading={isLoading}
             pokedexAngle={pokedexAngle}
             evolutionChain={evolutionChain}
+            showLoginPrompt={showLoginPrompt}
           />
         </PokedexBody>
         <PokedexLid>

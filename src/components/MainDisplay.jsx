@@ -17,6 +17,7 @@ export default function MainDisplay({
   isLoading,
   pokedexAngle,
   evolutionChain,
+  showLoginPrompt,
   screenOn = true,
 }) {
   const [filteredPkmnIds, setFilteredPkmnIds] = useState([]);
@@ -58,6 +59,7 @@ export default function MainDisplay({
             pkmn={currPkmn}
             favoritePkmnIds={favoritePkmnIds}
             buttonAction={() => setPokedexMode('list')}
+            showLoginPrompt={showLoginPrompt}
           />
           <DisplaySinglePkmnMode
             pokemonDict={pokemonDict}
